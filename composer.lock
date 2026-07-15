@@ -171,12 +171,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:christianjbrown/php-smartthings-api-lib.git",
-                "reference": "8af6d30f0bc3d99dd94f852af723a059e817ee19"
+                "reference": "968a3e70e14bbdfb6e7fc65f9fd9cf72ca8a00e5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/christianjbrown/php-smartthings-api-lib/zipball/8af6d30f0bc3d99dd94f852af723a059e817ee19",
-                "reference": "8af6d30f0bc3d99dd94f852af723a059e817ee19",
+                "url": "https://api.github.com/repos/christianjbrown/php-smartthings-api-lib/zipball/968a3e70e14bbdfb6e7fc65f9fd9cf72ca8a00e5",
+                "reference": "968a3e70e14bbdfb6e7fc65f9fd9cf72ca8a00e5",
                 "shasum": ""
             },
             "require": {
@@ -241,7 +241,7 @@
             "support": {
                 "source": "https://github.com/christianjbrown/php-smartthings-api-lib/tree/main"
             },
-            "time": "2026-07-15T14:03:46+00:00"
+            "time": "2026-07-15T16:51:22+00:00"
         },
         {
             "name": "christianjbrown/php-user-friendly-exception-lib",

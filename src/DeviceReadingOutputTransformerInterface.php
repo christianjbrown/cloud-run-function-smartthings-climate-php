@@ -6,6 +6,7 @@ namespace ChristianBrown\GetSmartHomeTemps;
 
 interface DeviceReadingOutputTransformerInterface
 {
+    public const KEY_BATTERY = 'batteryValue';
     public const KEY_HUMIDITY = 'humidityValue';
     public const KEY_HUMIDITY_STALE = 'humidityStale';
     public const KEY_HUMIDITY_TIMESTAMP = 'humidityTimestamp';

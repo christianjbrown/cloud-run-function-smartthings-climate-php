@@ -6,6 +6,7 @@ namespace ChristianBrown\GetSmartHomeTemps;
 
 final class DeviceReading implements DeviceReadingInterface
 {
+    private ?int $batteryValue;
     private ?float $humidity;
     private ?bool $humidityStale;
     private ?int $humidityTimestamp;
@@ -15,16 +16,22 @@ final class DeviceReading implements DeviceReadingInterface
     private ?float $temperature;
     private ?int $timestamp;
 
-    public function __construct(string $label, ?string $roomName, ?float $temperature, ?int $timestamp, ?bool $stale, ?float $humidity, ?int $humidityTimestamp, ?bool $humidityStale)
+    public function __construct(string $label, ?string $roomName, ?int $batteryValue, ?float $temperature, ?int $timestamp, ?bool $stale, ?float $humidity, ?int $humidityTimestamp, ?bool $humidityStale)
     {
         $this->label = $label;
         $this->roomName = $roomName;
+        $this->batteryValue = $batteryValue;
         $this->temperature = $temperature;
         $this->timestamp = $timestamp;
         $this->stale = $stale;
         $this->humidity = $humidity;
         $this->humidityTimestamp = $humidityTimestamp;
         $this->humidityStale = $humidityStale;
+    }
+
+    public function getBatteryValue(): ?int
+    {
+        return $this->batteryValue;
     }
 
     public function getHumidity(): ?float

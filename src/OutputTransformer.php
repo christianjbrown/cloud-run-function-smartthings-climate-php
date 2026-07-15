@@ -38,6 +38,24 @@ final class OutputTransformer implements OutputTransformerInterface
     }
 
     /**
+     * @param float[] $values
+     * @param int[]   $timestamps
+     *
+     * @return mixed[]
+     */
+    private function average(array $values, array $timestamps, string $valueKey, string $timestampKey): array
+    {
+        if ([] === $timestamps) {
+            return [];
+        }
+
+        return [
+            $valueKey => array_sum($values) / count($values),
+            $timestampKey => min($timestamps),
+        ];
+    }
+
+    /**
      * @param DeviceReadingInterface[] $deviceReadings
      *
      * @return mixed[]
@@ -75,23 +93,5 @@ final class OutputTransformer implements OutputTransformerInterface
             self::KEY_AVERAGE_TEMPERATURE_VALUE,
             self::KEY_AVERAGE_TEMPERATURE_TIMESTAMP
         );
-    }
-
-    /**
-     * @param float[] $values
-     * @param int[]   $timestamps
-     *
-     * @return mixed[]
-     */
-    private function average(array $values, array $timestamps, string $valueKey, string $timestampKey): array
-    {
-        if ([] === $timestamps) {
-            return [];
-        }
-
-        return [
-            $valueKey => array_sum($values) / count($values),
-            $timestampKey => min($timestamps),
-        ];
     }
 }

@@ -14,6 +14,8 @@ use ChristianBrown\SmartThings\Api\LocationRoomApiInterface;
 use ChristianBrown\SmartThings\Model\DeviceComponentCapabilityInterface;
 use ChristianBrown\SmartThings\Model\DeviceComponentInterface;
 use ChristianBrown\SmartThings\Model\DeviceInterface;
+use ChristianBrown\SmartThings\Model\DeviceStatusBatteryBatteryInterface;
+use ChristianBrown\SmartThings\Model\DeviceStatusBatteryInterface;
 use ChristianBrown\SmartThings\Model\DeviceStatusInterface;
 use ChristianBrown\SmartThings\Model\DeviceStatusRelativeHumidityMeasurementHumidityInterface;
 use ChristianBrown\SmartThings\Model\DeviceStatusRelativeHumidityMeasurementInterface;
@@ -79,7 +81,7 @@ final class DataProviderTest extends TestCase
 
         $device1status = $this->createDeviceStatus($temperatureMeasurement1, null);
         $device3status = $this->createDeviceStatus(null, null);
-        $device4status = $this->createDeviceStatus($temperatureMeasurement4, null);
+        $device4status = $this->createDeviceStatus($temperatureMeasurement4, null, 80);
         $device5status = $this->createDeviceStatus(null, $humidityMeasurement5);
         $device6status = $this->createDeviceStatus($temperatureMeasurement6, $humidityMeasurement6);
 
@@ -120,6 +122,7 @@ final class DataProviderTest extends TestCase
                         self::assertInstanceOf(DeviceReadingInterface::class, $data[0]);
                         self::assertSame('test-device-1-mixed-components-inc-temp', $data[0]->getLabel());
                         self::assertNull($data[0]->getRoomName());
+                        self::assertNull($data[0]->getBatteryValue());
                         self::assertSame(42.0, $data[0]->getTemperature());
                         self::assertSame($temperature1time, $data[0]->getTimestamp());
                         self::assertTrue($data[0]->isStale());
@@ -131,6 +134,7 @@ final class DataProviderTest extends TestCase
                         self::assertInstanceOf(DeviceReadingInterface::class, $data[1]);
                         self::assertSame('test-device-4-has-temp', $data[1]->getLabel());
                         self::assertSame('test-room-4', $data[1]->getRoomName());
+                        self::assertSame(80, $data[1]->getBatteryValue());
                         self::assertSame(98.0, $data[1]->getTemperature());
                         self::assertSame($temperature4time, $data[1]->getTimestamp());
                         self::assertFalse($data[1]->isStale());
@@ -169,54 +173,6 @@ final class DataProviderTest extends TestCase
         $actual = $dataProvider->getData($request);
 
         self::assertSame(['test-actual-output'], $actual);
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function testSingleDeviceProducingAReadingIsTransformed(): void
-    {
-        $request = self::createStub(ServerRequestInterface::class);
-
-        $device = $this->createDevice('test-device', [$this->createDeviceComponent(true, false)], 'test-room-id');
-
-        $deviceApi = self::createStub(DeviceApiInterface::class);
-        $deviceApi->method('getMultiple')
-            ->willReturn([$device]);
-
-        $deviceStatusApi = self::createMock(DeviceStatusApiInterface::class);
-        $deviceStatusApi->expects(self::once())
-            ->method('getOneByDevice')
-            ->with($device)
-            ->willReturn($this->createDeviceStatus($this->createTemperatureMeasurement(20.0, 'C', time()), null));
-
-        $locationRoomApi = self::createMock(LocationRoomApiInterface::class);
-        $locationRoomApi->expects(self::once())
-            ->method('getOneByDevice')
-            ->with($device)
-            ->willReturn($this->createRoom('test-room'));
-
-        $outputTransformer = self::createMock(OutputTransformerInterface::class);
-        $outputTransformer->expects(self::once())
-            ->method('transform')
-            ->with(
-                self::callback(
-                    static function (array $data): bool {
-                        self::assertCount(1, $data);
-                        self::assertInstanceOf(DeviceReadingInterface::class, $data[0]);
-                        self::assertSame('test-device', $data[0]->getLabel());
-                        self::assertSame('test-room', $data[0]->getRoomName());
-                        self::assertSame(20.0, $data[0]->getTemperature());
-
-                        return true;
-                    }
-                )
-            )
-            ->willReturn(['test-actual-output']);
-
-        $dataProvider = new DataProvider($deviceApi, $deviceStatusApi, $locationRoomApi, $outputTransformer);
-
-        self::assertSame(['test-actual-output'], $dataProvider->getData($request));
     }
 
     /**
@@ -309,6 +265,54 @@ final class DataProviderTest extends TestCase
     /**
      * @throws Exception
      */
+    public function testSingleDeviceProducingAReadingIsTransformed(): void
+    {
+        $request = self::createStub(ServerRequestInterface::class);
+
+        $device = $this->createDevice('test-device', [$this->createDeviceComponent(true, false)], 'test-room-id');
+
+        $deviceApi = self::createStub(DeviceApiInterface::class);
+        $deviceApi->method('getMultiple')
+            ->willReturn([$device]);
+
+        $deviceStatusApi = self::createMock(DeviceStatusApiInterface::class);
+        $deviceStatusApi->expects(self::once())
+            ->method('getOneByDevice')
+            ->with($device)
+            ->willReturn($this->createDeviceStatus($this->createTemperatureMeasurement(20.0, 'C', time()), null));
+
+        $locationRoomApi = self::createMock(LocationRoomApiInterface::class);
+        $locationRoomApi->expects(self::once())
+            ->method('getOneByDevice')
+            ->with($device)
+            ->willReturn($this->createRoom('test-room'));
+
+        $outputTransformer = self::createMock(OutputTransformerInterface::class);
+        $outputTransformer->expects(self::once())
+            ->method('transform')
+            ->with(
+                self::callback(
+                    static function (array $data): bool {
+                        self::assertCount(1, $data);
+                        self::assertInstanceOf(DeviceReadingInterface::class, $data[0]);
+                        self::assertSame('test-device', $data[0]->getLabel());
+                        self::assertSame('test-room', $data[0]->getRoomName());
+                        self::assertSame(20.0, $data[0]->getTemperature());
+
+                        return true;
+                    }
+                )
+            )
+            ->willReturn(['test-actual-output']);
+
+        $dataProvider = new DataProvider($deviceApi, $deviceStatusApi, $locationRoomApi, $outputTransformer);
+
+        self::assertSame(['test-actual-output'], $dataProvider->getData($request));
+    }
+
+    /**
+     * @throws Exception
+     */
     private function createDevice(string $label, array $components, ?string $roomId = null): DeviceInterface
     {
         $device = self::createStub(DeviceInterface::class);
@@ -360,15 +364,33 @@ final class DataProviderTest extends TestCase
     /**
      * @throws Exception
      */
-    private function createDeviceStatus(?DeviceStatusTemperatureMeasurementInterface $temperatureMeasurement, ?DeviceStatusRelativeHumidityMeasurementInterface $humidityMeasurement): DeviceStatusInterface
+    private function createDeviceStatus(?DeviceStatusTemperatureMeasurementInterface $temperatureMeasurement, ?DeviceStatusRelativeHumidityMeasurementInterface $humidityMeasurement, ?int $batteryValue = null): DeviceStatusInterface
     {
         $deviceStatus = self::createStub(DeviceStatusInterface::class);
         $deviceStatus->method('getTemperatureMeasurement')
             ->willReturn($temperatureMeasurement);
         $deviceStatus->method('getRelativeHumidityMeasurement')
             ->willReturn($humidityMeasurement);
+        $deviceStatus->method('getBattery')
+            ->willReturn(null === $batteryValue ? null : $this->createBattery($batteryValue));
 
         return $deviceStatus;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function createBattery(int $value): DeviceStatusBatteryInterface
+    {
+        $batteryValue = self::createStub(DeviceStatusBatteryBatteryInterface::class);
+        $batteryValue->method('getValue')
+            ->willReturn($value);
+
+        $battery = self::createStub(DeviceStatusBatteryInterface::class);
+        $battery->method('getBattery')
+            ->willReturn($batteryValue);
+
+        return $battery;
     }
 
     /**
