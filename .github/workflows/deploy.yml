@@ -12,7 +12,7 @@ jobs:
       id-token: 'write'
     steps:
       - name: 'Checkout'
-        uses: 'actions/checkout@v4'
+        uses: 'actions/checkout@v5'
 
       - name: 'Authenticate with GCP'
         uses: 'google-github-actions/auth@v1'
@@ -24,7 +24,7 @@ jobs:
         id: 'deploy'
         uses: 'google-github-actions/deploy-cloud-functions@v1'
         with:
-          build_environment_variables: 'COMPOSER_AUTH={"github-oauth":{"github.com":"${{ secrets.COMPOSER_GITHUB_TOKEN }}"}}'
+          build_environment_variables: 'COMPOSER_AUTH=${{ secrets.COMPOSER_AUTH }}'
           deploy_timeout: 600
           entry_point: 'run'
           env_vars: 'USE_CACHE_TTL=300,USE_CACHE_BUT_REQUEST_TTL=600,USE_CACHE_IF_ERROR_TTL=3600'

@@ -1,26 +1,38 @@
 {
     "require": {
         "php": "~8.2",
-        "christianjbrown/cloud-function": "dev-main",
-        "christianjbrown/smarthings-api": "dev-main",
-        "christianjbrown/user-friendly-exception": "dev-main",
+        "christianjbrown/php-cloud-function-lib": "dev-main",
+        "christianjbrown/php-smartthings-api-lib": "dev-main",
+        "christianjbrown/php-user-friendly-exception-lib": "dev-main",
         "google/cloud-functions-framework": "^1.1",
         "psr/http-client": "^1.0"
     },
-    "minimum-stability": "dev",
+    "require-dev": {
+        "phpunit/phpunit": "^11.0.8",
+        "christianjbrown/php-code-quality-scripts": "dev-main"
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
     "scripts": {
         "start": [
             "Composer\\Config::disableProcessTimeout",
-            "(export $(grep -v '^#' .local.env | xargs) && FUNCTION_SOURCE=index.php FUNCTION_TARGET=run FUNCTION_SIGNATURE_TYPE=http php -S localhost:${PORT:-8080} ./vendor/bin/router.php)"
+            "clear && (export $(grep -v '^#' .local.env | xargs) && FUNCTION_SOURCE=index.php FUNCTION_TARGET=run FUNCTION_SIGNATURE_TYPE=http php -S localhost:${PORT:-8080} ./vendor/bin/router.php)"
         ],
         "test": [
-            "./vendor/bin/phpunit && open ./.phpunit.cache/code-coverage-html/index.html"
+            "clear && XDEBUG_MODE=coverage ./bin/phpunit --process-isolation && open ./.phpunit.cache/code-coverage-html/index.html"
         ],
         "check-style": [
-            "./vendor/bin/phpcs --standard=vendor/christianjbrown/phpcs-wrapper/standards/ChristianBrown/ruleset.xml ./src ./tests"
+            "clear && ./bin/php-cs ./src ./tests"
+        ],
+        "check-style-diff": [
+            "clear && ./bin/php-cs-diff"
         ],
         "fix-style": [
-            "./vendor/bin/php-cs-fixer fix ./src ./tests index.php -vvv --config=vendor/christianjbrown/php-cs-fixer-wrapper/rule-sets/risky.php"
+            "clear && ./bin/php-cs-fix ./src ./tests"
+        ],
+        "fix-style-diff": [
+            "clear && ./bin/php-cs-fix-diff"
         ]
     },
     "autoload": {
@@ -32,36 +44,24 @@
     "repositories": [
         {
             "type": "github",
-            "url": "git@github.com:christianjbrown/cloud-function.git"
+            "url": "git@github.com:christianjbrown/php-cloud-function-lib.git"
         },
         {
             "type": "github",
-            "url": "git@github.com:christianjbrown/user-friendly-exception.git"
+            "url": "git@github.com:christianjbrown/php-user-friendly-exception-lib.git"
         },
         {
             "type": "github",
-            "url": "git@github.com:christianjbrown/json-api-client.git"
+            "url": "git@github.com:christianjbrown/php-api-client-lib.git"
         },
         {
             "type": "github",
-            "url": "git@github.com:christianjbrown/php-cs-fixer-wrapper.git"
+            "url": "git@github.com:christianjbrown/php-code-quality-scripts.git"
         },
         {
             "type": "github",
-            "url": "git@github.com:christianjbrown/smartthings-api.git"
-        },
-        {
-            "type": "github",
-            "url": "git@github.com:christianjbrown/phpcs-wrapper.git"
-        },
-        {
-            "type": "github",
-            "url": "git@github.com:christianjbrown/git-php-wrapper.git"
+            "url": "git@github.com:christianjbrown/php-smartthings-api-lib.git"
         }
     ],
-    "require-dev": {
-        "phpunit/phpunit": "^11.0@dev",
-        "christianjbrown/phpcs-wrapper": "dev-main",
-        "christianjbrown/php-cs-fixer-wrapper": "dev-main"
-    }
+    "minimum-stability": "dev"
 }

@@ -1,3 +1,5 @@
+name: CI
+
 on:
   pull_request:
     branches: ['main']
@@ -5,15 +7,20 @@ on:
 jobs:
   on-push-checks:
     name: "On-push checks"
-    runs-on: "ubuntu-20.04"
+    runs-on: "ubuntu-latest"
+
+    # The composer scripts prefix commands with `clear`, which needs TERM set;
+    # GitHub runners don't set it, so provide one to keep the scripts working.
+    env:
+      TERM: "xterm"
 
     steps:
       - name: "Checkout code"
-        uses: "actions/checkout@v4"
+        uses: "actions/checkout@v5"
 
       - name: "Install dependencies"
         env:
-          COMPOSER_AUTH: '{"github-oauth":{"github.com":"${{ secrets.COMPOSER_GITHUB_TOKEN }}"}}'
+          COMPOSER_AUTH: '${{ secrets.COMPOSER_AUTH }}'
         run: 'composer update'
 
       - name: "Run PHPCS checks"

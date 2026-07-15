@@ -10,7 +10,6 @@ use ChristianBrown\SmartThings\Model\DeviceComponentCapabilityInterface;
 use ChristianBrown\SmartThings\Model\DeviceComponentInterface;
 use ChristianBrown\SmartThings\Model\DeviceInterface;
 use ChristianBrown\SmartThings\Model\DeviceStatusTemperatureMeasurementInterface;
-use ChristianBrown\SmartThings\Transformer\DeviceComponentCapabilitiesTransformerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class DataProvider implements DataProviderInterface
@@ -30,7 +29,7 @@ final class DataProvider implements DataProviderInterface
 
     public function getData(ServerRequestInterface $request): array
     {
-        $devices = $this->devicesApi->get();
+        $devices = $this->devicesApi->getMultiple();
         $deviceTemperatures = [];
 
         foreach ($devices as $device) {
@@ -47,7 +46,7 @@ final class DataProvider implements DataProviderInterface
 
     private function getTemperatureMeasurementData(DeviceInterface $device): ?DeviceTemperatureInterface
     {
-        $deviceStatus = $this->deviceStatusApi->get($device);
+        $deviceStatus = $this->deviceStatusApi->getOneByDevice($device);
         $temperatureMeasurement = $deviceStatus->getTemperatureMeasurement();
         if (!($temperatureMeasurement instanceof DeviceStatusTemperatureMeasurementInterface)) {
             return null;
@@ -71,7 +70,7 @@ final class DataProvider implements DataProviderInterface
         foreach ($device->getComponents() as $component) {
             if ($component instanceof DeviceComponentInterface) {
                 foreach ($component->getCapabilities() as $capability) {
-                    if ($capability instanceof DeviceComponentCapabilityInterface && DeviceComponentCapabilitiesTransformerInterface::ID_VALUE_TEMPERATURE_MEASUREMENT === $capability->getId()) {
+                    if ($capability instanceof DeviceComponentCapabilityInterface && self::ID_VALUE_TEMPERATURE_MEASUREMENT === $capability->getId()) {
                         return $this->getTemperatureMeasurementData($device);
                     }
                 }

@@ -52,7 +52,7 @@ final class DataProviderTest extends TestCase
         $devices = [$device0, $device1, $device2, $device3, $device4];
 
         $deviceApi = $this->createMock(DeviceApiInterface::class);
-        $deviceApi->method('get')
+        $deviceApi->method('getMultiple')
             ->willReturn($devices);
 
         $temperatureMeasurement1time = time() - 604800; // stale
@@ -66,7 +66,7 @@ final class DataProviderTest extends TestCase
 
         $deviceStatusApi = $this->createMock(DeviceStatusApiInterface::class);
         $deviceStatusApi->expects(self::exactly(3))
-            ->method('get')
+            ->method('getOneByDevice')
             ->willReturnMap(
                 [
                     [$device1, $device1status],
