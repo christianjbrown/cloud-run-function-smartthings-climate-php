@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:christianjbrown/php-api-client-lib.git",
-                "reference": "b6a7f292c496b4d763a418856edf628913c08d01"
+                "reference": "621bc0889079cbac7beae91340869e624beca691"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/christianjbrown/php-api-client-lib/zipball/b6a7f292c496b4d763a418856edf628913c08d01",
-                "reference": "b6a7f292c496b4d763a418856edf628913c08d01",
+                "url": "https://api.github.com/repos/christianjbrown/php-api-client-lib/zipball/621bc0889079cbac7beae91340869e624beca691",
+                "reference": "621bc0889079cbac7beae91340869e624beca691",
                 "shasum": ""
             },
             "require": {
@@ -171,12 +171,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:christianjbrown/php-smartthings-api-lib.git",
-                "reference": "a87380ed362d335f7fc340153c3601842d9c58b7"
+                "reference": "8af6d30f0bc3d99dd94f852af723a059e817ee19"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/christianjbrown/php-smartthings-api-lib/zipball/a87380ed362d335f7fc340153c3601842d9c58b7",
-                "reference": "a87380ed362d335f7fc340153c3601842d9c58b7",
+                "url": "https://api.github.com/repos/christianjbrown/php-smartthings-api-lib/zipball/8af6d30f0bc3d99dd94f852af723a059e817ee19",
+                "reference": "8af6d30f0bc3d99dd94f852af723a059e817ee19",
                 "shasum": ""
             },
             "require": {
@@ -241,7 +241,7 @@
             "support": {
                 "source": "https://github.com/christianjbrown/php-smartthings-api-lib/tree/main"
             },
-            "time": "2026-07-15T11:49:40+00:00"
+            "time": "2026-07-15T14:03:46+00:00"
         },
         {
             "name": "christianjbrown/php-user-friendly-exception-lib",

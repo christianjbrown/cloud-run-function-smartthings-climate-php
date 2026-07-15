@@ -71,9 +71,9 @@ final class DataProviderTest extends TestCase
         $temperatureMeasurement6 = $this->createTemperatureMeasurement(70.0, 'F', $temperature6time);
 
         $humidity5time = time(); // not stale
-        $humidityMeasurement5 = $this->createHumidityMeasurement(55, '%', $humidity5time);
+        $humidityMeasurement5 = $this->createHumidityMeasurement(55.0, '%', $humidity5time);
         $humidity6time = time() - 604800; // stale
-        $humidityMeasurement6 = $this->createHumidityMeasurement(60, '%', $humidity6time);
+        $humidityMeasurement6 = $this->createHumidityMeasurement(60.0, '%', $humidity6time);
 
         $device1status = $this->createDeviceStatus($temperatureMeasurement1, null);
         $device3status = $this->createDeviceStatus(null, null);
@@ -125,7 +125,7 @@ final class DataProviderTest extends TestCase
                         self::assertNull($data[2]->getTemperature());
                         self::assertNull($data[2]->getTimestamp());
                         self::assertNull($data[2]->isStale());
-                        self::assertSame(55, $data[2]->getHumidity());
+                        self::assertSame(55.0, $data[2]->getHumidity());
                         self::assertSame($humidity5time, $data[2]->getHumidityTimestamp());
                         self::assertFalse($data[2]->isHumidityStale());
 
@@ -135,7 +135,7 @@ final class DataProviderTest extends TestCase
                         self::assertSame(70.0, $data[3]->getTemperature());
                         self::assertSame($temperature6time, $data[3]->getTimestamp());
                         self::assertFalse($data[3]->isStale());
-                        self::assertSame(60, $data[3]->getHumidity());
+                        self::assertSame(60.0, $data[3]->getHumidity());
                         self::assertSame($humidity6time, $data[3]->getHumidityTimestamp());
                         self::assertTrue($data[3]->isHumidityStale());
 
@@ -218,7 +218,7 @@ final class DataProviderTest extends TestCase
     /**
      * @throws Exception
      */
-    private function createHumidityMeasurement(int $value, string $unit, int $timestamp): DeviceStatusRelativeHumidityMeasurementInterface
+    private function createHumidityMeasurement(float $value, string $unit, int $timestamp): DeviceStatusRelativeHumidityMeasurementInterface
     {
         $humidity = $this->createMock(DeviceStatusRelativeHumidityMeasurementHumidityInterface::class);
         $humidity->method('getValue')

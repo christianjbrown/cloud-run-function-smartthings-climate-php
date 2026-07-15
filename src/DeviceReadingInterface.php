@@ -6,7 +6,7 @@ namespace ChristianBrown\GetSmartHomeTemps;
 
 interface DeviceReadingInterface
 {
-    public function getHumidity(): ?int;
+    public function getHumidity(): ?float;
 
     public function getHumidityTimestamp(): ?int;
 

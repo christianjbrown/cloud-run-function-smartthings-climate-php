@@ -21,15 +21,15 @@ final class OutputTransformerTest extends TestCase
     public function test(): void
     {
         // temp: stale, humidity: fresh
-        $reading1 = $this->createReading('test-device-1', 42.2, 29000, true, 30, 28000, false);
+        $reading1 = $this->createReading('test-device-1', 42.2, 29000, true, 30.0, 28000, false);
         // temp: fresh, humidity: fresh
-        $reading2 = $this->createReading('test-device-2', 52.2, 39000, false, 40, 38000, false);
+        $reading2 = $this->createReading('test-device-2', 52.2, 39000, false, 40.0, 38000, false);
         // temp: fresh, humidity: stale
-        $reading3 = $this->createReading('test-device-3', 62.2, 49000, false, 90, 9000, true);
+        $reading3 = $this->createReading('test-device-3', 62.2, 49000, false, 90.0, 9000, true);
         // temp: stale, humidity: none
         $reading4 = $this->createReading('test-device-4', 72.2, 59000, true, null, null, null);
         // humidity-only: no temperature, humidity fresh
-        $reading5 = $this->createReading('test-device-5', null, null, null, 50, 48000, false);
+        $reading5 = $this->createReading('test-device-5', null, null, null, 50.0, 48000, false);
 
         $deviceReadingOutputTransformer = $this->createMock(DeviceReadingOutputTransformerInterface::class);
         $deviceReadingOutputTransformer->method('transform')
@@ -57,7 +57,7 @@ final class OutputTransformerTest extends TestCase
             OutputTransformerInterface::KEY_AVERAGE_TEMPERATURE_VALUE => 57.2,
             OutputTransformerInterface::KEY_AVERAGE_TEMPERATURE_TIMESTAMP => 39000,
             // Non-stale humidities: device-1 (30) + device-2 (40) + device-5 (50) -> avg 40, earliest ts 28000
-            OutputTransformerInterface::KEY_AVERAGE_HUMIDITY_VALUE => 40,
+            OutputTransformerInterface::KEY_AVERAGE_HUMIDITY_VALUE => 40.0,
             OutputTransformerInterface::KEY_AVERAGE_HUMIDITY_TIMESTAMP => 28000,
         ];
 
@@ -71,8 +71,8 @@ final class OutputTransformerTest extends TestCase
      */
     public function testAveragesOmittedWhenAllReadingsStale(): void
     {
-        $reading1 = $this->createReading('test-device-1', 42.2, 29000, true, 30, 28000, true);
-        $reading2 = $this->createReading('test-device-2', 52.2, 39000, true, 40, 38000, true);
+        $reading1 = $this->createReading('test-device-1', 42.2, 29000, true, 30.0, 28000, true);
+        $reading2 = $this->createReading('test-device-2', 52.2, 39000, true, 40.0, 38000, true);
 
         $deviceReadingOutputTransformer = $this->createMock(DeviceReadingOutputTransformerInterface::class);
         $deviceReadingOutputTransformer->method('transform')
@@ -100,7 +100,7 @@ final class OutputTransformerTest extends TestCase
     /**
      * @throws Exception
      */
-    private function createReading(string $label, ?float $temperature, ?int $timestamp, ?bool $stale, ?int $humidity, ?int $humidityTimestamp, ?bool $humidityStale): DeviceReadingInterface
+    private function createReading(string $label, ?float $temperature, ?int $timestamp, ?bool $stale, ?float $humidity, ?int $humidityTimestamp, ?bool $humidityStale): DeviceReadingInterface
     {
         $reading = $this->createMock(DeviceReadingInterface::class);
         $reading->method('getLabel')
