@@ -37,6 +37,7 @@ Configuration is read entirely from environment variables.
 | Variable | Required | Description |
 | --- | --- | --- |
 | `SMARTTHINGS_API_TOKEN` | ✅ | Your SmartThings personal access token. |
+| `SMARTTHINGS_LOCATION_ID` | ✅ | The SmartThings location whose devices are read; readings are scoped to this location. |
 | `K_REVISION` | ✅ | Set automatically by the Cloud Functions/Cloud Run runtime; only needs setting yourself when running locally. |
 | `REQUIRED_HEADER_KEY` | — | If set (with `REQUIRED_HEADER_VALUE`), requests must send this header to be served. |
 | `REQUIRED_HEADER_VALUE` | — | Expected value for `REQUIRED_HEADER_KEY`. |
@@ -50,6 +51,7 @@ For local development, put these in a `.local.env` file in the project root (git
 
 ```env
 SMARTTHINGS_API_TOKEN=your-smartthings-personal-access-token
+SMARTTHINGS_LOCATION_ID=your-smartthings-location-id
 K_REVISION=local
 ```
 

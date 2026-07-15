@@ -7,6 +7,7 @@ namespace ChristianBrown\GetSmartHomeTemps;
 interface ConfigTransformerInterface
 {
     public const ENV_API_TOKEN = 'SMARTTHINGS_API_TOKEN';
+    public const ENV_LOCATION_ID = 'SMARTTHINGS_LOCATION_ID';
 
     /**
      * @param mixed[] $env

@@ -11,4 +11,6 @@ interface ConfigInterface
     public function getApiToken(): string;
 
     public function getFunctionConfig(): FunctionConfigInterface;
+
+    public function getLocationId(): string;
 }

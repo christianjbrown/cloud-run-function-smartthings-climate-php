@@ -25,16 +25,18 @@ final class DataProvider implements DataProviderInterface
 {
     private DeviceApiInterface $devicesApi;
     private DeviceStatusApiInterface $deviceStatusApi;
+    private string $locationId;
     private LocationRoomApiInterface $locationRoomApi;
     private int $now;
     private OutputTransformerInterface $outputTransformer;
 
-    public function __construct(DeviceApiInterface $devicesApi, DeviceStatusApiInterface $deviceStatusApi, LocationRoomApiInterface $locationRoomApi, OutputTransformerInterface $outputTransformer)
+    public function __construct(DeviceApiInterface $devicesApi, DeviceStatusApiInterface $deviceStatusApi, LocationRoomApiInterface $locationRoomApi, OutputTransformerInterface $outputTransformer, string $locationId)
     {
         $this->devicesApi = $devicesApi;
         $this->deviceStatusApi = $deviceStatusApi;
         $this->locationRoomApi = $locationRoomApi;
         $this->outputTransformer = $outputTransformer;
+        $this->locationId = $locationId;
         $this->now = time();
     }
 
@@ -42,7 +44,7 @@ final class DataProvider implements DataProviderInterface
     {
         $readings = array_map(
             fn (DeviceInterface $device): ?DeviceReading => $this->processDevice($device),
-            $this->devicesApi->getMultiple()
+            $this->devicesApi->getMultiple($this->locationId)
         );
 
         return $this->outputTransformer->transform(array_values(array_filter($readings)));

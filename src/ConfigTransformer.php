@@ -31,8 +31,16 @@ final class ConfigTransformer implements ConfigTransformerInterface
         }
         $apiToken = $env[self::ENV_API_TOKEN];
 
+        if (empty($env[self::ENV_LOCATION_ID])) {
+            throw new RuntimeException(sprintf('%s not set or not a string', self::ENV_LOCATION_ID));
+        }
+        if (!is_string($env[self::ENV_LOCATION_ID])) {
+            throw new RuntimeException(sprintf('%s not set or not a string', self::ENV_LOCATION_ID));
+        }
+        $locationId = $env[self::ENV_LOCATION_ID];
+
         $requestConfig = $this->functionConfigTransformer->transform($env);
 
-        return new Config($requestConfig, $apiToken);
+        return new Config($requestConfig, $apiToken, $locationId);
     }
 }

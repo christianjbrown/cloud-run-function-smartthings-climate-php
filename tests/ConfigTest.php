@@ -19,8 +19,9 @@ final class ConfigTest extends TestCase
     public function test(): void
     {
         $functionConfig = self::createStub(FunctionConfigInterface::class);
-        $config = new Config($functionConfig, 'test-api-token');
+        $config = new Config($functionConfig, 'test-api-token', 'test-location-id');
         self::assertSame($functionConfig, $config->getFunctionConfig());
         self::assertSame('test-api-token', $config->getApiToken());
+        self::assertSame('test-location-id', $config->getLocationId());
     }
 }

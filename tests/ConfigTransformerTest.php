@@ -26,6 +26,7 @@ final class ConfigTransformerTest extends TestCase
     {
         $env = [
             ConfigTransformerInterface::ENV_API_TOKEN => 'test-api-token',
+            ConfigTransformerInterface::ENV_LOCATION_ID => 'test-location-id',
         ];
 
         $functionConfig = self::createStub(FunctionConfigInterface::class);
@@ -41,6 +42,7 @@ final class ConfigTransformerTest extends TestCase
 
         self::assertSame('test-api-token', $actual->getApiToken());
         self::assertSame($functionConfig, $actual->getFunctionConfig());
+        self::assertSame('test-location-id', $actual->getLocationId());
     }
 
     /**
@@ -55,6 +57,25 @@ final class ConfigTransformerTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage(sprintf('%s not set or not a string', ConfigTransformerInterface::ENV_API_TOKEN));
+
+        $functionConfigTransformer = self::createStub(FunctionConfigTransformerInterface::class);
+
+        $transformer = new ConfigTransformer($functionConfigTransformer);
+        $transformer->transform($env);
+    }
+
+    /**
+     * @param mixed[] $env
+     *
+     * @throws Exception
+     */
+    #[TestWith([[ConfigTransformerInterface::ENV_API_TOKEN => 'test-api-token']])]
+    #[TestWith([[ConfigTransformerInterface::ENV_API_TOKEN => 'test-api-token', ConfigTransformerInterface::ENV_LOCATION_ID => null]])]
+    #[TestWith([[ConfigTransformerInterface::ENV_API_TOKEN => 'test-api-token', ConfigTransformerInterface::ENV_LOCATION_ID => 42]])]
+    public function testTransformWithMissingLocationId(array $env): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage(sprintf('%s not set or not a string', ConfigTransformerInterface::ENV_LOCATION_ID));
 
         $functionConfigTransformer = self::createStub(FunctionConfigTransformerInterface::class);
 

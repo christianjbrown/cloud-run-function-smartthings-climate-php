@@ -29,7 +29,7 @@ function run(ServerRequestInterface $request): ResponseInterface
     $deviceReadingOutputTransformer = new DeviceReadingOutputTransformer();
     $outputTransformer = new OutputTransformer($deviceReadingOutputTransformer);
 
-    $dataProvider = new DataProvider($devicesApi, $devicesStatusApi, $locationRoomApi, $outputTransformer);
+    $dataProvider = new DataProvider($devicesApi, $devicesStatusApi, $locationRoomApi, $outputTransformer, $config->getLocationId());
     $cloudFunction = new CloudFunction($dataProvider, $config->getFunctionConfig());
     $response = $cloudFunction->run($request);
 

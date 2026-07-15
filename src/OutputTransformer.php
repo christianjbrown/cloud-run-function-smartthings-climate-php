@@ -22,7 +22,7 @@ final class OutputTransformer implements OutputTransformerInterface
     {
         usort(
             $deviceReadings,
-            static fn (DeviceReadingInterface $a, DeviceReadingInterface $b) => strcmp($a->getLabel(), $b->getLabel())
+            static fn (DeviceReadingInterface $a, DeviceReadingInterface $b) => strcmp($a->getName(), $b->getName())
         );
 
         $devicesData = array_map(
@@ -64,11 +64,11 @@ final class OutputTransformer implements OutputTransformerInterface
     {
         $fresh = array_filter(
             $deviceReadings,
-            static fn (DeviceReadingInterface $deviceReading): bool => null !== $deviceReading->getHumidity() && !$deviceReading->isHumidityStale()
+            static fn (DeviceReadingInterface $deviceReading): bool => null !== $deviceReading->getHumidityValue() && !$deviceReading->isHumidityStale()
         );
 
         return $this->average(
-            array_map(static fn (DeviceReadingInterface $deviceReading): float => (float) $deviceReading->getHumidity(), $fresh),
+            array_map(static fn (DeviceReadingInterface $deviceReading): float => (float) $deviceReading->getHumidityValue(), $fresh),
             array_map(static fn (DeviceReadingInterface $deviceReading): int => (int) $deviceReading->getHumidityTimestamp(), $fresh),
             self::KEY_AVERAGE_HUMIDITY_VALUE,
             self::KEY_AVERAGE_HUMIDITY_TIMESTAMP
@@ -84,12 +84,12 @@ final class OutputTransformer implements OutputTransformerInterface
     {
         $fresh = array_filter(
             $deviceReadings,
-            static fn (DeviceReadingInterface $deviceReading): bool => null !== $deviceReading->getTemperature() && !$deviceReading->isStale()
+            static fn (DeviceReadingInterface $deviceReading): bool => null !== $deviceReading->getTemperatureValue() && !$deviceReading->isTemperatureStale()
         );
 
         return $this->average(
-            array_map(static fn (DeviceReadingInterface $deviceReading): float => (float) $deviceReading->getTemperature(), $fresh),
-            array_map(static fn (DeviceReadingInterface $deviceReading): int => (int) $deviceReading->getTimestamp(), $fresh),
+            array_map(static fn (DeviceReadingInterface $deviceReading): float => (float) $deviceReading->getTemperatureValue(), $fresh),
+            array_map(static fn (DeviceReadingInterface $deviceReading): int => (int) $deviceReading->getTemperatureTimestamp(), $fresh),
             self::KEY_AVERAGE_TEMPERATURE_VALUE,
             self::KEY_AVERAGE_TEMPERATURE_TIMESTAMP
         );

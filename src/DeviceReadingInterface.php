@@ -8,19 +8,19 @@ interface DeviceReadingInterface
 {
     public function getBatteryValue(): ?int;
 
-    public function getHumidity(): ?float;
-
     public function getHumidityTimestamp(): ?int;
 
-    public function getLabel(): string;
+    public function getHumidityValue(): ?float;
+
+    public function getName(): string;
 
     public function getRoomName(): ?string;
 
-    public function getTemperature(): ?float;
+    public function getTemperatureTimestamp(): ?int;
 
-    public function getTimestamp(): ?int;
+    public function getTemperatureValue(): ?float;
 
     public function isHumidityStale(): ?bool;
 
-    public function isStale(): ?bool;
+    public function isTemperatureStale(): ?bool;
 }

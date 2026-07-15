@@ -121,15 +121,15 @@ final class OutputTransformerTest extends TestCase
     private function createReading(string $label, ?float $temperature, ?int $timestamp, ?bool $stale, ?float $humidity, ?int $humidityTimestamp, ?bool $humidityStale): DeviceReadingInterface
     {
         $reading = self::createStub(DeviceReadingInterface::class);
-        $reading->method('getLabel')
+        $reading->method('getName')
             ->willReturn($label);
-        $reading->method('getTemperature')
+        $reading->method('getTemperatureValue')
             ->willReturn($temperature);
-        $reading->method('getTimestamp')
+        $reading->method('getTemperatureTimestamp')
             ->willReturn($timestamp);
-        $reading->method('isStale')
+        $reading->method('isTemperatureStale')
             ->willReturn($stale);
-        $reading->method('getHumidity')
+        $reading->method('getHumidityValue')
             ->willReturn($humidity);
         $reading->method('getHumidityTimestamp')
             ->willReturn($humidityTimestamp);

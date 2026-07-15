@@ -7,24 +7,24 @@ namespace ChristianBrown\GetSmartHomeTemps;
 final class DeviceReading implements DeviceReadingInterface
 {
     private ?int $batteryValue;
-    private ?float $humidity;
     private ?bool $humidityStale;
     private ?int $humidityTimestamp;
-    private string $label;
+    private ?float $humidityValue;
+    private string $name;
     private ?string $roomName;
-    private ?bool $stale;
-    private ?float $temperature;
-    private ?int $timestamp;
+    private ?bool $temperatureStale;
+    private ?int $temperatureTimestamp;
+    private ?float $temperatureValue;
 
-    public function __construct(string $label, ?string $roomName, ?int $batteryValue, ?float $temperature, ?int $timestamp, ?bool $stale, ?float $humidity, ?int $humidityTimestamp, ?bool $humidityStale)
+    public function __construct(string $name, ?string $roomName, ?int $batteryValue, ?float $temperatureValue, ?int $temperatureTimestamp, ?bool $temperatureStale, ?float $humidityValue, ?int $humidityTimestamp, ?bool $humidityStale)
     {
-        $this->label = $label;
+        $this->name = $name;
         $this->roomName = $roomName;
         $this->batteryValue = $batteryValue;
-        $this->temperature = $temperature;
-        $this->timestamp = $timestamp;
-        $this->stale = $stale;
-        $this->humidity = $humidity;
+        $this->temperatureValue = $temperatureValue;
+        $this->temperatureTimestamp = $temperatureTimestamp;
+        $this->temperatureStale = $temperatureStale;
+        $this->humidityValue = $humidityValue;
         $this->humidityTimestamp = $humidityTimestamp;
         $this->humidityStale = $humidityStale;
     }
@@ -34,19 +34,19 @@ final class DeviceReading implements DeviceReadingInterface
         return $this->batteryValue;
     }
 
-    public function getHumidity(): ?float
-    {
-        return $this->humidity;
-    }
-
     public function getHumidityTimestamp(): ?int
     {
         return $this->humidityTimestamp;
     }
 
-    public function getLabel(): string
+    public function getHumidityValue(): ?float
     {
-        return $this->label;
+        return $this->humidityValue;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
     }
 
     public function getRoomName(): ?string
@@ -54,14 +54,14 @@ final class DeviceReading implements DeviceReadingInterface
         return $this->roomName;
     }
 
-    public function getTemperature(): ?float
+    public function getTemperatureTimestamp(): ?int
     {
-        return $this->temperature;
+        return $this->temperatureTimestamp;
     }
 
-    public function getTimestamp(): ?int
+    public function getTemperatureValue(): ?float
     {
-        return $this->timestamp;
+        return $this->temperatureValue;
     }
 
     public function isHumidityStale(): ?bool
@@ -69,8 +69,8 @@ final class DeviceReading implements DeviceReadingInterface
         return $this->humidityStale;
     }
 
-    public function isStale(): ?bool
+    public function isTemperatureStale(): ?bool
     {
-        return $this->stale;
+        return $this->temperatureStale;
     }
 }

@@ -171,12 +171,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:christianjbrown/php-smartthings-api-lib.git",
-                "reference": "d1e7f3c504a9870a714cbad05c6679fdd7860c8c"
+                "reference": "290e95dd3774a3535c11f92a6427b5000a298b6b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/christianjbrown/php-smartthings-api-lib/zipball/d1e7f3c504a9870a714cbad05c6679fdd7860c8c",
-                "reference": "d1e7f3c504a9870a714cbad05c6679fdd7860c8c",
+                "url": "https://api.github.com/repos/christianjbrown/php-smartthings-api-lib/zipball/290e95dd3774a3535c11f92a6427b5000a298b6b",
+                "reference": "290e95dd3774a3535c11f92a6427b5000a298b6b",
                 "shasum": ""
             },
             "require": {
@@ -206,6 +206,9 @@
                 "test": [
                     "clear && XDEBUG_MODE=coverage php -d memory_limit=-1 ./bin/phpunit && open ./.phpunit.cache/code-coverage-html/index.html"
                 ],
+                "stan": [
+                    "clear && ./bin/phpstan analyse"
+                ],
                 "check-style": [
                     "clear && ./bin/php-cs ./src ./tests"
                 ],
@@ -217,9 +220,6 @@
                 ],
                 "fix-style-diff": [
                     "clear && ./bin/php-cs-fix-diff"
-                ],
-                "stan": [
-                    "clear && ./bin/phpstan analyse"
                 ]
             },
             "license": [
@@ -241,7 +241,7 @@
             "support": {
                 "source": "https://github.com/christianjbrown/php-smartthings-api-lib/tree/main"
             },
-            "time": "2026-07-15T17:21:06+00:00"
+            "time": "2026-07-15T18:16:03+00:00"
         },
         {
             "name": "christianjbrown/php-user-friendly-exception-lib",

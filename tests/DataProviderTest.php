@@ -63,8 +63,10 @@ final class DataProviderTest extends TestCase
 
         $devices = [$device0, $device1, $device2, $device3, $device4, $device5, $device6];
 
-        $deviceApi = self::createStub(DeviceApiInterface::class);
-        $deviceApi->method('getMultiple')
+        $deviceApi = self::createMock(DeviceApiInterface::class);
+        $deviceApi->expects(self::once())
+            ->method('getMultiple')
+            ->with('test-location-id')
             ->willReturn($devices);
 
         $temperature1time = time() - 604800; // stale
@@ -120,45 +122,45 @@ final class DataProviderTest extends TestCase
 
                         // device-1: temperature only, stale
                         self::assertInstanceOf(DeviceReadingInterface::class, $data[0]);
-                        self::assertSame('test-device-1-mixed-components-inc-temp', $data[0]->getLabel());
+                        self::assertSame('test-device-1-mixed-components-inc-temp', $data[0]->getName());
                         self::assertNull($data[0]->getRoomName());
                         self::assertNull($data[0]->getBatteryValue());
-                        self::assertSame(42.0, $data[0]->getTemperature());
-                        self::assertSame($temperature1time, $data[0]->getTimestamp());
-                        self::assertTrue($data[0]->isStale());
-                        self::assertNull($data[0]->getHumidity());
+                        self::assertSame(42.0, $data[0]->getTemperatureValue());
+                        self::assertSame($temperature1time, $data[0]->getTemperatureTimestamp());
+                        self::assertTrue($data[0]->isTemperatureStale());
+                        self::assertNull($data[0]->getHumidityValue());
                         self::assertNull($data[0]->getHumidityTimestamp());
                         self::assertNull($data[0]->isHumidityStale());
 
                         // device-4: temperature only, fresh
                         self::assertInstanceOf(DeviceReadingInterface::class, $data[1]);
-                        self::assertSame('test-device-4-has-temp', $data[1]->getLabel());
+                        self::assertSame('test-device-4-has-temp', $data[1]->getName());
                         self::assertSame('test-room-4', $data[1]->getRoomName());
                         self::assertSame(80, $data[1]->getBatteryValue());
-                        self::assertSame(98.0, $data[1]->getTemperature());
-                        self::assertSame($temperature4time, $data[1]->getTimestamp());
-                        self::assertFalse($data[1]->isStale());
-                        self::assertNull($data[1]->getHumidity());
+                        self::assertSame(98.0, $data[1]->getTemperatureValue());
+                        self::assertSame($temperature4time, $data[1]->getTemperatureTimestamp());
+                        self::assertFalse($data[1]->isTemperatureStale());
+                        self::assertNull($data[1]->getHumidityValue());
 
                         // device-5: humidity only, fresh
                         self::assertInstanceOf(DeviceReadingInterface::class, $data[2]);
-                        self::assertSame('test-device-5-humidity-only', $data[2]->getLabel());
+                        self::assertSame('test-device-5-humidity-only', $data[2]->getName());
                         self::assertSame('test-room-5', $data[2]->getRoomName());
-                        self::assertNull($data[2]->getTemperature());
-                        self::assertNull($data[2]->getTimestamp());
-                        self::assertNull($data[2]->isStale());
-                        self::assertSame(55.0, $data[2]->getHumidity());
+                        self::assertNull($data[2]->getTemperatureValue());
+                        self::assertNull($data[2]->getTemperatureTimestamp());
+                        self::assertNull($data[2]->isTemperatureStale());
+                        self::assertSame(55.0, $data[2]->getHumidityValue());
                         self::assertSame($humidity5time, $data[2]->getHumidityTimestamp());
                         self::assertFalse($data[2]->isHumidityStale());
 
                         // device-6: temperature (fresh) and humidity (stale)
                         self::assertInstanceOf(DeviceReadingInterface::class, $data[3]);
-                        self::assertSame('test-device-6-temp-and-humidity', $data[3]->getLabel());
+                        self::assertSame('test-device-6-temp-and-humidity', $data[3]->getName());
                         self::assertSame('test-room-6', $data[3]->getRoomName());
-                        self::assertSame(70.0, $data[3]->getTemperature());
-                        self::assertSame($temperature6time, $data[3]->getTimestamp());
-                        self::assertFalse($data[3]->isStale());
-                        self::assertSame(60.0, $data[3]->getHumidity());
+                        self::assertSame(70.0, $data[3]->getTemperatureValue());
+                        self::assertSame($temperature6time, $data[3]->getTemperatureTimestamp());
+                        self::assertFalse($data[3]->isTemperatureStale());
+                        self::assertSame(60.0, $data[3]->getHumidityValue());
                         self::assertSame($humidity6time, $data[3]->getHumidityTimestamp());
                         self::assertTrue($data[3]->isHumidityStale());
 
@@ -168,7 +170,7 @@ final class DataProviderTest extends TestCase
             )
             ->willReturn(['test-actual-output']);
 
-        $dataProvider = new DataProvider($deviceApi, $deviceStatusApi, $locationRoomApi, $outputTransformer);
+        $dataProvider = new DataProvider($deviceApi, $deviceStatusApi, $locationRoomApi, $outputTransformer, 'test-location-id');
 
         $actual = $dataProvider->getData($request);
 
@@ -200,7 +202,7 @@ final class DataProviderTest extends TestCase
             ->with([])
             ->willReturn(['test-actual-output']);
 
-        $dataProvider = new DataProvider($deviceApi, $deviceStatusApi, $locationRoomApi, $outputTransformer);
+        $dataProvider = new DataProvider($deviceApi, $deviceStatusApi, $locationRoomApi, $outputTransformer, 'test-location-id');
 
         self::assertSame(['test-actual-output'], $dataProvider->getData($request));
     }
@@ -232,7 +234,7 @@ final class DataProviderTest extends TestCase
             ->with([])
             ->willReturn(['test-actual-output']);
 
-        $dataProvider = new DataProvider($deviceApi, $deviceStatusApi, $locationRoomApi, $outputTransformer);
+        $dataProvider = new DataProvider($deviceApi, $deviceStatusApi, $locationRoomApi, $outputTransformer, 'test-location-id');
 
         self::assertSame(['test-actual-output'], $dataProvider->getData($request));
     }
@@ -257,7 +259,7 @@ final class DataProviderTest extends TestCase
             ->with([])
             ->willReturn(['test-actual-output']);
 
-        $dataProvider = new DataProvider($deviceApi, $deviceStatusApi, $locationRoomApi, $outputTransformer);
+        $dataProvider = new DataProvider($deviceApi, $deviceStatusApi, $locationRoomApi, $outputTransformer, 'test-location-id');
 
         self::assertSame(['test-actual-output'], $dataProvider->getData($request));
     }
@@ -295,9 +297,9 @@ final class DataProviderTest extends TestCase
                     static function (array $data): bool {
                         self::assertCount(1, $data);
                         self::assertInstanceOf(DeviceReadingInterface::class, $data[0]);
-                        self::assertSame('test-device', $data[0]->getLabel());
+                        self::assertSame('test-device', $data[0]->getName());
                         self::assertSame('test-room', $data[0]->getRoomName());
-                        self::assertSame(20.0, $data[0]->getTemperature());
+                        self::assertSame(20.0, $data[0]->getTemperatureValue());
 
                         return true;
                     }
@@ -305,9 +307,25 @@ final class DataProviderTest extends TestCase
             )
             ->willReturn(['test-actual-output']);
 
-        $dataProvider = new DataProvider($deviceApi, $deviceStatusApi, $locationRoomApi, $outputTransformer);
+        $dataProvider = new DataProvider($deviceApi, $deviceStatusApi, $locationRoomApi, $outputTransformer, 'test-location-id');
 
         self::assertSame(['test-actual-output'], $dataProvider->getData($request));
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function createBattery(int $value): DeviceStatusBatteryInterface
+    {
+        $batteryValue = self::createStub(DeviceStatusBatteryBatteryInterface::class);
+        $batteryValue->method('getValue')
+            ->willReturn($value);
+
+        $battery = self::createStub(DeviceStatusBatteryInterface::class);
+        $battery->method('getBattery')
+            ->willReturn($batteryValue);
+
+        return $battery;
     }
 
     /**
@@ -375,22 +393,6 @@ final class DataProviderTest extends TestCase
             ->willReturn(null === $batteryValue ? null : $this->createBattery($batteryValue));
 
         return $deviceStatus;
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function createBattery(int $value): DeviceStatusBatteryInterface
-    {
-        $batteryValue = self::createStub(DeviceStatusBatteryBatteryInterface::class);
-        $batteryValue->method('getValue')
-            ->willReturn($value);
-
-        $battery = self::createStub(DeviceStatusBatteryInterface::class);
-        $battery->method('getBattery')
-            ->willReturn($batteryValue);
-
-        return $battery;
     }
 
     /**

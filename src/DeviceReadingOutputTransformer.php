@@ -13,7 +13,7 @@ final class DeviceReadingOutputTransformer implements DeviceReadingOutputTransfo
     {
         // Each optional block is a self-contained helper unioned onto the base,
         // so a block's presence/absence is an independent code path.
-        $data = [self::KEY_LABEL => $deviceReading->getLabel()];
+        $data = [self::KEY_NAME => $deviceReading->getName()];
         $data += $this->roomName($deviceReading);
         $data += $this->battery($deviceReading);
         $data += $this->temperature($deviceReading);
@@ -31,7 +31,7 @@ final class DeviceReadingOutputTransformer implements DeviceReadingOutputTransfo
             return [];
         }
 
-        return [self::KEY_BATTERY => $deviceReading->getBatteryValue()];
+        return [self::KEY_BATTERY_VALUE => $deviceReading->getBatteryValue()];
     }
 
     /**
@@ -39,12 +39,12 @@ final class DeviceReadingOutputTransformer implements DeviceReadingOutputTransfo
      */
     private function humidity(DeviceReadingInterface $deviceReading): array
     {
-        if (null === $deviceReading->getHumidity()) {
+        if (null === $deviceReading->getHumidityValue()) {
             return [];
         }
 
         return [
-            self::KEY_HUMIDITY => $deviceReading->getHumidity(),
+            self::KEY_HUMIDITY_VALUE => $deviceReading->getHumidityValue(),
             self::KEY_HUMIDITY_TIMESTAMP => $deviceReading->getHumidityTimestamp(),
             self::KEY_HUMIDITY_STALE => $deviceReading->isHumidityStale(),
         ];
@@ -67,14 +67,14 @@ final class DeviceReadingOutputTransformer implements DeviceReadingOutputTransfo
      */
     private function temperature(DeviceReadingInterface $deviceReading): array
     {
-        if (null === $deviceReading->getTemperature()) {
+        if (null === $deviceReading->getTemperatureValue()) {
             return [];
         }
 
         return [
-            self::KEY_TEMPERATURE => $deviceReading->getTemperature(),
-            self::KEY_TIMESTAMP => $deviceReading->getTimestamp(),
-            self::KEY_STALE => $deviceReading->isStale(),
+            self::KEY_TEMPERATURE_VALUE => $deviceReading->getTemperatureValue(),
+            self::KEY_TEMPERATURE_TIMESTAMP => $deviceReading->getTemperatureTimestamp(),
+            self::KEY_TEMPERATURE_STALE => $deviceReading->isTemperatureStale(),
         ];
     }
 }

@@ -43,6 +43,7 @@ jobs:
           environment_variables: 'USE_CACHE_TTL=300,USE_CACHE_BUT_REQUEST_TTL=600,USE_CACHE_IF_ERROR_TTL=3600'
           secrets: |-
             SMARTTHINGS_API_TOKEN=projects/${{ vars.GCP_PROJECT_ID }}/secrets/SMARTTHINGS_API_TOKEN/versions/latest
+            SMARTTHINGS_LOCATION_ID=projects/${{ vars.GCP_PROJECT_ID }}/secrets/SMARTTHINGS_LOCATION_ID/versions/latest
             REQUIRED_HEADER_KEY=projects/${{ vars.GCP_PROJECT_ID }}/secrets/SMARTTHINGS_REQUIRED_HEADER_KEY/versions/latest
             REQUIRED_HEADER_VALUE=projects/${{ vars.GCP_PROJECT_ID }}/secrets/SMARTTHINGS_REQUIRED_HEADER_VALUE/versions/latest
             REQUIRED_ORIGIN=projects/${{ vars.GCP_PROJECT_ID }}/secrets/SMARTTHINGS_REQUIRED_ORIGIN/versions/latest

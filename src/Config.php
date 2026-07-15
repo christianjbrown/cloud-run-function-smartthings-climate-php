@@ -10,11 +10,13 @@ final class Config implements ConfigInterface
 {
     private string $apiToken;
     private FunctionConfigInterface $functionConfig;
+    private string $locationId;
 
-    public function __construct(FunctionConfigInterface $functionConfig, string $apiToken)
+    public function __construct(FunctionConfigInterface $functionConfig, string $apiToken, string $locationId)
     {
         $this->functionConfig = $functionConfig;
         $this->apiToken = $apiToken;
+        $this->locationId = $locationId;
     }
 
     public function getApiToken(): string
@@ -25,5 +27,10 @@ final class Config implements ConfigInterface
     public function getFunctionConfig(): FunctionConfigInterface
     {
         return $this->functionConfig;
+    }
+
+    public function getLocationId(): string
+    {
+        return $this->locationId;
     }
 }
