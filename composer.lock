@@ -93,12 +93,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:christianjbrown/php-cloud-function-lib.git",
-                "reference": "02dacc9aaba8c446851c7bc64f353f9db3233655"
+                "reference": "434939199fcadcff16a5c72f5044d8eba993b2c6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/christianjbrown/php-cloud-function-lib/zipball/02dacc9aaba8c446851c7bc64f353f9db3233655",
-                "reference": "02dacc9aaba8c446851c7bc64f353f9db3233655",
+                "url": "https://api.github.com/repos/christianjbrown/php-cloud-function-lib/zipball/434939199fcadcff16a5c72f5044d8eba993b2c6",
+                "reference": "434939199fcadcff16a5c72f5044d8eba993b2c6",
                 "shasum": ""
             },
             "require": {
@@ -163,7 +163,7 @@
             "support": {
                 "source": "https://github.com/christianjbrown/php-cloud-function-lib/tree/main"
             },
-            "time": "2026-07-15T17:47:54+00:00"
+            "time": "2026-07-15T18:34:10+00:00"
         },
         {
             "name": "christianjbrown/php-smartthings-api-lib",
