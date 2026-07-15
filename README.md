@@ -9,7 +9,7 @@ It walks every device in your SmartThings account, keeps the ones that expose a 
 ## :heavy_check_mark: Prerequisites
 
 - [Git](https://git-scm.com/)
-- [PHP](https://www.php.net/) 8.2 or higher (8.x)
+- [PHP](https://www.php.net/) 8.3 or higher (8.x)
 - [Composer](https://getcomposer.org/)
 - A SmartThings [personal access token](https://account.smartthings.com/tokens) with the `devices` scope
 - Read access to the private `christianjbrown/*` package repositories this function depends on (Composer needs a GitHub token — see [CI & deployment](#rocket-ci--deployment))
@@ -110,7 +110,7 @@ composer fix-style-diff    # auto-fix changed files only
 ## :rocket: CI & deployment
 
 - **`.github/workflows/ci.yml`** runs on pull requests to `main`: `composer update`, PHPCS, and PHPUnit.
-- **`.github/workflows/deploy.yml`** runs on push to `main`: deploys to Google Cloud Functions (`php82` runtime, `europe-west2`) via Workload Identity Federation, then smoke-tests the deployed URL.
+- **`.github/workflows/deploy.yml`** runs on push to `main`: deploys to Google Cloud Functions (`php83` runtime, `europe-west2`) via Workload Identity Federation, then smoke-tests the deployed URL.
 
 Both workflows install the private `christianjbrown/*` dependencies using a `COMPOSER_AUTH` repository secret — a Composer auth JSON containing a GitHub token with read access to those repos:
 

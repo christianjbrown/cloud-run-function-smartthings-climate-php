@@ -38,7 +38,7 @@ jobs:
           min_instances: 0
           name: '${{ vars.GCP_CLOUD_FUNCTION_ENDPOINT }}'
           region: 'europe-west2'
-          runtime: 'php82'
+          runtime: 'php83'
           secret_environment_variables: 'SMARTTHINGS_API_TOKEN=projects/${{ vars.GCP_PROJECT_ID }}/secrets/SMARTTHINGS_API_TOKEN,REQUIRED_HEADER_KEY=projects/${{ vars.GCP_PROJECT_ID }}/secrets/SMARTTHINGS_REQUIRED_HEADER_KEY,REQUIRED_HEADER_VALUE=projects/${{ vars.GCP_PROJECT_ID }}/secrets/SMARTTHINGS_REQUIRED_HEADER_VALUE,REQUIRED_ORIGIN=projects/${{ vars.GCP_PROJECT_ID }}/secrets/SMARTTHINGS_REQUIRED_ORIGIN'
           timeout: 60
 

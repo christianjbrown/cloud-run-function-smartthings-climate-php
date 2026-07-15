@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4396f973e478a26908c867a4cba1a116",
+    "content-hash": "91c94d105e00a0e802ef35e2298d03d1",
     "packages": [
         {
             "name": "christianjbrown/php-api-client-lib",
@@ -5947,7 +5947,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": "~8.2"
+        "php": "~8.3"
     },
     "platform-dev": {},
     "plugin-api-version": "2.9.0"

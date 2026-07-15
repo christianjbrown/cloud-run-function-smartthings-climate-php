@@ -1,6 +1,6 @@
 {
     "require": {
-        "php": "~8.2",
+        "php": "~8.3",
         "christianjbrown/php-cloud-function-lib": "dev-main",
         "christianjbrown/php-smartthings-api-lib": "dev-main",
         "christianjbrown/php-user-friendly-exception-lib": "dev-main",
