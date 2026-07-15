@@ -12,7 +12,10 @@
         "christianjbrown/php-code-quality-scripts": "dev-main"
     },
     "config": {
-        "bin-dir": "bin"
+        "bin-dir": "bin",
+        "platform": {
+            "php": "8.3.30"
+        }
     },
     "scripts": {
         "start": [
