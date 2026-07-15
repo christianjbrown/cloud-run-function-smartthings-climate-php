@@ -110,7 +110,7 @@ composer fix-style-diff    # auto-fix changed files only
 ## :rocket: CI & deployment
 
 - **`.github/workflows/ci.yml`** runs on pull requests to `main`: `composer update`, PHPCS, and PHPUnit.
-- **`.github/workflows/deploy.yml`** runs on push to `main`: deploys to Google Cloud Functions (`php83` runtime, `europe-west2`) via Workload Identity Federation, then smoke-tests the deployed URL.
+- **`.github/workflows/deploy.yml`** runs on push to `main`: deploys to Google Cloud Functions 2nd gen (`php83` runtime, `europe-west2`) via Workload Identity Federation, grants public (`allUsers`) invoker access on the underlying Cloud Run service, then smoke-tests the deployed URL.
 
 Both workflows install the private `christianjbrown/*` dependencies using a `COMPOSER_AUTH` repository secret — a Composer auth JSON containing a GitHub token with read access to those repos:
 
