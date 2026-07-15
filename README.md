@@ -1,8 +1,8 @@
 # Get Smart Home Temps
 
-A small [Google Cloud Function](https://cloud.google.com/functions) (PHP) that reads the current temperature from your [SmartThings](https://www.smartthings.com/) devices and returns them as a single JSON payload, along with an average across all non-stale readings.
+A small [Google Cloud Function](https://cloud.google.com/functions) (PHP) that reads the current temperature and relative humidity from your [SmartThings](https://www.smartthings.com/) devices and returns them as a single JSON payload, along with an average across all non-stale readings.
 
-It walks every device in your SmartThings account, keeps the ones that expose a `temperatureMeasurement` capability, reads each one's latest temperature, flags readings older than 24 hours as stale, and returns the lot sorted by device name.
+It walks every device in your SmartThings account, keeps the ones that expose a `temperatureMeasurement` or `relativeHumidityMeasurement` capability, reads each one's latest temperature and/or humidity, flags readings older than 24 hours as stale, and returns the lot sorted by device name.
 
 
 
@@ -76,7 +76,10 @@ curl http://localhost:8080
             "name": "Bedroom",
             "temp": 19.5,
             "timestamp": 1752580800,
-            "stale": false
+            "stale": false,
+            "humidity": 48,
+            "humidityTimestamp": 1752580790,
+            "humidityStale": false
         },
         {
             "name": "Living Room",
@@ -86,12 +89,17 @@ curl http://localhost:8080
         }
     ],
     "averageTempDegrees": 20.25,
-    "averageTempTimestamp": 1752580800
+    "averageTempTimestamp": 1752580800,
+    "averageHumidity": 48,
+    "averageHumidityTimestamp": 1752580790
 }
 ```
 
-- `devices` — one entry per temperature-reporting device, sorted by `name`. `timestamp` is the Unix time of the reading; `stale` is `true` when the reading is more than 24 hours old.
-- `averageTempDegrees` / `averageTempTimestamp` — the mean temperature across non-stale devices and its associated timestamp. Both are omitted when there are no non-stale readings.
+- `devices` — one entry per device that reports temperature and/or humidity, sorted by `name`.
+- `temp` / `timestamp` / `stale` — the latest temperature, the Unix time of that reading, and whether it is more than 24 hours old. These keys are present only for devices that report temperature.
+- `humidity` / `humidityTimestamp` / `humidityStale` — the latest relative humidity (percent), the Unix time of that reading, and whether it is more than 24 hours old. Humidity carries its own timestamp and stale flag because SmartThings reports each measurement independently. These keys are present only for devices that report humidity.
+- `averageTempDegrees` / `averageTempTimestamp` — the mean temperature across non-stale temperature readings and the earliest of their timestamps. Both are omitted when there are no non-stale temperature readings.
+- `averageHumidity` / `averageHumidityTimestamp` — the equivalent mean humidity across non-stale humidity readings. Both are omitted when there are no non-stale humidity readings.
 
 
 
@@ -128,6 +136,6 @@ The entry point is `run()` in [`index.php`](index.php), which wires the pieces t
 
 - **`ConfigTransformer`** reads the environment into a `Config` (API token + request/caching config).
 - **`SmartThings`** (from [`christianjbrown/php-smartthings-api-lib`](https://github.com/christianjbrown/php-smartthings-api-lib)) provides the device and device-status API clients.
-- **`DataProvider`** fetches devices, filters to those with a temperature capability, reads each status, and builds `DeviceTemperature` value objects.
-- **`OutputTransformer`** sorts them, computes the non-stale average, and shapes the JSON response.
+- **`DataProvider`** fetches devices, filters to those with a temperature and/or humidity capability, reads each status, and builds `DeviceReading` value objects.
+- **`OutputTransformer`** sorts them, computes the non-stale temperature and humidity averages, and shapes the JSON response.
 - **`CloudFunction`** (from [`christianjbrown/php-cloud-function-lib`](https://github.com/christianjbrown/php-cloud-function-lib)) handles the HTTP request/response, header/origin gating, and caching headers.

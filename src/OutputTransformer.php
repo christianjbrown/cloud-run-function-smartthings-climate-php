@@ -6,49 +6,76 @@ namespace ChristianBrown\GetSmartHomeTemps;
 
 final class OutputTransformer implements OutputTransformerInterface
 {
-    private DeviceTemperatureOutputTransformerInterface $deviceTemperatureOutputTransformer;
+    private DeviceReadingOutputTransformerInterface $deviceReadingOutputTransformer;
 
-    public function __construct(DeviceTemperatureOutputTransformerInterface $deviceTemperatureOutputTransformer)
+    public function __construct(DeviceReadingOutputTransformerInterface $deviceReadingOutputTransformer)
     {
-        $this->deviceTemperatureOutputTransformer = $deviceTemperatureOutputTransformer;
+        $this->deviceReadingOutputTransformer = $deviceReadingOutputTransformer;
     }
 
-    public function transform(array $deviceTemperatures): array
+    public function transform(array $deviceReadings): array
     {
-        // @todo Doesn't check if the things in the array are really a DeviceTemperatureInterface
+        // @todo Doesn't check if the things in the array are really a DeviceReadingInterface
         usort(
-            $deviceTemperatures,
+            $deviceReadings,
             static fn ($a, $b) => strcmp($a->getLabel(), $b->getLabel())
         );
 
         $devicesData = [];
-
-        $totalForAverage = 0;
-        $totalDevicesAveraged = 0;
-        $latestNonStaleTimestamp = null;
-        foreach ($deviceTemperatures as $deviceTemperature) {
-            if ($deviceTemperature instanceof DeviceTemperatureInterface) {
-                $devicesData[] = $this->deviceTemperatureOutputTransformer->transform($deviceTemperature);
-                if (!$deviceTemperature->isStale()) {
-                    $totalForAverage += $deviceTemperature->getTemperature();
-                    ++$totalDevicesAveraged;
-                    $timestamp = $deviceTemperature->getTimestamp();
-                    if (null === $latestNonStaleTimestamp || $timestamp < $latestNonStaleTimestamp) {
-                        $latestNonStaleTimestamp = $timestamp;
-                    }
-                }
+        foreach ($deviceReadings as $deviceReading) {
+            if ($deviceReading instanceof DeviceReadingInterface) {
+                $devicesData[] = $this->deviceReadingOutputTransformer->transform($deviceReading);
             }
         }
 
-        $data = [
-            self::KEY_DEVICES => $devicesData,
-        ];
-
-        if ($totalDevicesAveraged > 0) {
-            $data[self::KEY_AVERAGE_TEMPERATURE_VALUE] = $totalForAverage / $totalDevicesAveraged;
-            $data[self::KEY_AVERAGE_TEMPERATURE_TIMESTAMP] = $latestNonStaleTimestamp;
-        }
+        $data = [self::KEY_DEVICES => $devicesData];
+        $data += $this->buildTemperatureAverage($deviceReadings);
+        $data += $this->buildHumidityAverage($deviceReadings);
 
         return $data;
+    }
+
+    private function buildHumidityAverage(array $deviceReadings): array
+    {
+        $total = 0;
+        $timestamps = [];
+        foreach ($deviceReadings as $deviceReading) {
+            if (!$deviceReading instanceof DeviceReadingInterface || null === $deviceReading->getHumidity() || $deviceReading->isHumidityStale()) {
+                continue;
+            }
+            $total += $deviceReading->getHumidity();
+            $timestamps[] = $deviceReading->getHumidityTimestamp();
+        }
+
+        if ([] === $timestamps) {
+            return [];
+        }
+
+        return [
+            self::KEY_AVERAGE_HUMIDITY_VALUE => $total / count($timestamps),
+            self::KEY_AVERAGE_HUMIDITY_TIMESTAMP => min($timestamps),
+        ];
+    }
+
+    private function buildTemperatureAverage(array $deviceReadings): array
+    {
+        $total = 0;
+        $timestamps = [];
+        foreach ($deviceReadings as $deviceReading) {
+            if (!$deviceReading instanceof DeviceReadingInterface || null === $deviceReading->getTemperature() || $deviceReading->isStale()) {
+                continue;
+            }
+            $total += $deviceReading->getTemperature();
+            $timestamps[] = $deviceReading->getTimestamp();
+        }
+
+        if ([] === $timestamps) {
+            return [];
+        }
+
+        return [
+            self::KEY_AVERAGE_TEMPERATURE_VALUE => $total / count($timestamps),
+            self::KEY_AVERAGE_TEMPERATURE_TIMESTAMP => min($timestamps),
+        ];
     }
 }

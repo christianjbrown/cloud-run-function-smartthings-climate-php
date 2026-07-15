@@ -8,7 +8,7 @@ use ChristianBrown\CloudFunction\CloudFunction;
 use ChristianBrown\CloudFunction\FunctionConfigTransformer;
 use ChristianBrown\GetSmartHomeTemps\ConfigTransformer;
 use ChristianBrown\GetSmartHomeTemps\DataProvider;
-use ChristianBrown\GetSmartHomeTemps\DeviceTemperatureOutputTransformer;
+use ChristianBrown\GetSmartHomeTemps\DeviceReadingOutputTransformer;
 use ChristianBrown\GetSmartHomeTemps\OutputTransformer;
 use ChristianBrown\SmartThings\SmartThings;
 use Psr\Http\Message\ResponseInterface;
@@ -25,8 +25,8 @@ function run(ServerRequestInterface $request): ResponseInterface
     $devicesApi = $smartThings->getDeviceApi();
     $devicesStatusApi = $smartThings->getDeviceStatusApi();
 
-    $deviceTemperatureOutputTransformer = new DeviceTemperatureOutputTransformer();
-    $outputTransformer = new OutputTransformer($deviceTemperatureOutputTransformer);
+    $deviceReadingOutputTransformer = new DeviceReadingOutputTransformer();
+    $outputTransformer = new OutputTransformer($deviceReadingOutputTransformer);
 
     $dataProvider = new DataProvider($devicesApi, $devicesStatusApi, $outputTransformer);
     $cloudFunction = new CloudFunction($dataProvider, $config->getFunctionConfig());
