@@ -1,4 +1,4 @@
-# SmartThings Climate
+# SmartThings Climate Google Cloud Function
 
 [![CI](https://github.com/christianjbrown/php-gcp-function-smartthings-climate/actions/workflows/ci.yml/badge.svg)](https://github.com/christianjbrown/php-gcp-function-smartthings-climate/actions/workflows/ci.yml)
 
