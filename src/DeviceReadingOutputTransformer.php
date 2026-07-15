@@ -12,6 +12,10 @@ final class DeviceReadingOutputTransformer implements DeviceReadingOutputTransfo
             self::KEY_LABEL => $deviceReading->getLabel(),
         ];
 
+        if (null !== $deviceReading->getRoomName()) {
+            $data[self::KEY_ROOM_NAME] = $deviceReading->getRoomName();
+        }
+
         if (null !== $deviceReading->getTemperature()) {
             $data[self::KEY_TEMPERATURE] = $deviceReading->getTemperature();
             $data[self::KEY_TIMESTAMP] = $deviceReading->getTimestamp();

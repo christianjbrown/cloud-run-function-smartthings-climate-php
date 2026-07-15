@@ -6,13 +6,14 @@ namespace ChristianBrown\GetSmartHomeTemps;
 
 interface DeviceReadingOutputTransformerInterface
 {
-    public const KEY_HUMIDITY = 'humidity';
+    public const KEY_HUMIDITY = 'humidityValue';
     public const KEY_HUMIDITY_STALE = 'humidityStale';
     public const KEY_HUMIDITY_TIMESTAMP = 'humidityTimestamp';
     public const KEY_LABEL = 'name';
-    public const KEY_STALE = 'stale';
-    public const KEY_TEMPERATURE = 'temp';
-    public const KEY_TIMESTAMP = 'timestamp';
+    public const KEY_ROOM_NAME = 'roomName';
+    public const KEY_STALE = 'temperatureStale';
+    public const KEY_TEMPERATURE = 'temperatureValue';
+    public const KEY_TIMESTAMP = 'temperatureTimestamp';
 
     public function transform(DeviceReadingInterface $deviceReading): array;
 }

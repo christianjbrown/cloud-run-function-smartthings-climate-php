@@ -19,7 +19,7 @@ final class DeviceReadingOutputTransformerTest extends TestCase
      */
     public function testHumidityOnlyOmitsTemperatureKeys(): void
     {
-        $reading = $this->createReading('test-label', null, null, null, 55.0, 28000, false);
+        $reading = $this->createReading('test-label', null, null, null, null, 55.0, 28000, false);
 
         $expected = [
             DeviceReadingOutputTransformerInterface::KEY_LABEL => 'test-label',
@@ -38,10 +38,11 @@ final class DeviceReadingOutputTransformerTest extends TestCase
      */
     public function testTemperatureAndHumidity(): void
     {
-        $reading = $this->createReading('test-label', 42.2, 29000, true, 55.0, 28000, false);
+        $reading = $this->createReading('test-label', 'test-room', 42.2, 29000, true, 55.0, 28000, false);
 
         $expected = [
             DeviceReadingOutputTransformerInterface::KEY_LABEL => 'test-label',
+            DeviceReadingOutputTransformerInterface::KEY_ROOM_NAME => 'test-room',
             DeviceReadingOutputTransformerInterface::KEY_TEMPERATURE => 42.2,
             DeviceReadingOutputTransformerInterface::KEY_TIMESTAMP => 29000,
             DeviceReadingOutputTransformerInterface::KEY_STALE => true,
@@ -60,7 +61,7 @@ final class DeviceReadingOutputTransformerTest extends TestCase
      */
     public function testTemperatureOnlyOmitsHumidityKeys(): void
     {
-        $reading = $this->createReading('test-label', 42.2, 29000, true, null, null, null);
+        $reading = $this->createReading('test-label', null, 42.2, 29000, true, null, null, null);
 
         $expected = [
             DeviceReadingOutputTransformerInterface::KEY_LABEL => 'test-label',
@@ -77,11 +78,13 @@ final class DeviceReadingOutputTransformerTest extends TestCase
     /**
      * @throws Exception
      */
-    private function createReading(string $label, ?float $temperature, ?int $timestamp, ?bool $stale, ?float $humidity, ?int $humidityTimestamp, ?bool $humidityStale): DeviceReadingInterface
+    private function createReading(string $label, ?string $roomName, ?float $temperature, ?int $timestamp, ?bool $stale, ?float $humidity, ?int $humidityTimestamp, ?bool $humidityStale): DeviceReadingInterface
     {
         $reading = $this->createMock(DeviceReadingInterface::class);
         $reading->method('getLabel')
             ->willReturn($label);
+        $reading->method('getRoomName')
+            ->willReturn($roomName);
         $reading->method('getTemperature')
             ->willReturn($temperature);
         $reading->method('getTimestamp')

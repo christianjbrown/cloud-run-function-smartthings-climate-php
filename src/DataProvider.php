@@ -6,6 +6,7 @@ namespace ChristianBrown\GetSmartHomeTemps;
 
 use ChristianBrown\SmartThings\Api\DeviceApiInterface;
 use ChristianBrown\SmartThings\Api\DeviceStatusApiInterface;
+use ChristianBrown\SmartThings\Api\LocationRoomApiInterface;
 use ChristianBrown\SmartThings\Model\DeviceComponentCapabilityInterface;
 use ChristianBrown\SmartThings\Model\DeviceComponentInterface;
 use ChristianBrown\SmartThings\Model\DeviceInterface;
@@ -17,13 +18,15 @@ final class DataProvider implements DataProviderInterface
 {
     private DeviceApiInterface $devicesApi;
     private DeviceStatusApiInterface $deviceStatusApi;
+    private LocationRoomApiInterface $locationRoomApi;
     private int $now;
     private OutputTransformerInterface $outputTransformer;
 
-    public function __construct(DeviceApiInterface $devicesApi, DeviceStatusApiInterface $deviceStatusApi, OutputTransformerInterface $outputTransformer)
+    public function __construct(DeviceApiInterface $devicesApi, DeviceStatusApiInterface $deviceStatusApi, LocationRoomApiInterface $locationRoomApi, OutputTransformerInterface $outputTransformer)
     {
         $this->devicesApi = $devicesApi;
         $this->deviceStatusApi = $deviceStatusApi;
+        $this->locationRoomApi = $locationRoomApi;
         $this->outputTransformer = $outputTransformer;
         $this->now = time();
     }
@@ -75,8 +78,14 @@ final class DataProvider implements DataProviderInterface
             return null;
         }
 
+        $roomName = null;
+        if (null !== $device->getRoomId()) {
+            $roomName = $this->locationRoomApi->getOneByDevice($device)->getName();
+        }
+
         return new DeviceReading(
             $device->getLabel(),
+            $roomName,
             $temperature,
             $temperatureTimestamp,
             $temperatureStale,

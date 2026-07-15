@@ -24,11 +24,12 @@ function run(ServerRequestInterface $request): ResponseInterface
     $smartThings = new SmartThings($config->getApiToken());
     $devicesApi = $smartThings->getDeviceApi();
     $devicesStatusApi = $smartThings->getDeviceStatusApi();
+    $locationRoomApi = $smartThings->getLocationRoomApi();
 
     $deviceReadingOutputTransformer = new DeviceReadingOutputTransformer();
     $outputTransformer = new OutputTransformer($deviceReadingOutputTransformer);
 
-    $dataProvider = new DataProvider($devicesApi, $devicesStatusApi, $outputTransformer);
+    $dataProvider = new DataProvider($devicesApi, $devicesStatusApi, $locationRoomApi, $outputTransformer);
     $cloudFunction = new CloudFunction($dataProvider, $config->getFunctionConfig());
     $response = $cloudFunction->run($request);
 

@@ -12,6 +12,8 @@ interface DeviceReadingInterface
 
     public function getLabel(): string;
 
+    public function getRoomName(): ?string;
+
     public function getTemperature(): ?float;
 
     public function getTimestamp(): ?int;

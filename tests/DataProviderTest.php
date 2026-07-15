@@ -10,6 +10,7 @@ use ChristianBrown\GetSmartHomeTemps\DeviceReadingInterface;
 use ChristianBrown\GetSmartHomeTemps\OutputTransformerInterface;
 use ChristianBrown\SmartThings\Api\DeviceApiInterface;
 use ChristianBrown\SmartThings\Api\DeviceStatusApiInterface;
+use ChristianBrown\SmartThings\Api\LocationRoomApiInterface;
 use ChristianBrown\SmartThings\Model\DeviceComponentCapabilityInterface;
 use ChristianBrown\SmartThings\Model\DeviceComponentInterface;
 use ChristianBrown\SmartThings\Model\DeviceInterface;
@@ -18,6 +19,7 @@ use ChristianBrown\SmartThings\Model\DeviceStatusRelativeHumidityMeasurementHumi
 use ChristianBrown\SmartThings\Model\DeviceStatusRelativeHumidityMeasurementInterface;
 use ChristianBrown\SmartThings\Model\DeviceStatusTemperatureMeasurementInterface;
 use ChristianBrown\SmartThings\Model\DeviceStatusTemperatureMeasurementTemperatureInterface;
+use ChristianBrown\SmartThings\Model\LocationRoomInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
@@ -49,13 +51,13 @@ final class DataProviderTest extends TestCase
         $device3 = $this->createDevice('test-device-3-has-temp-no-value', [$device3component1]);
 
         $device4component1 = $this->createDeviceComponent(true, false);
-        $device4 = $this->createDevice('test-device-4-has-temp', [$device4component1]);
+        $device4 = $this->createDevice('test-device-4-has-temp', [$device4component1], 'test-room-id-4');
 
         $device5component1 = $this->createDeviceComponent(false, true);
-        $device5 = $this->createDevice('test-device-5-humidity-only', [$device5component1]);
+        $device5 = $this->createDevice('test-device-5-humidity-only', [$device5component1], 'test-room-id-5');
 
         $device6component1 = $this->createDeviceComponent(true, true);
-        $device6 = $this->createDevice('test-device-6-temp-and-humidity', [$device6component1]);
+        $device6 = $this->createDevice('test-device-6-temp-and-humidity', [$device6component1], 'test-room-id-6');
 
         $devices = [$device0, $device1, $device2, $device3, $device4, $device5, $device6];
 
@@ -94,6 +96,18 @@ final class DataProviderTest extends TestCase
                 ]
             );
 
+        // Only devices that are in a room (and produce a reading) are looked up.
+        $locationRoomApi = $this->createMock(LocationRoomApiInterface::class);
+        $locationRoomApi->expects(self::exactly(3))
+            ->method('getOneByDevice')
+            ->willReturnMap(
+                [
+                    [$device4, false, $this->createRoom('test-room-4')],
+                    [$device5, false, $this->createRoom('test-room-5')],
+                    [$device6, false, $this->createRoom('test-room-6')],
+                ]
+            );
+
         $outputTransformer = $this->createMock(OutputTransformerInterface::class);
         $outputTransformer->method('transform')
             ->with(
@@ -104,6 +118,7 @@ final class DataProviderTest extends TestCase
                         // device-1: temperature only, stale
                         self::assertInstanceOf(DeviceReadingInterface::class, $data[0]);
                         self::assertSame('test-device-1-mixed-components-inc-temp', $data[0]->getLabel());
+                        self::assertNull($data[0]->getRoomName());
                         self::assertSame(42.0, $data[0]->getTemperature());
                         self::assertSame($temperature1time, $data[0]->getTimestamp());
                         self::assertTrue($data[0]->isStale());
@@ -114,6 +129,7 @@ final class DataProviderTest extends TestCase
                         // device-4: temperature only, fresh
                         self::assertInstanceOf(DeviceReadingInterface::class, $data[1]);
                         self::assertSame('test-device-4-has-temp', $data[1]->getLabel());
+                        self::assertSame('test-room-4', $data[1]->getRoomName());
                         self::assertSame(98.0, $data[1]->getTemperature());
                         self::assertSame($temperature4time, $data[1]->getTimestamp());
                         self::assertFalse($data[1]->isStale());
@@ -122,6 +138,7 @@ final class DataProviderTest extends TestCase
                         // device-5: humidity only, fresh
                         self::assertInstanceOf(DeviceReadingInterface::class, $data[2]);
                         self::assertSame('test-device-5-humidity-only', $data[2]->getLabel());
+                        self::assertSame('test-room-5', $data[2]->getRoomName());
                         self::assertNull($data[2]->getTemperature());
                         self::assertNull($data[2]->getTimestamp());
                         self::assertNull($data[2]->isStale());
@@ -132,6 +149,7 @@ final class DataProviderTest extends TestCase
                         // device-6: temperature (fresh) and humidity (stale)
                         self::assertInstanceOf(DeviceReadingInterface::class, $data[3]);
                         self::assertSame('test-device-6-temp-and-humidity', $data[3]->getLabel());
+                        self::assertSame('test-room-6', $data[3]->getRoomName());
                         self::assertSame(70.0, $data[3]->getTemperature());
                         self::assertSame($temperature6time, $data[3]->getTimestamp());
                         self::assertFalse($data[3]->isStale());
@@ -145,7 +163,7 @@ final class DataProviderTest extends TestCase
             )
             ->willReturn(['test-actual-output']);
 
-        $dataProvider = new DataProvider($deviceApi, $deviceStatusApi, $outputTransformer);
+        $dataProvider = new DataProvider($deviceApi, $deviceStatusApi, $locationRoomApi, $outputTransformer);
 
         $actual = $dataProvider->getData($request);
 
@@ -155,15 +173,29 @@ final class DataProviderTest extends TestCase
     /**
      * @throws Exception
      */
-    private function createDevice(string $label, array $components): DeviceInterface
+    private function createDevice(string $label, array $components, ?string $roomId = null): DeviceInterface
     {
         $device = $this->createMock(DeviceInterface::class);
         $device->method('getLabel')
             ->willReturn($label);
         $device->method('getComponents')
             ->willReturn($components);
+        $device->method('getRoomId')
+            ->willReturn($roomId);
 
         return $device;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function createRoom(string $name): LocationRoomInterface
+    {
+        $room = $this->createMock(LocationRoomInterface::class);
+        $room->method('getName')
+            ->willReturn($name);
+
+        return $room;
     }
 
     /**
