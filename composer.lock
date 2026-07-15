@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:christianjbrown/php-api-client-lib.git",
-                "reference": "621bc0889079cbac7beae91340869e624beca691"
+                "reference": "3a71e607c3feb64108f0eb00f562ebbab57579ed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/christianjbrown/php-api-client-lib/zipball/621bc0889079cbac7beae91340869e624beca691",
-                "reference": "621bc0889079cbac7beae91340869e624beca691",
+                "url": "https://api.github.com/repos/christianjbrown/php-api-client-lib/zipball/3a71e607c3feb64108f0eb00f562ebbab57579ed",
+                "reference": "3a71e607c3feb64108f0eb00f562ebbab57579ed",
                 "shasum": ""
             },
             "require": {
@@ -46,6 +46,12 @@
                 }
             },
             "scripts": {
+                "test": [
+                    "clear && XDEBUG_MODE=coverage php -d memory_limit=-1 ./bin/phpunit && open ./.phpunit.cache/code-coverage-html/index.html"
+                ],
+                "stan": [
+                    "clear && ./bin/phpstan analyse"
+                ],
                 "check-style": [
                     "clear && ./bin/php-cs ./src ./tests"
                 ],
@@ -57,12 +63,6 @@
                 ],
                 "fix-style-diff": [
                     "clear && ./bin/php-cs-fix-diff"
-                ],
-                "stan": [
-                    "clear && ./bin/phpstan analyse"
-                ],
-                "test": [
-                    "clear && XDEBUG_MODE=coverage php -d memory_limit=-1 ./bin/phpunit && open ./.phpunit.cache/code-coverage-html/index.html"
                 ]
             },
             "license": [
@@ -85,7 +85,7 @@
             "support": {
                 "source": "https://github.com/christianjbrown/php-api-client-lib/tree/main"
             },
-            "time": "2026-07-15T11:45:59+00:00"
+            "time": "2026-07-15T17:47:49+00:00"
         },
         {
             "name": "christianjbrown/php-cloud-function-lib",
@@ -93,12 +93,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:christianjbrown/php-cloud-function-lib.git",
-                "reference": "11cfa84a7995aac2b04fdc4968fe4c0b8e806327"
+                "reference": "02dacc9aaba8c446851c7bc64f353f9db3233655"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/christianjbrown/php-cloud-function-lib/zipball/11cfa84a7995aac2b04fdc4968fe4c0b8e806327",
-                "reference": "11cfa84a7995aac2b04fdc4968fe4c0b8e806327",
+                "url": "https://api.github.com/repos/christianjbrown/php-cloud-function-lib/zipball/02dacc9aaba8c446851c7bc64f353f9db3233655",
+                "reference": "02dacc9aaba8c446851c7bc64f353f9db3233655",
                 "shasum": ""
             },
             "require": {
@@ -127,6 +127,9 @@
                 "test": [
                     "clear && XDEBUG_MODE=coverage php -d memory_limit=-1 ./bin/phpunit && open ./.phpunit.cache/code-coverage-html/index.html"
                 ],
+                "stan": [
+                    "clear && ./bin/phpstan analyse"
+                ],
                 "check-style": [
                     "clear && ./bin/php-cs ./src ./tests"
                 ],
@@ -138,9 +141,6 @@
                 ],
                 "fix-style-diff": [
                     "clear && ./bin/php-cs-fix-diff"
-                ],
-                "stan": [
-                    "clear && ./bin/phpstan analyse"
                 ]
             },
             "license": [
@@ -163,7 +163,7 @@
             "support": {
                 "source": "https://github.com/christianjbrown/php-cloud-function-lib/tree/main"
             },
-            "time": "2026-07-15T11:57:39+00:00"
+            "time": "2026-07-15T17:47:54+00:00"
         },
         {
             "name": "christianjbrown/php-smartthings-api-lib",
@@ -249,12 +249,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:christianjbrown/php-user-friendly-exception-lib.git",
-                "reference": "adc6d5066ca053c6c66a7014f4a75cfffa57705e"
+                "reference": "933fc6fcaefa6389f6f13cbfea54d9dec2409eef"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/christianjbrown/php-user-friendly-exception-lib/zipball/adc6d5066ca053c6c66a7014f4a75cfffa57705e",
-                "reference": "adc6d5066ca053c6c66a7014f4a75cfffa57705e",
+                "url": "https://api.github.com/repos/christianjbrown/php-user-friendly-exception-lib/zipball/933fc6fcaefa6389f6f13cbfea54d9dec2409eef",
+                "reference": "933fc6fcaefa6389f6f13cbfea54d9dec2409eef",
                 "shasum": ""
             },
             "require": {
@@ -314,7 +314,7 @@
             "support": {
                 "source": "https://github.com/christianjbrown/php-user-friendly-exception-lib/tree/main"
             },
-            "time": "2026-07-15T11:46:35+00:00"
+            "time": "2026-07-15T17:49:04+00:00"
         },
         {
             "name": "cloudevents/sdk-php",
@@ -1434,12 +1434,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:christianjbrown/php-code-quality-scripts.git",
-                "reference": "771eeef46fb301e1f5cc82c9c960bacb10e54fff"
+                "reference": "2e7597306aaabc9b55254b70a2185af16890bbb0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/christianjbrown/php-code-quality-scripts/zipball/771eeef46fb301e1f5cc82c9c960bacb10e54fff",
-                "reference": "771eeef46fb301e1f5cc82c9c960bacb10e54fff",
+                "url": "https://api.github.com/repos/christianjbrown/php-code-quality-scripts/zipball/2e7597306aaabc9b55254b70a2185af16890bbb0",
+                "reference": "2e7597306aaabc9b55254b70a2185af16890bbb0",
                 "shasum": ""
             },
             "require": {
@@ -1516,7 +1516,7 @@
             "support": {
                 "source": "https://github.com/christianjbrown/php-code-quality-scripts/tree/main"
             },
-            "time": "2026-07-15T11:37:26+00:00"
+            "time": "2026-07-15T17:49:09+00:00"
         },
         {
             "name": "clue/ndjson-react",
