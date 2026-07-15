@@ -9,11 +9,6 @@ jobs:
     name: "On-push checks"
     runs-on: "ubuntu-latest"
 
-    # The composer scripts prefix commands with `clear`, which needs TERM set;
-    # GitHub runners don't set it, so provide one to keep the scripts working.
-    env:
-      TERM: "xterm"
-
     steps:
       - name: "Checkout code"
         uses: "actions/checkout@v5"
@@ -24,7 +19,7 @@ jobs:
         run: 'composer update'
 
       - name: "Run PHPCS checks"
-        run: "composer check-style"
+        run: "./bin/php-cs ./src ./tests"
 
       - name: "Run PHPUnit tests"
         env:
