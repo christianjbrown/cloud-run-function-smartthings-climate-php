@@ -20,7 +20,7 @@
     ],
     "require": {
         "php": "^8.3",
-        "christianjbrown/php-cloud-function-lib": "dev-main",
+        "christianjbrown/php-gcp-function-lib": "dev-main",
         "christianjbrown/php-smartthings-api-lib": "dev-main",
         "christianjbrown/php-user-friendly-exception-lib": "dev-main",
         "google/cloud-functions-framework": "^1.1",
@@ -74,7 +74,7 @@
     "repositories": [
         {
             "type": "github",
-            "url": "git@github.com:christianjbrown/php-cloud-function-lib.git"
+            "url": "git@github.com:christianjbrown/php-gcp-function-lib.git"
         },
         {
             "type": "github",

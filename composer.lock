@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "eb9b8289bd613d6289581e6f120c31ca",
+    "content-hash": "c770106ba2554e3c82305dd63f6ce3f4",
     "packages": [
         {
             "name": "christianjbrown/php-api-client-lib",
@@ -88,17 +88,17 @@
             "time": "2026-07-15T17:47:49+00:00"
         },
         {
-            "name": "christianjbrown/php-cloud-function-lib",
+            "name": "christianjbrown/php-gcp-function-lib",
             "version": "dev-main",
             "source": {
                 "type": "git",
-                "url": "git@github.com:christianjbrown/php-cloud-function-lib.git",
-                "reference": "4ba0a75975b18f304396feb1019d84ab58cd4e3a"
+                "url": "git@github.com:christianjbrown/php-gcp-function-lib.git",
+                "reference": "5fc7cac1dc8943d787b29c7040f368b5a60d02ef"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/christianjbrown/php-cloud-function-lib/zipball/4ba0a75975b18f304396feb1019d84ab58cd4e3a",
-                "reference": "4ba0a75975b18f304396feb1019d84ab58cd4e3a",
+                "url": "https://api.github.com/repos/christianjbrown/php-gcp-function-lib/zipball/5fc7cac1dc8943d787b29c7040f368b5a60d02ef",
+                "reference": "5fc7cac1dc8943d787b29c7040f368b5a60d02ef",
                 "shasum": ""
             },
             "require": {
@@ -115,12 +115,12 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "ChristianBrown\\CloudFunction\\": "src/"
+                    "ChristianBrown\\GcpFunction\\": "src/"
                 }
             },
             "autoload-dev": {
                 "psr-4": {
-                    "ChristianBrown\\CloudFunction\\Tests\\": "tests/"
+                    "ChristianBrown\\GcpFunction\\Tests\\": "tests/"
                 }
             },
             "scripts": {
@@ -161,9 +161,9 @@
                 "serverless"
             ],
             "support": {
-                "source": "https://github.com/christianjbrown/php-cloud-function-lib/tree/main"
+                "source": "https://github.com/christianjbrown/php-gcp-function-lib/tree/main"
             },
-            "time": "2026-07-15T19:37:39+00:00"
+            "time": "2026-07-15T19:53:45+00:00"
         },
         {
             "name": "christianjbrown/php-smartthings-api-lib",
@@ -5900,8 +5900,8 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "christianjbrown/php-cloud-function-lib": 20,
         "christianjbrown/php-code-quality-scripts": 20,
+        "christianjbrown/php-gcp-function-lib": 20,
         "christianjbrown/php-smartthings-api-lib": 20,
         "christianjbrown/php-user-friendly-exception-lib": 20
     },

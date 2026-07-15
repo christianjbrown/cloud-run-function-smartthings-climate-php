@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ChristianBrown\SmartThingsClimate\Tests;
 
-use ChristianBrown\CloudFunction\FunctionConfigInterface;
+use ChristianBrown\GcpFunction\FunctionConfigInterface;
 use ChristianBrown\SmartThingsClimate\Config;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\Exception;

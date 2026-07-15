@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ChristianBrown\SmartThingsClimate;
 
-use ChristianBrown\CloudFunction\DataProviderInterface as BaseDataProviderInterface;
+use ChristianBrown\GcpFunction\DataProviderInterface as BaseDataProviderInterface;
 
 interface DataProviderInterface extends BaseDataProviderInterface
 {

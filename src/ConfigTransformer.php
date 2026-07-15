@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ChristianBrown\SmartThingsClimate;
 
-use ChristianBrown\CloudFunction\FunctionConfigTransformerInterface;
+use ChristianBrown\GcpFunction\FunctionConfigTransformerInterface;
 use RuntimeException;
 
 final class ConfigTransformer implements ConfigTransformerInterface

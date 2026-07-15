@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 date_default_timezone_set('UTC');
 
-use ChristianBrown\CloudFunction\CloudFunction;
-use ChristianBrown\CloudFunction\FunctionConfigTransformer;
+use ChristianBrown\GcpFunction\CloudFunction;
+use ChristianBrown\GcpFunction\FunctionConfigTransformer;
 use ChristianBrown\SmartThingsClimate\ConfigTransformer;
 use ChristianBrown\SmartThingsClimate\DataProvider;
 use ChristianBrown\SmartThingsClimate\DeviceReadingOutputTransformer;

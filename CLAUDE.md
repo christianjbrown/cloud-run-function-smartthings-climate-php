@@ -12,7 +12,7 @@ a library** — it wires the sibling `christianjbrown/*` libraries together behi
 the `run()` function in `index.php` builds the config, constructs a `SmartThings` client and a
 `CloudFunction`, and returns the PSR-7 response.
 
-The app consumes four private `dev-main` sibling packages: `php-cloud-function-lib` (the HTTP
+The app consumes four private `dev-main` sibling packages: `php-gcp-function-lib` (the HTTP
 envelope/gating/caching framework), `php-smartthings-api-lib` (the read-only SmartThings client),
 `php-user-friendly-exception-lib`, and `php-code-quality-scripts` (dev). It runs on Google's
 [Functions Framework](https://github.com/GoogleCloudPlatform/functions-framework-php) locally.
@@ -55,7 +55,7 @@ top-level `index.php` holds the framework entry point and is intentionally outsi
   facade and pulls its device / device-status / location-room clients, assembles the `DataProvider`
   and `OutputTransformer`, and hands both to a `CloudFunction`, returning its `run()` response.
 - **`Config`** / **`ConfigInterface`** — a small holder for the SmartThings API token plus the
-  `FunctionConfigInterface` (from `php-cloud-function-lib`) that drives gating/caching.
+  `FunctionConfigInterface` (from `php-gcp-function-lib`) that drives gating/caching.
 - **`ConfigTransformer`** / **`ConfigTransformerInterface`** — builds a `Config` from the environment
   array. It guards `SMARTTHINGS_API_TOKEN` (via `ENV_API_TOKEN`) with sequential presence/type checks
   and delegates the rest of the env to the injected `FunctionConfigTransformer`.

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace ChristianBrown\SmartThingsClimate\Tests;
 
-use ChristianBrown\CloudFunction\FunctionConfigInterface;
-use ChristianBrown\CloudFunction\FunctionConfigTransformerInterface;
+use ChristianBrown\GcpFunction\FunctionConfigInterface;
+use ChristianBrown\GcpFunction\FunctionConfigTransformerInterface;
 use ChristianBrown\SmartThingsClimate\Config;
 use ChristianBrown\SmartThingsClimate\ConfigTransformer;
 use ChristianBrown\SmartThingsClimate\ConfigTransformerInterface;
