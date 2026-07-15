@@ -1,7 +1,25 @@
 {
+    "name": "christianjbrown/cloud-function-smart-home-temps",
+    "description": "A PHP 8.3+ Google Cloud Function that reads smart-home device temperatures from the SmartThings API and returns them as a JSON envelope.",
+    "type": "project",
     "license": "MIT",
+    "keywords": [
+        "google-cloud",
+        "cloud-run",
+        "cloud-functions",
+        "serverless",
+        "smartthings",
+        "smart-home",
+        "iot",
+        "temperature"
+    ],
+    "authors": [
+        {
+            "name": "Christian Brown"
+        }
+    ],
     "require": {
-        "php": "~8.3",
+        "php": "^8.3",
         "christianjbrown/php-cloud-function-lib": "dev-main",
         "christianjbrown/php-smartthings-api-lib": "dev-main",
         "christianjbrown/php-user-friendly-exception-lib": "dev-main",
@@ -13,10 +31,14 @@
         "phpstan/phpstan": "^2.0",
         "phpunit/phpunit": "^12.0"
     },
-    "config": {
-        "bin-dir": "bin",
-        "platform": {
-            "php": "8.3.30"
+    "autoload": {
+        "psr-4": {
+            "ChristianBrown\\GetSmartHomeTemps\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ChristianBrown\\GetSmartHomeTemps\\Tests\\": "tests/"
         }
     },
     "scripts": {
@@ -27,11 +49,11 @@
         "test": [
             "clear && XDEBUG_MODE=coverage php -d memory_limit=-1 ./bin/phpunit && open ./.phpunit.cache/code-coverage-html/index.html"
         ],
-        "check-style": [
-            "clear && ./bin/php-cs ./src ./tests"
-        ],
         "stan": [
             "clear && ./bin/phpstan analyse"
+        ],
+        "check-style": [
+            "clear && ./bin/php-cs ./src ./tests"
         ],
         "check-style-diff": [
             "clear && ./bin/php-cs-diff"
@@ -43,10 +65,10 @@
             "clear && ./bin/php-cs-fix-diff"
         ]
     },
-    "autoload": {
-        "psr-4": {
-            "ChristianBrown\\GetSmartHomeTemps\\": "src/",
-            "ChristianBrown\\GetSmartHomeTemps\\Tests\\": "tests/"
+    "config": {
+        "bin-dir": "bin",
+        "platform": {
+            "php": "8.3.30"
         }
     },
     "repositories": [

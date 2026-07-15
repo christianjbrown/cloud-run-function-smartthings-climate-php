@@ -145,3 +145,9 @@ The entry point is `run()` in [`index.php`](index.php), which wires the pieces t
 - **`DataProvider`** fetches devices, filters to those with a temperature and/or humidity capability, reads each status, resolves the room name for devices assigned to one, and builds `DeviceReading` value objects.
 - **`OutputTransformer`** sorts them, computes the non-stale temperature and humidity averages, and shapes the JSON response.
 - **`CloudFunction`** (from [`christianjbrown/php-cloud-function-lib`](https://github.com/christianjbrown/php-cloud-function-lib)) handles the HTTP request/response, header/origin gating, and caching headers.
+
+
+
+## :page_facing_up: License
+
+Released under the [MIT License](LICENSE).
