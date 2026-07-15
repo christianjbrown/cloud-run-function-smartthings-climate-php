@@ -31,7 +31,7 @@ jobs:
 
       # The runtime and dev dependencies are private `dev-main` packages on GitHub.
       # Composer needs credentials to fetch them; supply a token with read access
-      # via the COMPOSER_AUTH secret.
+      # via the COMPOSER_AUTH secret (or swap the repositories to HTTPS + token).
       - name: Configure Composer auth
         run: echo "COMPOSER_AUTH=$COMPOSER_AUTH" >> "$GITHUB_ENV"
         env:

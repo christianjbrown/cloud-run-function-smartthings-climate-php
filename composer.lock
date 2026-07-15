@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4d6d75d477adffe59b01d34c70f6b09a",
+    "content-hash": "db0d5bf6d0a3f1e42fca50b77cee5053",
     "packages": [
         {
             "name": "christianjbrown/php-api-client-lib",
@@ -2388,8 +2388,8 @@
             "version": "2.2.x-dev",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/9a842df26672d5fadadf52c62cff33c7b059ba74",
-                "reference": "9a842df26672d5fadadf52c62cff33c7b059ba74",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/e69dcb5e7d1138f17825b997b9930ca270b89cd6",
+                "reference": "e69dcb5e7d1138f17825b997b9930ca270b89cd6",
                 "shasum": ""
             },
             "require": {
@@ -2446,7 +2446,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-07-15T12:57:37+00:00"
+            "time": "2026-07-15T16:51:45+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -5908,7 +5908,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": "~8.3"
+        "php": "^8.3"
     },
     "platform-dev": {},
     "platform-overrides": {
