@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:christianjbrown/php-api-client-lib.git",
-                "reference": "3a71e607c3feb64108f0eb00f562ebbab57579ed"
+                "reference": "69abb137b4e05463fd248cf0f62953d8ba3b0d25"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/christianjbrown/php-api-client-lib/zipball/3a71e607c3feb64108f0eb00f562ebbab57579ed",
-                "reference": "3a71e607c3feb64108f0eb00f562ebbab57579ed",
+                "url": "https://api.github.com/repos/christianjbrown/php-api-client-lib/zipball/69abb137b4e05463fd248cf0f62953d8ba3b0d25",
+                "reference": "69abb137b4e05463fd248cf0f62953d8ba3b0d25",
                 "shasum": ""
             },
             "require": {
@@ -85,7 +85,7 @@
             "support": {
                 "source": "https://github.com/christianjbrown/php-api-client-lib/tree/main"
             },
-            "time": "2026-07-15T17:47:49+00:00"
+            "time": "2026-07-15T20:46:26+00:00"
         },
         {
             "name": "christianjbrown/php-gcp-function-lib",
@@ -93,12 +93,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:christianjbrown/php-gcp-function-lib.git",
-                "reference": "5fc7cac1dc8943d787b29c7040f368b5a60d02ef"
+                "reference": "7f0796b396f0c4f48e0ce794b1c8e94e25510a57"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/christianjbrown/php-gcp-function-lib/zipball/5fc7cac1dc8943d787b29c7040f368b5a60d02ef",
-                "reference": "5fc7cac1dc8943d787b29c7040f368b5a60d02ef",
+                "url": "https://api.github.com/repos/christianjbrown/php-gcp-function-lib/zipball/7f0796b396f0c4f48e0ce794b1c8e94e25510a57",
+                "reference": "7f0796b396f0c4f48e0ce794b1c8e94e25510a57",
                 "shasum": ""
             },
             "require": {
@@ -163,7 +163,7 @@
             "support": {
                 "source": "https://github.com/christianjbrown/php-gcp-function-lib/tree/main"
             },
-            "time": "2026-07-15T19:53:45+00:00"
+            "time": "2026-07-15T20:54:31+00:00"
         },
         {
             "name": "christianjbrown/php-smartthings-api-lib",
@@ -171,12 +171,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:christianjbrown/php-smartthings-api-lib.git",
-                "reference": "290e95dd3774a3535c11f92a6427b5000a298b6b"
+                "reference": "233371f3db763664680cf497e8970c611683995f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/christianjbrown/php-smartthings-api-lib/zipball/290e95dd3774a3535c11f92a6427b5000a298b6b",
-                "reference": "290e95dd3774a3535c11f92a6427b5000a298b6b",
+                "url": "https://api.github.com/repos/christianjbrown/php-smartthings-api-lib/zipball/233371f3db763664680cf497e8970c611683995f",
+                "reference": "233371f3db763664680cf497e8970c611683995f",
                 "shasum": ""
             },
             "require": {
@@ -241,7 +241,7 @@
             "support": {
                 "source": "https://github.com/christianjbrown/php-smartthings-api-lib/tree/main"
             },
-            "time": "2026-07-15T18:16:03+00:00"
+            "time": "2026-07-15T20:48:29+00:00"
         },
         {
             "name": "christianjbrown/php-user-friendly-exception-lib",
