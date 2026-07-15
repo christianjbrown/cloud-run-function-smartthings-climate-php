@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace ChristianBrown\GetSmartHomeTemps\Tests;
+namespace ChristianBrown\SmartThingsClimate\Tests;
 
-use ChristianBrown\GetSmartHomeTemps\DeviceReadingInterface;
-use ChristianBrown\GetSmartHomeTemps\DeviceReadingOutputTransformerInterface;
-use ChristianBrown\GetSmartHomeTemps\OutputTransformer;
-use ChristianBrown\GetSmartHomeTemps\OutputTransformerInterface;
+use ChristianBrown\SmartThingsClimate\DeviceReadingInterface;
+use ChristianBrown\SmartThingsClimate\DeviceReadingOutputTransformerInterface;
+use ChristianBrown\SmartThingsClimate\OutputTransformer;
+use ChristianBrown\SmartThingsClimate\OutputTransformerInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;

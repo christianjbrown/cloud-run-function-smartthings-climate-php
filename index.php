@@ -6,10 +6,10 @@ date_default_timezone_set('UTC');
 
 use ChristianBrown\CloudFunction\CloudFunction;
 use ChristianBrown\CloudFunction\FunctionConfigTransformer;
-use ChristianBrown\GetSmartHomeTemps\ConfigTransformer;
-use ChristianBrown\GetSmartHomeTemps\DataProvider;
-use ChristianBrown\GetSmartHomeTemps\DeviceReadingOutputTransformer;
-use ChristianBrown\GetSmartHomeTemps\OutputTransformer;
+use ChristianBrown\SmartThingsClimate\ConfigTransformer;
+use ChristianBrown\SmartThingsClimate\DataProvider;
+use ChristianBrown\SmartThingsClimate\DeviceReadingOutputTransformer;
+use ChristianBrown\SmartThingsClimate\OutputTransformer;
 use ChristianBrown\SmartThings\SmartThings;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

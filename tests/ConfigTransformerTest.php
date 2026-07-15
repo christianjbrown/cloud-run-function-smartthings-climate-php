@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace ChristianBrown\GetSmartHomeTemps\Tests;
+namespace ChristianBrown\SmartThingsClimate\Tests;
 
 use ChristianBrown\CloudFunction\FunctionConfigInterface;
 use ChristianBrown\CloudFunction\FunctionConfigTransformerInterface;
-use ChristianBrown\GetSmartHomeTemps\Config;
-use ChristianBrown\GetSmartHomeTemps\ConfigTransformer;
-use ChristianBrown\GetSmartHomeTemps\ConfigTransformerInterface;
+use ChristianBrown\SmartThingsClimate\Config;
+use ChristianBrown\SmartThingsClimate\ConfigTransformer;
+use ChristianBrown\SmartThingsClimate\ConfigTransformerInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\Exception;

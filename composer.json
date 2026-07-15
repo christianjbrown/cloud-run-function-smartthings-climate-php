@@ -1,5 +1,5 @@
 {
-    "name": "christianjbrown/cloud-function-smart-home-temps",
+    "name": "christianjbrown/php-gcp-function-smartthings-climate",
     "description": "A PHP 8.3+ Google Cloud Function that reads smart-home device temperatures from the SmartThings API and returns them as a JSON envelope.",
     "type": "project",
     "license": "MIT",
@@ -33,12 +33,12 @@
     },
     "autoload": {
         "psr-4": {
-            "ChristianBrown\\GetSmartHomeTemps\\": "src/"
+            "ChristianBrown\\SmartThingsClimate\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "ChristianBrown\\GetSmartHomeTemps\\Tests\\": "tests/"
+            "ChristianBrown\\SmartThingsClimate\\Tests\\": "tests/"
         }
     },
     "scripts": {

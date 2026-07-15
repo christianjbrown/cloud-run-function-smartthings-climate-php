@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ChristianBrown\GetSmartHomeTemps;
+namespace ChristianBrown\SmartThingsClimate;
 
 use ChristianBrown\SmartThings\Api\DeviceApiInterface;
 use ChristianBrown\SmartThings\Api\DeviceStatusApiInterface;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ChristianBrown\GetSmartHomeTemps;
+namespace ChristianBrown\SmartThingsClimate;
 
 final class DeviceReading implements DeviceReadingInterface
 {

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace ChristianBrown\GetSmartHomeTemps\Tests;
+namespace ChristianBrown\SmartThingsClimate\Tests;
 
-use ChristianBrown\GetSmartHomeTemps\DataProvider;
-use ChristianBrown\GetSmartHomeTemps\DeviceReading;
-use ChristianBrown\GetSmartHomeTemps\DeviceReadingInterface;
-use ChristianBrown\GetSmartHomeTemps\OutputTransformerInterface;
+use ChristianBrown\SmartThingsClimate\DataProvider;
+use ChristianBrown\SmartThingsClimate\DeviceReading;
+use ChristianBrown\SmartThingsClimate\DeviceReadingInterface;
+use ChristianBrown\SmartThingsClimate\OutputTransformerInterface;
 use ChristianBrown\SmartThings\Api\DeviceApiInterface;
 use ChristianBrown\SmartThings\Api\DeviceStatusApiInterface;
 use ChristianBrown\SmartThings\Api\LocationRoomApiInterface;

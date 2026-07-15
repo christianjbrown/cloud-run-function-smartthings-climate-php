@@ -1,6 +1,6 @@
-# Get Smart Home Temps
+# SmartThings Climate
 
-[![CI](https://github.com/christianjbrown/cloud-function-smart-home-temps/actions/workflows/ci.yml/badge.svg)](https://github.com/christianjbrown/cloud-function-smart-home-temps/actions/workflows/ci.yml)
+[![CI](https://github.com/christianjbrown/php-gcp-function-smartthings-climate/actions/workflows/ci.yml/badge.svg)](https://github.com/christianjbrown/php-gcp-function-smartthings-climate/actions/workflows/ci.yml)
 
 A small [Google Cloud Function](https://cloud.google.com/functions) (PHP) that reads the current temperature and relative humidity from your [SmartThings](https://www.smartthings.com/) devices and returns them as a single JSON payload, along with an average across all non-stale readings.
 
@@ -23,8 +23,8 @@ It walks every device in your SmartThings account, keeps the ones that expose a 
 ## :building_construction: Installation
 
 ```bash
-git clone git@github.com:christianjbrown/cloud-function-smart-home-temps.git
-cd cloud-function-smart-home-temps
+git clone git@github.com:christianjbrown/php-gcp-function-smartthings-climate.git
+cd php-gcp-function-smartthings-climate
 composer install
 ```
 

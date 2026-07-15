@@ -46,8 +46,8 @@ first, then `composer check-style` to surface anything left to fix by hand, then
 
 ## Architecture
 
-Everything lives directly under `src/` (no sub-layers). PSR-4: `ChristianBrown\GetSmartHomeTemps\` →
-`src/` (`autoload`), `ChristianBrown\GetSmartHomeTemps\Tests\` → `tests/` (`autoload-dev`). The
+Everything lives directly under `src/` (no sub-layers). PSR-4: `ChristianBrown\SmartThingsClimate\` →
+`src/` (`autoload`), `ChristianBrown\SmartThingsClimate\Tests\` → `tests/` (`autoload-dev`). The
 top-level `index.php` holds the framework entry point and is intentionally outside the namespace.
 
 - **`index.php`** — defines `run(ServerRequestInterface): ResponseInterface`, the Functions Framework
