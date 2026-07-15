@@ -13,19 +13,21 @@ final class OutputTransformer implements OutputTransformerInterface
         $this->deviceReadingOutputTransformer = $deviceReadingOutputTransformer;
     }
 
+    /**
+     * @param DeviceReadingInterface[] $deviceReadings
+     *
+     * @return mixed[]
+     */
     public function transform(array $deviceReadings): array
     {
-        // @todo Doesn't check if the things in the array are really a DeviceReadingInterface
         usort(
             $deviceReadings,
-            static fn ($a, $b) => strcmp($a->getLabel(), $b->getLabel())
+            static fn (DeviceReadingInterface $a, DeviceReadingInterface $b) => strcmp($a->getLabel(), $b->getLabel())
         );
 
         $devicesData = [];
         foreach ($deviceReadings as $deviceReading) {
-            if ($deviceReading instanceof DeviceReadingInterface) {
-                $devicesData[] = $this->deviceReadingOutputTransformer->transform($deviceReading);
-            }
+            $devicesData[] = $this->deviceReadingOutputTransformer->transform($deviceReading);
         }
 
         $data = [self::KEY_DEVICES => $devicesData];
@@ -35,12 +37,17 @@ final class OutputTransformer implements OutputTransformerInterface
         return $data;
     }
 
+    /**
+     * @param DeviceReadingInterface[] $deviceReadings
+     *
+     * @return mixed[]
+     */
     private function buildHumidityAverage(array $deviceReadings): array
     {
         $total = 0;
         $timestamps = [];
         foreach ($deviceReadings as $deviceReading) {
-            if (!$deviceReading instanceof DeviceReadingInterface || null === $deviceReading->getHumidity() || $deviceReading->isHumidityStale()) {
+            if (null === $deviceReading->getHumidity() || $deviceReading->isHumidityStale()) {
                 continue;
             }
             $total += $deviceReading->getHumidity();
@@ -57,12 +64,17 @@ final class OutputTransformer implements OutputTransformerInterface
         ];
     }
 
+    /**
+     * @param DeviceReadingInterface[] $deviceReadings
+     *
+     * @return mixed[]
+     */
     private function buildTemperatureAverage(array $deviceReadings): array
     {
         $total = 0;
         $timestamps = [];
         foreach ($deviceReadings as $deviceReading) {
-            if (!$deviceReading instanceof DeviceReadingInterface || null === $deviceReading->getTemperature() || $deviceReading->isStale()) {
+            if (null === $deviceReading->getTemperature() || $deviceReading->isStale()) {
                 continue;
             }
             $total += $deviceReading->getTemperature();

@@ -80,7 +80,7 @@ final class DeviceReadingOutputTransformerTest extends TestCase
      */
     private function createReading(string $label, ?string $roomName, ?float $temperature, ?int $timestamp, ?bool $stale, ?float $humidity, ?int $humidityTimestamp, ?bool $humidityStale): DeviceReadingInterface
     {
-        $reading = $this->createMock(DeviceReadingInterface::class);
+        $reading = self::createStub(DeviceReadingInterface::class);
         $reading->method('getLabel')
             ->willReturn($label);
         $reading->method('getRoomName')

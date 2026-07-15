@@ -36,7 +36,7 @@ final class DataProviderTest extends TestCase
      */
     public function test(): void
     {
-        $request = $this->createMock(ServerRequestInterface::class);
+        $request = self::createStub(ServerRequestInterface::class);
 
         $device0 = $this->createDevice('test-device-0-no-components', []);
 
@@ -61,7 +61,7 @@ final class DataProviderTest extends TestCase
 
         $devices = [$device0, $device1, $device2, $device3, $device4, $device5, $device6];
 
-        $deviceApi = $this->createMock(DeviceApiInterface::class);
+        $deviceApi = self::createStub(DeviceApiInterface::class);
         $deviceApi->method('getMultiple')
             ->willReturn($devices);
 
@@ -83,7 +83,7 @@ final class DataProviderTest extends TestCase
         $device5status = $this->createDeviceStatus(null, $humidityMeasurement5);
         $device6status = $this->createDeviceStatus($temperatureMeasurement6, $humidityMeasurement6);
 
-        $deviceStatusApi = $this->createMock(DeviceStatusApiInterface::class);
+        $deviceStatusApi = self::createMock(DeviceStatusApiInterface::class);
         $deviceStatusApi->expects(self::exactly(5))
             ->method('getOneByDevice')
             ->willReturnMap(
@@ -97,7 +97,7 @@ final class DataProviderTest extends TestCase
             );
 
         // Only devices that are in a room (and produce a reading) are looked up.
-        $locationRoomApi = $this->createMock(LocationRoomApiInterface::class);
+        $locationRoomApi = self::createMock(LocationRoomApiInterface::class);
         $locationRoomApi->expects(self::exactly(3))
             ->method('getOneByDevice')
             ->willReturnMap(
@@ -108,8 +108,9 @@ final class DataProviderTest extends TestCase
                 ]
             );
 
-        $outputTransformer = $this->createMock(OutputTransformerInterface::class);
-        $outputTransformer->method('transform')
+        $outputTransformer = self::createMock(OutputTransformerInterface::class);
+        $outputTransformer->expects(self::once())
+            ->method('transform')
             ->with(
                 self::callback(
                     static function (array $data) use ($temperature1time, $temperature4time, $temperature6time, $humidity5time, $humidity6time) {
@@ -175,7 +176,7 @@ final class DataProviderTest extends TestCase
      */
     private function createDevice(string $label, array $components, ?string $roomId = null): DeviceInterface
     {
-        $device = $this->createMock(DeviceInterface::class);
+        $device = self::createStub(DeviceInterface::class);
         $device->method('getLabel')
             ->willReturn($label);
         $device->method('getComponents')
@@ -191,7 +192,7 @@ final class DataProviderTest extends TestCase
      */
     private function createRoom(string $name): LocationRoomInterface
     {
-        $room = $this->createMock(LocationRoomInterface::class);
+        $room = self::createStub(LocationRoomInterface::class);
         $room->method('getName')
             ->willReturn($name);
 
@@ -214,7 +215,7 @@ final class DataProviderTest extends TestCase
             $capabilities[] = $this->createDeviceComponentCapability('test-capability-3');
         }
 
-        $deviceComponent = $this->createMock(DeviceComponentInterface::class);
+        $deviceComponent = self::createStub(DeviceComponentInterface::class);
         $deviceComponent->method('getCapabilities')
             ->willReturn($capabilities);
 
@@ -226,7 +227,7 @@ final class DataProviderTest extends TestCase
      */
     private function createDeviceComponentCapability(string $id): DeviceComponentCapabilityInterface
     {
-        $capability = $this->createMock(DeviceComponentCapabilityInterface::class);
+        $capability = self::createStub(DeviceComponentCapabilityInterface::class);
         $capability->method('getId')
             ->willReturn($id);
 
@@ -238,7 +239,7 @@ final class DataProviderTest extends TestCase
      */
     private function createDeviceStatus(?DeviceStatusTemperatureMeasurementInterface $temperatureMeasurement, ?DeviceStatusRelativeHumidityMeasurementInterface $humidityMeasurement): DeviceStatusInterface
     {
-        $deviceStatus = $this->createMock(DeviceStatusInterface::class);
+        $deviceStatus = self::createStub(DeviceStatusInterface::class);
         $deviceStatus->method('getTemperatureMeasurement')
             ->willReturn($temperatureMeasurement);
         $deviceStatus->method('getRelativeHumidityMeasurement')
@@ -252,7 +253,7 @@ final class DataProviderTest extends TestCase
      */
     private function createHumidityMeasurement(float $value, string $unit, int $timestamp): DeviceStatusRelativeHumidityMeasurementInterface
     {
-        $humidity = $this->createMock(DeviceStatusRelativeHumidityMeasurementHumidityInterface::class);
+        $humidity = self::createStub(DeviceStatusRelativeHumidityMeasurementHumidityInterface::class);
         $humidity->method('getValue')
             ->willReturn($value);
         $humidity->method('getTimestamp')
@@ -260,7 +261,7 @@ final class DataProviderTest extends TestCase
         $humidity->method('getUnit')
             ->willReturn($unit);
 
-        $humidityMeasurement = $this->createMock(DeviceStatusRelativeHumidityMeasurementInterface::class);
+        $humidityMeasurement = self::createStub(DeviceStatusRelativeHumidityMeasurementInterface::class);
         $humidityMeasurement->method('getHumidity')
             ->willReturn($humidity);
 
@@ -272,7 +273,7 @@ final class DataProviderTest extends TestCase
      */
     private function createTemperatureMeasurement(float $value, string $unit, int $timestamp): DeviceStatusTemperatureMeasurementInterface
     {
-        $temperature = $this->createMock(DeviceStatusTemperatureMeasurementTemperatureInterface::class);
+        $temperature = self::createStub(DeviceStatusTemperatureMeasurementTemperatureInterface::class);
         $temperature->method('getValue')
             ->willReturn($value);
         $temperature->method('getTimestamp')
@@ -280,7 +281,7 @@ final class DataProviderTest extends TestCase
         $temperature->method('getUnit')
             ->willReturn($unit);
 
-        $temperatureMeasurement = $this->createMock(DeviceStatusTemperatureMeasurementInterface::class);
+        $temperatureMeasurement = self::createStub(DeviceStatusTemperatureMeasurementInterface::class);
         $temperatureMeasurement->method('getTemperature')
             ->willReturn($temperature);
 

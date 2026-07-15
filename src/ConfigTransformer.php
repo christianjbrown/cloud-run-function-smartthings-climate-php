@@ -16,6 +16,9 @@ final class ConfigTransformer implements ConfigTransformerInterface
         $this->functionConfigTransformer = $functionConfigTransformer;
     }
 
+    /**
+     * @param mixed[] $env
+     */
     public function transform(array $env): ConfigInterface
     {
         if (empty($env[self::ENV_API_TOKEN]) || !is_string($env[self::ENV_API_TOKEN])) {

@@ -7,8 +7,6 @@ namespace ChristianBrown\GetSmartHomeTemps;
 use ChristianBrown\SmartThings\Api\DeviceApiInterface;
 use ChristianBrown\SmartThings\Api\DeviceStatusApiInterface;
 use ChristianBrown\SmartThings\Api\LocationRoomApiInterface;
-use ChristianBrown\SmartThings\Model\DeviceComponentCapabilityInterface;
-use ChristianBrown\SmartThings\Model\DeviceComponentInterface;
 use ChristianBrown\SmartThings\Model\DeviceInterface;
 use ChristianBrown\SmartThings\Model\DeviceStatusRelativeHumidityMeasurementInterface;
 use ChristianBrown\SmartThings\Model\DeviceStatusTemperatureMeasurementInterface;
@@ -84,7 +82,7 @@ final class DataProvider implements DataProviderInterface
         }
 
         return new DeviceReading(
-            $device->getLabel(),
+            $device->getLabel() ?? '',
             $roomName,
             $temperature,
             $temperatureTimestamp,
@@ -103,15 +101,11 @@ final class DataProvider implements DataProviderInterface
         $hasTemperature = false;
         $hasHumidity = false;
         foreach ($device->getComponents() as $component) {
-            if ($component instanceof DeviceComponentInterface) {
-                foreach ($component->getCapabilities() as $capability) {
-                    if ($capability instanceof DeviceComponentCapabilityInterface) {
-                        if (self::ID_VALUE_TEMPERATURE_MEASUREMENT === $capability->getId()) {
-                            $hasTemperature = true;
-                        } elseif (self::ID_VALUE_RELATIVE_HUMIDITY_MEASUREMENT === $capability->getId()) {
-                            $hasHumidity = true;
-                        }
-                    }
+            foreach ($component->getCapabilities() as $capability) {
+                if (self::ID_VALUE_TEMPERATURE_MEASUREMENT === $capability->getId()) {
+                    $hasTemperature = true;
+                } elseif (self::ID_VALUE_RELATIVE_HUMIDITY_MEASUREMENT === $capability->getId()) {
+                    $hasHumidity = true;
                 }
             }
         }

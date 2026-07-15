@@ -6,6 +6,9 @@ namespace ChristianBrown\GetSmartHomeTemps;
 
 final class DeviceReadingOutputTransformer implements DeviceReadingOutputTransformerInterface
 {
+    /**
+     * @return mixed[]
+     */
     public function transform(DeviceReadingInterface $deviceReading): array
     {
         $data = [

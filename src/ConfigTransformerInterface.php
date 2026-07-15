@@ -8,5 +8,8 @@ interface ConfigTransformerInterface
 {
     public const ENV_API_TOKEN = 'SMARTTHINGS_API_TOKEN';
 
+    /**
+     * @param mixed[] $env
+     */
     public function transform(array $env): ConfigInterface;
 }

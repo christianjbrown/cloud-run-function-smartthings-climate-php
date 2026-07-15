@@ -15,5 +15,8 @@ interface DeviceReadingOutputTransformerInterface
     public const KEY_TEMPERATURE = 'temperatureValue';
     public const KEY_TIMESTAMP = 'temperatureTimestamp';
 
+    /**
+     * @return mixed[]
+     */
     public function transform(DeviceReadingInterface $deviceReading): array;
 }

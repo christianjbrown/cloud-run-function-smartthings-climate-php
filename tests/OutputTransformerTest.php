@@ -31,7 +31,7 @@ final class OutputTransformerTest extends TestCase
         // humidity-only: no temperature, humidity fresh
         $reading5 = $this->createReading('test-device-5', null, null, null, 50.0, 48000, false);
 
-        $deviceReadingOutputTransformer = $this->createMock(DeviceReadingOutputTransformerInterface::class);
+        $deviceReadingOutputTransformer = self::createStub(DeviceReadingOutputTransformerInterface::class);
         $deviceReadingOutputTransformer->method('transform')
             ->willReturnMap(
                 [
@@ -74,7 +74,7 @@ final class OutputTransformerTest extends TestCase
         $reading1 = $this->createReading('test-device-1', 42.2, 29000, true, 30.0, 28000, true);
         $reading2 = $this->createReading('test-device-2', 52.2, 39000, true, 40.0, 38000, true);
 
-        $deviceReadingOutputTransformer = $this->createMock(DeviceReadingOutputTransformerInterface::class);
+        $deviceReadingOutputTransformer = self::createStub(DeviceReadingOutputTransformerInterface::class);
         $deviceReadingOutputTransformer->method('transform')
             ->willReturnMap(
                 [
@@ -102,7 +102,7 @@ final class OutputTransformerTest extends TestCase
      */
     private function createReading(string $label, ?float $temperature, ?int $timestamp, ?bool $stale, ?float $humidity, ?int $humidityTimestamp, ?bool $humidityStale): DeviceReadingInterface
     {
-        $reading = $this->createMock(DeviceReadingInterface::class);
+        $reading = self::createStub(DeviceReadingInterface::class);
         $reading->method('getLabel')
             ->willReturn($label);
         $reading->method('getTemperature')

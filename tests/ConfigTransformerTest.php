@@ -28,10 +28,11 @@ final class ConfigTransformerTest extends TestCase
             ConfigTransformerInterface::ENV_API_TOKEN => 'test-api-token',
         ];
 
-        $functionConfig = $this->createMock(FunctionConfigInterface::class);
+        $functionConfig = self::createStub(FunctionConfigInterface::class);
 
-        $functionConfigTransformer = $this->createMock(FunctionConfigTransformerInterface::class);
-        $functionConfigTransformer->method('transform')
+        $functionConfigTransformer = self::createMock(FunctionConfigTransformerInterface::class);
+        $functionConfigTransformer->expects(self::once())
+            ->method('transform')
             ->with($env)
             ->willReturn($functionConfig);
 
@@ -43,6 +44,8 @@ final class ConfigTransformerTest extends TestCase
     }
 
     /**
+     * @param mixed[] $env
+     *
      * @throws Exception
      */
     #[TestWith([[]])]
@@ -53,7 +56,7 @@ final class ConfigTransformerTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage(sprintf('%s not set or not a string', ConfigTransformerInterface::ENV_API_TOKEN));
 
-        $functionConfigTransformer = $this->createMock(FunctionConfigTransformerInterface::class);
+        $functionConfigTransformer = self::createStub(FunctionConfigTransformerInterface::class);
 
         $transformer = new ConfigTransformer($functionConfigTransformer);
         $transformer->transform($env);

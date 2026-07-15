@@ -1,0 +1,12 @@
+parameters:
+    level: max
+    paths:
+        - src
+        - tests
+    ignoreErrors:
+        # $components is a non-first parameter, so annotating only its array value
+        # type conflicts with the phpcs FunctionComment positional @param sniff (it
+        # maps the lone @param to the first parameter). Left unspecified here.
+        -
+            identifier: missingType.iterableValue
+            message: '#createDevice\(\) has parameter \$components with no value type specified in iterable type array#'
