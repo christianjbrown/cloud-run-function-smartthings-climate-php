@@ -174,6 +174,141 @@ final class DataProviderTest extends TestCase
     /**
      * @throws Exception
      */
+    public function testSingleDeviceProducingAReadingIsTransformed(): void
+    {
+        $request = self::createStub(ServerRequestInterface::class);
+
+        $device = $this->createDevice('test-device', [$this->createDeviceComponent(true, false)], 'test-room-id');
+
+        $deviceApi = self::createStub(DeviceApiInterface::class);
+        $deviceApi->method('getMultiple')
+            ->willReturn([$device]);
+
+        $deviceStatusApi = self::createMock(DeviceStatusApiInterface::class);
+        $deviceStatusApi->expects(self::once())
+            ->method('getOneByDevice')
+            ->with($device)
+            ->willReturn($this->createDeviceStatus($this->createTemperatureMeasurement(20.0, 'C', time()), null));
+
+        $locationRoomApi = self::createMock(LocationRoomApiInterface::class);
+        $locationRoomApi->expects(self::once())
+            ->method('getOneByDevice')
+            ->with($device)
+            ->willReturn($this->createRoom('test-room'));
+
+        $outputTransformer = self::createMock(OutputTransformerInterface::class);
+        $outputTransformer->expects(self::once())
+            ->method('transform')
+            ->with(
+                self::callback(
+                    static function (array $data): bool {
+                        self::assertCount(1, $data);
+                        self::assertInstanceOf(DeviceReadingInterface::class, $data[0]);
+                        self::assertSame('test-device', $data[0]->getLabel());
+                        self::assertSame('test-room', $data[0]->getRoomName());
+                        self::assertSame(20.0, $data[0]->getTemperature());
+
+                        return true;
+                    }
+                )
+            )
+            ->willReturn(['test-actual-output']);
+
+        $dataProvider = new DataProvider($deviceApi, $deviceStatusApi, $locationRoomApi, $outputTransformer);
+
+        self::assertSame(['test-actual-output'], $dataProvider->getData($request));
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testDeviceComponentWithoutCapabilitiesIsExcluded(): void
+    {
+        $request = self::createStub(ServerRequestInterface::class);
+
+        $component = self::createStub(DeviceComponentInterface::class);
+        $component->method('getCapabilities')
+            ->willReturn([]);
+        $device = $this->createDevice('test-device', [$component]);
+
+        $deviceApi = self::createStub(DeviceApiInterface::class);
+        $deviceApi->method('getMultiple')
+            ->willReturn([$device]);
+
+        $deviceStatusApi = self::createStub(DeviceStatusApiInterface::class);
+        $locationRoomApi = self::createStub(LocationRoomApiInterface::class);
+
+        $outputTransformer = self::createMock(OutputTransformerInterface::class);
+        $outputTransformer->expects(self::once())
+            ->method('transform')
+            ->with([])
+            ->willReturn(['test-actual-output']);
+
+        $dataProvider = new DataProvider($deviceApi, $deviceStatusApi, $locationRoomApi, $outputTransformer);
+
+        self::assertSame(['test-actual-output'], $dataProvider->getData($request));
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testDeviceWithHumidityCapabilityButNoReadingIsExcluded(): void
+    {
+        $request = self::createStub(ServerRequestInterface::class);
+
+        $device = $this->createDevice('test-device', [$this->createDeviceComponent(false, true)]);
+
+        $deviceApi = self::createStub(DeviceApiInterface::class);
+        $deviceApi->method('getMultiple')
+            ->willReturn([$device]);
+
+        $deviceStatusApi = self::createMock(DeviceStatusApiInterface::class);
+        $deviceStatusApi->expects(self::once())
+            ->method('getOneByDevice')
+            ->with($device)
+            ->willReturn($this->createDeviceStatus(null, null));
+
+        $locationRoomApi = self::createStub(LocationRoomApiInterface::class);
+
+        $outputTransformer = self::createMock(OutputTransformerInterface::class);
+        $outputTransformer->expects(self::once())
+            ->method('transform')
+            ->with([])
+            ->willReturn(['test-actual-output']);
+
+        $dataProvider = new DataProvider($deviceApi, $deviceStatusApi, $locationRoomApi, $outputTransformer);
+
+        self::assertSame(['test-actual-output'], $dataProvider->getData($request));
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testEmptyDeviceListIsTransformed(): void
+    {
+        $request = self::createStub(ServerRequestInterface::class);
+
+        $deviceApi = self::createStub(DeviceApiInterface::class);
+        $deviceApi->method('getMultiple')
+            ->willReturn([]);
+
+        $deviceStatusApi = self::createStub(DeviceStatusApiInterface::class);
+        $locationRoomApi = self::createStub(LocationRoomApiInterface::class);
+
+        $outputTransformer = self::createMock(OutputTransformerInterface::class);
+        $outputTransformer->expects(self::once())
+            ->method('transform')
+            ->with([])
+            ->willReturn(['test-actual-output']);
+
+        $dataProvider = new DataProvider($deviceApi, $deviceStatusApi, $locationRoomApi, $outputTransformer);
+
+        self::assertSame(['test-actual-output'], $dataProvider->getData($request));
+    }
+
+    /**
+     * @throws Exception
+     */
     private function createDevice(string $label, array $components, ?string $roomId = null): DeviceInterface
     {
         $device = self::createStub(DeviceInterface::class);
@@ -185,18 +320,6 @@ final class DataProviderTest extends TestCase
             ->willReturn($roomId);
 
         return $device;
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function createRoom(string $name): LocationRoomInterface
-    {
-        $room = self::createStub(LocationRoomInterface::class);
-        $room->method('getName')
-            ->willReturn($name);
-
-        return $room;
     }
 
     /**
@@ -266,6 +389,18 @@ final class DataProviderTest extends TestCase
             ->willReturn($humidity);
 
         return $humidityMeasurement;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function createRoom(string $name): LocationRoomInterface
+    {
+        $room = self::createStub(LocationRoomInterface::class);
+        $room->method('getName')
+            ->willReturn($name);
+
+        return $room;
     }
 
     /**

@@ -21,7 +21,12 @@ final class ConfigTransformer implements ConfigTransformerInterface
      */
     public function transform(array $env): ConfigInterface
     {
-        if (empty($env[self::ENV_API_TOKEN]) || !is_string($env[self::ENV_API_TOKEN])) {
+        // Split into sequential guards (rather than a single `||`) so each
+        // failure path is independently reachable for path coverage.
+        if (empty($env[self::ENV_API_TOKEN])) {
+            throw new RuntimeException(sprintf('%s not set or not a string', self::ENV_API_TOKEN));
+        }
+        if (!is_string($env[self::ENV_API_TOKEN])) {
             throw new RuntimeException(sprintf('%s not set or not a string', self::ENV_API_TOKEN));
         }
         $apiToken = $env[self::ENV_API_TOKEN];

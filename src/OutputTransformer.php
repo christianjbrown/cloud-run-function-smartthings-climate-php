@@ -25,10 +25,10 @@ final class OutputTransformer implements OutputTransformerInterface
             static fn (DeviceReadingInterface $a, DeviceReadingInterface $b) => strcmp($a->getLabel(), $b->getLabel())
         );
 
-        $devicesData = [];
-        foreach ($deviceReadings as $deviceReading) {
-            $devicesData[] = $this->deviceReadingOutputTransformer->transform($deviceReading);
-        }
+        $devicesData = array_map(
+            fn (DeviceReadingInterface $deviceReading): array => $this->deviceReadingOutputTransformer->transform($deviceReading),
+            $deviceReadings
+        );
 
         $data = [self::KEY_DEVICES => $devicesData];
         $data += $this->buildTemperatureAverage($deviceReadings);
@@ -44,24 +44,17 @@ final class OutputTransformer implements OutputTransformerInterface
      */
     private function buildHumidityAverage(array $deviceReadings): array
     {
-        $total = 0;
-        $timestamps = [];
-        foreach ($deviceReadings as $deviceReading) {
-            if (null === $deviceReading->getHumidity() || $deviceReading->isHumidityStale()) {
-                continue;
-            }
-            $total += $deviceReading->getHumidity();
-            $timestamps[] = $deviceReading->getHumidityTimestamp();
-        }
+        $fresh = array_filter(
+            $deviceReadings,
+            static fn (DeviceReadingInterface $deviceReading): bool => null !== $deviceReading->getHumidity() && !$deviceReading->isHumidityStale()
+        );
 
-        if ([] === $timestamps) {
-            return [];
-        }
-
-        return [
-            self::KEY_AVERAGE_HUMIDITY_VALUE => $total / count($timestamps),
-            self::KEY_AVERAGE_HUMIDITY_TIMESTAMP => min($timestamps),
-        ];
+        return $this->average(
+            array_map(static fn (DeviceReadingInterface $deviceReading): float => (float) $deviceReading->getHumidity(), $fresh),
+            array_map(static fn (DeviceReadingInterface $deviceReading): int => (int) $deviceReading->getHumidityTimestamp(), $fresh),
+            self::KEY_AVERAGE_HUMIDITY_VALUE,
+            self::KEY_AVERAGE_HUMIDITY_TIMESTAMP
+        );
     }
 
     /**
@@ -71,23 +64,34 @@ final class OutputTransformer implements OutputTransformerInterface
      */
     private function buildTemperatureAverage(array $deviceReadings): array
     {
-        $total = 0;
-        $timestamps = [];
-        foreach ($deviceReadings as $deviceReading) {
-            if (null === $deviceReading->getTemperature() || $deviceReading->isStale()) {
-                continue;
-            }
-            $total += $deviceReading->getTemperature();
-            $timestamps[] = $deviceReading->getTimestamp();
-        }
+        $fresh = array_filter(
+            $deviceReadings,
+            static fn (DeviceReadingInterface $deviceReading): bool => null !== $deviceReading->getTemperature() && !$deviceReading->isStale()
+        );
 
+        return $this->average(
+            array_map(static fn (DeviceReadingInterface $deviceReading): float => (float) $deviceReading->getTemperature(), $fresh),
+            array_map(static fn (DeviceReadingInterface $deviceReading): int => (int) $deviceReading->getTimestamp(), $fresh),
+            self::KEY_AVERAGE_TEMPERATURE_VALUE,
+            self::KEY_AVERAGE_TEMPERATURE_TIMESTAMP
+        );
+    }
+
+    /**
+     * @param float[] $values
+     * @param int[]   $timestamps
+     *
+     * @return mixed[]
+     */
+    private function average(array $values, array $timestamps, string $valueKey, string $timestampKey): array
+    {
         if ([] === $timestamps) {
             return [];
         }
 
         return [
-            self::KEY_AVERAGE_TEMPERATURE_VALUE => $total / count($timestamps),
-            self::KEY_AVERAGE_TEMPERATURE_TIMESTAMP => min($timestamps),
+            $valueKey => array_sum($values) / count($values),
+            $timestampKey => min($timestamps),
         ];
     }
 }

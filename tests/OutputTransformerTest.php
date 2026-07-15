@@ -100,6 +100,24 @@ final class OutputTransformerTest extends TestCase
     /**
      * @throws Exception
      */
+    public function testEmptyReadingsProducesOnlyAnEmptyDeviceList(): void
+    {
+        $deviceReadingOutputTransformer = self::createStub(DeviceReadingOutputTransformerInterface::class);
+
+        $transformer = new OutputTransformer($deviceReadingOutputTransformer);
+
+        $expected = [
+            OutputTransformerInterface::KEY_DEVICES => [],
+        ];
+
+        $actual = $transformer->transform([]);
+
+        self::assertSame($expected, $actual);
+    }
+
+    /**
+     * @throws Exception
+     */
     private function createReading(string $label, ?float $temperature, ?int $timestamp, ?bool $stale, ?float $humidity, ?int $humidityTimestamp, ?bool $humidityStale): DeviceReadingInterface
     {
         $reading = self::createStub(DeviceReadingInterface::class);

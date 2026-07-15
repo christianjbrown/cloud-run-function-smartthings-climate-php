@@ -7,10 +7,19 @@ namespace ChristianBrown\GetSmartHomeTemps;
 use ChristianBrown\SmartThings\Api\DeviceApiInterface;
 use ChristianBrown\SmartThings\Api\DeviceStatusApiInterface;
 use ChristianBrown\SmartThings\Api\LocationRoomApiInterface;
+use ChristianBrown\SmartThings\Model\DeviceComponentCapabilityInterface;
+use ChristianBrown\SmartThings\Model\DeviceComponentInterface;
 use ChristianBrown\SmartThings\Model\DeviceInterface;
+use ChristianBrown\SmartThings\Model\DeviceStatusInterface;
 use ChristianBrown\SmartThings\Model\DeviceStatusRelativeHumidityMeasurementInterface;
 use ChristianBrown\SmartThings\Model\DeviceStatusTemperatureMeasurementInterface;
 use Psr\Http\Message\ServerRequestInterface;
+
+use function array_filter;
+use function array_map;
+use function array_merge;
+use function array_values;
+use function in_array;
 
 final class DataProvider implements DataProviderInterface
 {
@@ -31,59 +40,30 @@ final class DataProvider implements DataProviderInterface
 
     public function getData(ServerRequestInterface $request): array
     {
-        $devices = $this->devicesApi->getMultiple();
-        $deviceReadings = [];
+        $readings = array_map(
+            fn (DeviceInterface $device): ?DeviceReading => $this->processDevice($device),
+            $this->devicesApi->getMultiple()
+        );
 
-        foreach ($devices as $device) {
-            $reading = $this->processDevice($device);
-            if ($reading instanceof DeviceReadingInterface) {
-                $deviceReadings[] = $reading;
-            }
-        }
-
-        $data = $this->outputTransformer->transform($deviceReadings);
-
-        return $data;
+        return $this->outputTransformer->transform(array_values(array_filter($readings)));
     }
 
     private function buildReading(DeviceInterface $device, bool $hasTemperature, bool $hasHumidity): ?DeviceReading
     {
         $deviceStatus = $this->deviceStatusApi->getOneByDevice($device);
 
-        $temperature = null;
-        $temperatureTimestamp = null;
-        $temperatureStale = null;
-        $temperatureMeasurement = $hasTemperature ? $deviceStatus->getTemperatureMeasurement() : null;
-        if ($temperatureMeasurement instanceof DeviceStatusTemperatureMeasurementInterface) {
-            $value = $temperatureMeasurement->getTemperature();
-            $temperature = $value->getValue();
-            $temperatureTimestamp = $value->getTimestamp();
-            $temperatureStale = $temperatureTimestamp < $this->now - self::STALE_THRESHOLD;
-        }
+        [$temperature, $temperatureTimestamp, $temperatureStale] = $this->resolveTemperature($deviceStatus, $hasTemperature);
+        [$humidity, $humidityTimestamp, $humidityStale] = $this->resolveHumidity($deviceStatus, $hasHumidity);
 
-        $humidity = null;
-        $humidityTimestamp = null;
-        $humidityStale = null;
-        $humidityMeasurement = $hasHumidity ? $deviceStatus->getRelativeHumidityMeasurement() : null;
-        if ($humidityMeasurement instanceof DeviceStatusRelativeHumidityMeasurementInterface) {
-            $value = $humidityMeasurement->getHumidity();
-            $humidity = $value->getValue();
-            $humidityTimestamp = $value->getTimestamp();
-            $humidityStale = $humidityTimestamp < $this->now - self::STALE_THRESHOLD;
-        }
-
-        if (null === $temperature && null === $humidity) {
+        // array_filter (rather than `null === … && null === …`) so both the
+        // "has a reading" and "no reading" outcomes are reachable code paths.
+        if ([] === array_filter([$temperature, $humidity], static fn ($value): bool => null !== $value)) {
             return null;
-        }
-
-        $roomName = null;
-        if (null !== $device->getRoomId()) {
-            $roomName = $this->locationRoomApi->getOneByDevice($device)->getName();
         }
 
         return new DeviceReading(
             $device->getLabel() ?? '',
-            $roomName,
+            $this->resolveRoomName($device),
             $temperature,
             $temperatureTimestamp,
             $temperatureStale,
@@ -94,36 +74,89 @@ final class DataProvider implements DataProviderInterface
     }
 
     /**
+     * @return string[]
+     */
+    private function capabilityIds(DeviceInterface $device): array
+    {
+        return array_merge(
+            [],
+            ...array_map(
+                static fn (DeviceComponentInterface $component): array => array_map(
+                    static fn (DeviceComponentCapabilityInterface $capability): string => $capability->getId(),
+                    $component->getCapabilities()
+                ),
+                $device->getComponents()
+            )
+        );
+    }
+
+    /**
      * @return array{0: bool, 1: bool} Whether the device supports [temperature, relative humidity] measurement
      */
     private function detectSupportedMeasurements(DeviceInterface $device): array
     {
-        $hasTemperature = false;
-        $hasHumidity = false;
-        foreach ($device->getComponents() as $component) {
-            foreach ($component->getCapabilities() as $capability) {
-                if (self::ID_VALUE_TEMPERATURE_MEASUREMENT === $capability->getId()) {
-                    $hasTemperature = true;
-                } elseif (self::ID_VALUE_RELATIVE_HUMIDITY_MEASUREMENT === $capability->getId()) {
-                    $hasHumidity = true;
-                }
-            }
-        }
+        $capabilityIds = $this->capabilityIds($device);
 
-        return [$hasTemperature, $hasHumidity];
+        return [
+            in_array(self::ID_VALUE_TEMPERATURE_MEASUREMENT, $capabilityIds, true),
+            in_array(self::ID_VALUE_RELATIVE_HUMIDITY_MEASUREMENT, $capabilityIds, true),
+        ];
     }
 
     private function processDevice(DeviceInterface $device): ?DeviceReading
     {
-        if (!$device->getComponents()) {
-            return null;
-        }
-
         [$hasTemperature, $hasHumidity] = $this->detectSupportedMeasurements($device);
-        if (!$hasTemperature && !$hasHumidity) {
+        if ([] === array_filter([$hasTemperature, $hasHumidity])) {
             return null;
         }
 
         return $this->buildReading($device, $hasTemperature, $hasHumidity);
+    }
+
+    /**
+     * @return array{0: null|float, 1: null|int, 2: null|bool} The [value, timestamp, stale] of the reading, or nulls
+     */
+    private function resolveHumidity(DeviceStatusInterface $deviceStatus, bool $hasHumidity): array
+    {
+        if (!$hasHumidity) {
+            return [null, null, null];
+        }
+        $measurement = $deviceStatus->getRelativeHumidityMeasurement();
+        if (!$measurement instanceof DeviceStatusRelativeHumidityMeasurementInterface) {
+            return [null, null, null];
+        }
+
+        $value = $measurement->getHumidity();
+        $timestamp = $value->getTimestamp();
+
+        return [$value->getValue(), $timestamp, $timestamp < $this->now - self::STALE_THRESHOLD];
+    }
+
+    private function resolveRoomName(DeviceInterface $device): ?string
+    {
+        if (null === $device->getRoomId()) {
+            return null;
+        }
+
+        return $this->locationRoomApi->getOneByDevice($device)->getName();
+    }
+
+    /**
+     * @return array{0: null|float, 1: null|int, 2: null|bool} The [value, timestamp, stale] of the reading, or nulls
+     */
+    private function resolveTemperature(DeviceStatusInterface $deviceStatus, bool $hasTemperature): array
+    {
+        if (!$hasTemperature) {
+            return [null, null, null];
+        }
+        $measurement = $deviceStatus->getTemperatureMeasurement();
+        if (!$measurement instanceof DeviceStatusTemperatureMeasurementInterface) {
+            return [null, null, null];
+        }
+
+        $value = $measurement->getTemperature();
+        $timestamp = $value->getTimestamp();
+
+        return [$value->getValue(), $timestamp, $timestamp < $this->now - self::STALE_THRESHOLD];
     }
 }
