@@ -31,7 +31,7 @@ jobs:
         uses: 'google-github-actions/deploy-cloud-functions@v4'
         with:
           name: '${{ vars.GCP_CLOUD_FUNCTION_ENDPOINT }}'
-          runtime: 'php83'
+          runtime: 'php85'
           entry_point: 'run'
           region: 'europe-west2'
           memory: '128Mi'

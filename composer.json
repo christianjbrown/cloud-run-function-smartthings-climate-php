@@ -1,6 +1,6 @@
 {
     "name": "christianjbrown/php-gcp-function-smartthings-climate",
-    "description": "A PHP 8.3+ Google Cloud Function that reads SmartThings climate (temperature and humidity) readings from the SmartThings API and returns them as a JSON envelope.",
+    "description": "A PHP 8.5+ Google Cloud Function that reads SmartThings climate (temperature and humidity) readings from the SmartThings API and returns them as a JSON envelope.",
     "type": "project",
     "license": "MIT",
     "keywords": [
@@ -18,7 +18,7 @@
         }
     ],
     "require": {
-        "php": "^8.3",
+        "php": "^8.5",
         "christianjbrown/php-gcp-function-lib": "dev-main",
         "christianjbrown/php-smartthings-api-lib": "dev-main",
         "christianjbrown/php-user-friendly-exception-lib": "dev-main",
@@ -67,7 +67,7 @@
     "config": {
         "bin-dir": "bin",
         "platform": {
-            "php": "8.3.30"
+            "php": "8.5.0"
         }
     },
     "repositories": [

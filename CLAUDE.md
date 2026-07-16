@@ -5,7 +5,7 @@ small, uniform, and highly opinionated, so new code should be indistinguishable 
 
 ## What this is
 
-A deployable **Google Cloud Function** (PHP 8.3+, `php83` runtime) that reads the current temperature
+A deployable **Google Cloud Function** (PHP 8.5+, `php85` runtime) that reads the current temperature
 and relative humidity from your [SmartThings](https://www.smartthings.com/) devices and returns them
 as a single JSON envelope, with an average across all non-stale readings. It is an **application, not
 a library** — it wires the sibling `christianjbrown/*` libraries together behind an HTTP entry point:
