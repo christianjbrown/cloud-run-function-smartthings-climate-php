@@ -40,9 +40,11 @@ jobs:
           service_timeout: '60s'
           ingress_settings: 'ALLOW_ALL'
           build_environment_variables: 'COMPOSER_AUTH=${{ secrets.COMPOSER_AUTH }}'
-          environment_variables: 'USE_CACHE_TTL=300,USE_CACHE_BUT_REQUEST_TTL=600,USE_CACHE_IF_ERROR_TTL=3600,REQUIRED_HEADER_KEY=X-Request-Auth,REQUIRED_ORIGIN=${{ vars.REQUIRED_ORIGIN }}'
+          environment_variables: 'USE_CACHE_TTL=300,USE_CACHE_BUT_REQUEST_TTL=600,USE_CACHE_IF_ERROR_TTL=3600,REQUIRED_HEADER_KEY=X-Request-Auth,REQUIRED_ORIGIN=${{ vars.REQUIRED_ORIGIN }},SMARTTHINGS_OAUTH_TOKEN_URL=https://api.smartthings.com/oauth/token'
           secrets: |-
-            SMARTTHINGS_API_TOKEN=projects/${{ vars.GCP_PROJECT_ID }}/secrets/SMARTTHINGS_API_TOKEN/versions/latest
+            SMARTTHINGS_OAUTH_CLIENT_ID=projects/${{ vars.GCP_PROJECT_ID }}/secrets/SMARTTHINGS_OAUTH_CLIENT_ID/versions/latest
+            SMARTTHINGS_OAUTH_CLIENT_SECRET=projects/${{ vars.GCP_PROJECT_ID }}/secrets/SMARTTHINGS_OAUTH_CLIENT_SECRET/versions/latest
+            SMARTTHINGS_DATABASE_DSN=projects/${{ vars.GCP_PROJECT_ID }}/secrets/SMARTTHINGS_DATABASE_DSN/versions/latest
             SMARTTHINGS_LOCATION_ID=projects/${{ vars.GCP_PROJECT_ID }}/secrets/SMARTTHINGS_LOCATION_ID/versions/latest
             REQUIRED_HEADER_VALUE=projects/${{ vars.GCP_PROJECT_ID }}/secrets/FASTLY_REQUIRED_HEADER_VALUE/versions/latest
 
@@ -57,6 +59,17 @@ jobs:
             --region='europe-west2' \
             --member='allUsers' \
             --role='roles/run.invoker'
+
+      # Attach the shared Cloud SQL instance (in the separate shared-data-services
+      # project) to this Gen2/Cloud Run service so the OAuth token store is
+      # reachable over the /cloudsql unix socket named in SMARTTHINGS_DATABASE_DSN.
+      # The runtime service account needs roles/cloudsql.client on that project.
+      # Must run before the smoke test, which exercises the DB-backed token flow.
+      - name: 'Connect Cloud SQL instance'
+        run: |
+          gcloud run services update "${{ vars.GCP_CLOUD_FUNCTION_ENDPOINT }}" \
+            --region='europe-west2' \
+            --set-cloudsql-instances="${{ vars.GCP_CLOUD_SQL_INSTANCE }}"
 
       - name: 'Test Cloud Function'
         run: 'curl "${{ steps.deploy.outputs.url }}"'

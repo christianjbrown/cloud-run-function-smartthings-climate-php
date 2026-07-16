@@ -8,20 +8,36 @@ use ChristianBrown\GcpFunction\FunctionConfigInterface;
 
 final class Config implements ConfigInterface
 {
-    private string $apiToken;
+    private string $clientId;
+    private string $clientSecret;
+    private string $databaseDsn;
     private FunctionConfigInterface $functionConfig;
     private string $locationId;
+    private string $tokenUrl;
 
-    public function __construct(FunctionConfigInterface $functionConfig, string $apiToken, string $locationId)
+    public function __construct(FunctionConfigInterface $functionConfig, string $clientId, string $clientSecret, string $databaseDsn, string $locationId, string $tokenUrl)
     {
         $this->functionConfig = $functionConfig;
-        $this->apiToken = $apiToken;
+        $this->clientId = $clientId;
+        $this->clientSecret = $clientSecret;
+        $this->databaseDsn = $databaseDsn;
         $this->locationId = $locationId;
+        $this->tokenUrl = $tokenUrl;
     }
 
-    public function getApiToken(): string
+    public function getClientId(): string
     {
-        return $this->apiToken;
+        return $this->clientId;
+    }
+
+    public function getClientSecret(): string
+    {
+        return $this->clientSecret;
+    }
+
+    public function getDatabaseDsn(): string
+    {
+        return $this->databaseDsn;
     }
 
     public function getFunctionConfig(): FunctionConfigInterface
@@ -32,5 +48,10 @@ final class Config implements ConfigInterface
     public function getLocationId(): string
     {
         return $this->locationId;
+    }
+
+    public function getTokenUrl(): string
+    {
+        return $this->tokenUrl;
     }
 }

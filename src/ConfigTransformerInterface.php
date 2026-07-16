@@ -6,8 +6,11 @@ namespace ChristianBrown\SmartThingsClimate;
 
 interface ConfigTransformerInterface
 {
-    public const ENV_API_TOKEN = 'SMARTTHINGS_API_TOKEN';
+    public const ENV_CLIENT_ID = 'SMARTTHINGS_OAUTH_CLIENT_ID';
+    public const ENV_CLIENT_SECRET = 'SMARTTHINGS_OAUTH_CLIENT_SECRET';
+    public const ENV_DATABASE_DSN = 'SMARTTHINGS_DATABASE_DSN';
     public const ENV_LOCATION_ID = 'SMARTTHINGS_LOCATION_ID';
+    public const ENV_TOKEN_URL = 'SMARTTHINGS_OAUTH_TOKEN_URL';
 
     /**
      * @param mixed[] $env

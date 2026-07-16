@@ -12,10 +12,20 @@ a library** — it wires the sibling `christianjbrown/*` libraries together behi
 the `run()` function in `index.php` builds the config, constructs a `SmartThings` client and a
 `CloudFunction`, and returns the PSR-7 response.
 
-The app consumes four private `dev-main` sibling packages: `php-gcp-function-lib` (the HTTP
+The app consumes private `dev-main` sibling packages: `php-gcp-function-lib` (the HTTP
 envelope/gating/caching framework), `php-smartthings-api-lib` (the read-only SmartThings client),
-`php-user-friendly-exception-lib`, and `php-code-quality-scripts` (dev). It runs on Google's
+`php-oauth2-client-lib` (the OAuth refresh-token manager), `php-key-value-store-lib` (the DB-backed
+token store), `php-api-client-lib` (the JSON request sender used by the token manager),
+`php-user-friendly-exception-lib`, and `php-code-quality-scripts` (dev). It also pulls Doctrine ORM +
+DBAL directly for the token store's persistence. It runs on Google's
 [Functions Framework](https://github.com/GoogleCloudPlatform/functions-framework-php) locally.
+
+**Authentication.** The function no longer uses a static SmartThings token. On each request it obtains
+an OAuth access token via the refresh-token grant (`RefreshTokenManager`), reading and writing both the
+access token and the rotating refresh token to a shared MySQL key-value table. The minimal ORM plumbing
+for this — `EntityManagerFactory` and the `RefreshToken` entity — is **copied into this repo** under
+`src/Database/` rather than depended on: other services (e.g. `underpinned-*`) may share the same
+physical database for cost, but there is deliberately **no code coupling** between them.
 
 ## Commands
 
@@ -36,7 +46,9 @@ gitignored and Composer-installed, so run `composer install` first. Unlike the l
 
 `composer start` exports `.local.env` (git-ignored) and serves the function at `http://localhost:8080`
 (override with `PORT`) via `FUNCTION_TARGET=run` on the Functions Framework router. A local run needs
-at least `SMARTTHINGS_API_TOKEN` and `K_REVISION` set — see `README.md` for the full env-var list.
+the `SMARTTHINGS_OAUTH_*` credentials, `SMARTTHINGS_DATABASE_DSN`, `SMARTTHINGS_LOCATION_ID` and
+`K_REVISION` set (and a reachable database with a seeded refresh token) — see `README.md` for the full
+env-var list.
 
 Style tooling comes from the `christianjbrown/php-code-quality-scripts` dev dependency (php-cs-fixer
 + PHP_CodeSniffer, **Symfony2 coding standard**); the `bin/php-cs*` scripts are thin wrappers over it.
@@ -51,14 +63,24 @@ Everything lives directly under `src/` (no sub-layers). PSR-4: `ChristianBrown\S
 top-level `index.php` holds the framework entry point and is intentionally outside the namespace.
 
 - **`index.php`** — defines `run(ServerRequestInterface): ResponseInterface`, the Functions Framework
-  target. It reads `getenv()`, builds a `Config` via `ConfigTransformer`, constructs the `SmartThings`
-  facade and pulls its device / device-status / location-room clients, assembles the `DataProvider`
-  and `OutputTransformer`, and hands both to a `CloudFunction`, returning its `run()` response.
-- **`Config`** / **`ConfigInterface`** — a small holder for the SmartThings API token plus the
-  `FunctionConfigInterface` (from `php-gcp-function-lib`) that drives gating/caching.
+  target. It reads `getenv()`, builds a `Config` via `ConfigTransformer`, builds a Doctrine entity
+  manager (`EntityManagerFactory`) over the DSN and two `DatabaseKeyValueStore`s keyed
+  `smartthings_access_token` / `smartthings_refresh_token`, obtains a live access token from a
+  `RefreshTokenManager`, constructs the `SmartThings` facade with it, pulls the device /
+  device-status / location-room clients, assembles the `DataProvider` and `OutputTransformer`, and
+  hands both to a `CloudFunction`, returning its `run()` response.
+- **`Config`** / **`ConfigInterface`** — a small holder for the OAuth client id/secret, token URL,
+  database DSN and location id, plus the `FunctionConfigInterface` (from `php-gcp-function-lib`) that
+  drives gating/caching.
 - **`ConfigTransformer`** / **`ConfigTransformerInterface`** — builds a `Config` from the environment
-  array. It guards `SMARTTHINGS_API_TOKEN` (via `ENV_API_TOKEN`) with sequential presence/type checks
-  and delegates the rest of the env to the injected `FunctionConfigTransformer`.
+  array. A single `extractRequiredString()` helper guards each required env key (`SMARTTHINGS_OAUTH_*`,
+  `SMARTTHINGS_DATABASE_DSN`, `SMARTTHINGS_LOCATION_ID`) with sequential presence/type checks (kept in
+  one helper so the transformer's cyclomatic complexity stays within the Symfony2 limit), delegating
+  the rest of the env to the injected `FunctionConfigTransformer`.
+- **`Database\EntityManagerFactory`** / **`Database\Entity\RefreshToken`** — the copied-in ORM plumbing:
+  the factory builds a Doctrine `EntityManager` from the DSN (native lazy objects enabled for PHP 8.4+),
+  and `RefreshToken` maps the shared `refresh_tokens` key-value table via the abstract entity from
+  `php-key-value-store-lib`.
 - **`DataProvider`** — implements the lib's `DataProviderInterface`. `getData()` lists devices, and for
   each keeps those exposing a `temperatureMeasurement` or `relativeHumidityMeasurement` capability,
   reads its status, resolves the room name (for devices with a room) and battery, flags readings older

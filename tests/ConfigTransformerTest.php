@@ -10,10 +10,12 @@ use ChristianBrown\SmartThingsClimate\Config;
 use ChristianBrown\SmartThingsClimate\ConfigTransformer;
 use ChristianBrown\SmartThingsClimate\ConfigTransformerInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\TestWith;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+
+use function sprintf;
 
 #[CoversClass(Config::class)]
 #[CoversClass(ConfigTransformer::class)]
@@ -24,10 +26,7 @@ final class ConfigTransformerTest extends TestCase
      */
     public function testTransform(): void
     {
-        $env = [
-            ConfigTransformerInterface::ENV_API_TOKEN => 'test-api-token',
-            ConfigTransformerInterface::ENV_LOCATION_ID => 'test-location-id',
-        ];
+        $env = self::validEnv();
 
         $functionConfig = self::createStub(FunctionConfigInterface::class);
 
@@ -40,46 +39,76 @@ final class ConfigTransformerTest extends TestCase
         $transformer = new ConfigTransformer($functionConfigTransformer);
         $actual = $transformer->transform($env);
 
-        self::assertSame('test-api-token', $actual->getApiToken());
+        self::assertSame('test-client-id', $actual->getClientId());
+        self::assertSame('test-client-secret', $actual->getClientSecret());
+        self::assertSame('test-database-dsn', $actual->getDatabaseDsn());
         self::assertSame($functionConfig, $actual->getFunctionConfig());
         self::assertSame('test-location-id', $actual->getLocationId());
+        self::assertSame('test-token-url', $actual->getTokenUrl());
     }
 
     /**
-     * @param mixed[] $env
+     * Each required key is exercised through both guard paths: a null value
+     * (empty) and a non-string value (fails the type check).
      *
+     * @return array<string, array{0: string}>
+     */
+    public static function invalidKeyProvider(): array
+    {
+        return [
+            ConfigTransformerInterface::ENV_CLIENT_ID => [ConfigTransformerInterface::ENV_CLIENT_ID],
+            ConfigTransformerInterface::ENV_CLIENT_SECRET => [ConfigTransformerInterface::ENV_CLIENT_SECRET],
+            ConfigTransformerInterface::ENV_DATABASE_DSN => [ConfigTransformerInterface::ENV_DATABASE_DSN],
+            ConfigTransformerInterface::ENV_LOCATION_ID => [ConfigTransformerInterface::ENV_LOCATION_ID],
+            ConfigTransformerInterface::ENV_TOKEN_URL => [ConfigTransformerInterface::ENV_TOKEN_URL],
+        ];
+    }
+
+    /**
      * @throws Exception
      */
-    #[TestWith([[]])]
-    #[TestWith([[ConfigTransformerInterface::ENV_API_TOKEN => null]])]
-    #[TestWith([[ConfigTransformerInterface::ENV_API_TOKEN => 42]])]
-    public function testTransformWithMissingApiKey(array $env): void
+    #[DataProvider('invalidKeyProvider')]
+    public function testTransformWithMissingValue(string $key): void
     {
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage(sprintf('%s not set or not a string', ConfigTransformerInterface::ENV_API_TOKEN));
+        $env = self::validEnv();
+        $env[$key] = null;
 
         $functionConfigTransformer = self::createStub(FunctionConfigTransformerInterface::class);
-
         $transformer = new ConfigTransformer($functionConfigTransformer);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage(sprintf('%s not set or not a string', $key));
         $transformer->transform($env);
     }
 
     /**
-     * @param mixed[] $env
-     *
      * @throws Exception
      */
-    #[TestWith([[ConfigTransformerInterface::ENV_API_TOKEN => 'test-api-token']])]
-    #[TestWith([[ConfigTransformerInterface::ENV_API_TOKEN => 'test-api-token', ConfigTransformerInterface::ENV_LOCATION_ID => null]])]
-    #[TestWith([[ConfigTransformerInterface::ENV_API_TOKEN => 'test-api-token', ConfigTransformerInterface::ENV_LOCATION_ID => 42]])]
-    public function testTransformWithMissingLocationId(array $env): void
+    #[DataProvider('invalidKeyProvider')]
+    public function testTransformWithNonStringValue(string $key): void
     {
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage(sprintf('%s not set or not a string', ConfigTransformerInterface::ENV_LOCATION_ID));
+        $env = self::validEnv();
+        $env[$key] = 42;
 
         $functionConfigTransformer = self::createStub(FunctionConfigTransformerInterface::class);
-
         $transformer = new ConfigTransformer($functionConfigTransformer);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage(sprintf('%s not set or not a string', $key));
         $transformer->transform($env);
+    }
+
+    /**
+     * @return mixed[]
+     */
+    private static function validEnv(): array
+    {
+        return [
+            ConfigTransformerInterface::ENV_CLIENT_ID => 'test-client-id',
+            ConfigTransformerInterface::ENV_CLIENT_SECRET => 'test-client-secret',
+            ConfigTransformerInterface::ENV_DATABASE_DSN => 'test-database-dsn',
+            ConfigTransformerInterface::ENV_LOCATION_ID => 'test-location-id',
+            ConfigTransformerInterface::ENV_TOKEN_URL => 'test-token-url',
+        ];
     }
 }

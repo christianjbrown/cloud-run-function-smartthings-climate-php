@@ -19,9 +19,14 @@
     ],
     "require": {
         "php": "^8.5",
+        "christianjbrown/php-api-client-lib": "dev-main",
         "christianjbrown/php-gcp-function-lib": "dev-main",
+        "christianjbrown/php-key-value-store-lib": "dev-main",
+        "christianjbrown/php-oauth2-client-lib": "dev-main",
         "christianjbrown/php-smartthings-api-lib": "dev-main",
         "christianjbrown/php-user-friendly-exception-lib": "dev-main",
+        "doctrine/dbal": "^4.0.2",
+        "doctrine/orm": "^3.1.3",
         "google/cloud-functions-framework": "^1.1",
         "psr/http-client": "^1.0"
     },
@@ -82,6 +87,14 @@
         {
             "type": "github",
             "url": "git@github.com:christianjbrown/php-gcp-function-lib.git"
+        },
+        {
+            "type": "github",
+            "url": "git@github.com:christianjbrown/php-key-value-store-lib.git"
+        },
+        {
+            "type": "github",
+            "url": "git@github.com:christianjbrown/php-oauth2-client-lib.git"
         },
         {
             "type": "github",

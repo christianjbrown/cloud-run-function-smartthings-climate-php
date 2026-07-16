@@ -7,6 +7,9 @@ namespace ChristianBrown\SmartThingsClimate;
 use ChristianBrown\GcpFunction\FunctionConfigTransformerInterface;
 use RuntimeException;
 
+use function is_string;
+use function sprintf;
+
 final class ConfigTransformer implements ConfigTransformerInterface
 {
     private FunctionConfigTransformerInterface $functionConfigTransformer;
@@ -21,26 +24,31 @@ final class ConfigTransformer implements ConfigTransformerInterface
      */
     public function transform(array $env): ConfigInterface
     {
-        // Split into sequential guards (rather than a single `||`) so each
-        // failure path is independently reachable for path coverage.
-        if (empty($env[self::ENV_API_TOKEN])) {
-            throw new RuntimeException(sprintf('%s not set or not a string', self::ENV_API_TOKEN));
-        }
-        if (!is_string($env[self::ENV_API_TOKEN])) {
-            throw new RuntimeException(sprintf('%s not set or not a string', self::ENV_API_TOKEN));
-        }
-        $apiToken = $env[self::ENV_API_TOKEN];
-
-        if (empty($env[self::ENV_LOCATION_ID])) {
-            throw new RuntimeException(sprintf('%s not set or not a string', self::ENV_LOCATION_ID));
-        }
-        if (!is_string($env[self::ENV_LOCATION_ID])) {
-            throw new RuntimeException(sprintf('%s not set or not a string', self::ENV_LOCATION_ID));
-        }
-        $locationId = $env[self::ENV_LOCATION_ID];
+        $clientId = $this->extractRequiredString($env, self::ENV_CLIENT_ID);
+        $clientSecret = $this->extractRequiredString($env, self::ENV_CLIENT_SECRET);
+        $databaseDsn = $this->extractRequiredString($env, self::ENV_DATABASE_DSN);
+        $locationId = $this->extractRequiredString($env, self::ENV_LOCATION_ID);
+        $tokenUrl = $this->extractRequiredString($env, self::ENV_TOKEN_URL);
 
         $requestConfig = $this->functionConfigTransformer->transform($env);
 
-        return new Config($requestConfig, $apiToken, $locationId);
+        return new Config($requestConfig, $clientId, $clientSecret, $databaseDsn, $locationId, $tokenUrl);
+    }
+
+    /**
+     * @param mixed[] $env
+     */
+    private function extractRequiredString(array $env, string $key): string
+    {
+        // Split into sequential guards (rather than a single `||`) so each
+        // failure path is independently reachable for path coverage.
+        if (empty($env[$key])) {
+            throw new RuntimeException(sprintf('%s not set or not a string', $key));
+        }
+        if (!is_string($env[$key])) {
+            throw new RuntimeException(sprintf('%s not set or not a string', $key));
+        }
+
+        return $env[$key];
     }
 }
