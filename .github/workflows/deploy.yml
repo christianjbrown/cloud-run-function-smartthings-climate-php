@@ -60,3 +60,17 @@ jobs:
 
       - name: 'Test Cloud Function'
         run: 'curl "${{ steps.deploy.outputs.url }}"'
+
+      # Bust the Fastly edge cache so the new revision is served immediately
+      # instead of waiting out the CDN's default_ttl. Hard-purges the single
+      # public URL that fronts this function (FASTLY_CDN_HOST + the function's
+      # endpoint path). Runs only if every prior step — including the deploy —
+      # succeeded, since Actions aborts the job on the first failing step.
+      # Uses FASTLY_PURGE_API_KEY — a purge-only token, deliberately scoped
+      # lower than the full-access FASTLY_API_KEY used to manage the service.
+      - name: 'Purge Fastly cache'
+        run: |
+          curl --fail-with-body --silent --show-error -X POST \
+            -H "Fastly-Key: ${{ secrets.FASTLY_PURGE_API_KEY }}" \
+            -H "Accept: application/json" \
+            "https://api.fastly.com/purge/${{ vars.FASTLY_CDN_HOST }}/${{ vars.GCP_CLOUD_FUNCTION_ENDPOINT }}"
