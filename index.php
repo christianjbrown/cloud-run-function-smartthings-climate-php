@@ -14,6 +14,7 @@ use ChristianBrown\SmartThings\SmartThings;
 use ChristianBrown\SmartThingsClimate\ConfigTransformer;
 use ChristianBrown\SmartThingsClimate\Database\Entity\RefreshToken;
 use ChristianBrown\SmartThingsClimate\Database\EntityManagerFactory;
+use ChristianBrown\SmartThingsClimate\Database\MySqlAdvisoryLock;
 use ChristianBrown\SmartThingsClimate\DataProvider;
 use ChristianBrown\SmartThingsClimate\DeviceReadingOutputTransformer;
 use ChristianBrown\SmartThingsClimate\OutputTransformer;
@@ -22,6 +23,8 @@ use Psr\Http\Message\ServerRequestInterface;
 
 const ACCESS_TOKEN_KEY = 'smartthings_access_token';
 const REFRESH_TOKEN_KEY = 'smartthings_refresh_token';
+const TOKEN_REFRESH_LOCK_NAME = 'smartthings_token_refresh';
+const TOKEN_REFRESH_LOCK_TIMEOUT_SECONDS = 10;
 
 function run(ServerRequestInterface $request): ResponseInterface
 {
@@ -37,6 +40,11 @@ function run(ServerRequestInterface $request): ResponseInterface
     $accessTokenKeyValueStore = new DatabaseKeyValueStore($entityManager, RefreshToken::class, ACCESS_TOKEN_KEY);
     $refreshTokenKeyValueStore = new DatabaseKeyValueStore($entityManager, RefreshToken::class, REFRESH_TOKEN_KEY);
 
+    // Serialise the refresh with a database advisory lock (on the same
+    // connection the token store uses) so that, if more than one instance ever
+    // runs, a rotating refresh token is never spent by two refreshes at once.
+    $refreshLock = new MySqlAdvisoryLock($entityManager->getConnection(), TOKEN_REFRESH_LOCK_NAME, TOKEN_REFRESH_LOCK_TIMEOUT_SECONDS);
+
     $jsonApiRequestSender = (new ApiClient())->getJsonApiRequestSender();
     $accessTokenTransformer = new AccessTokenTransformer();
     $refreshTokenManager = new RefreshTokenManager(
@@ -46,6 +54,7 @@ function run(ServerRequestInterface $request): ResponseInterface
         $accessTokenTransformer,
         $config->getTokenUrl(),
         $config->getClientSecret(),
+        $refreshLock,
     );
     $accessToken = $refreshTokenManager->getAccessToken($config->getClientId());
 
