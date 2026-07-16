@@ -73,14 +73,6 @@
     "repositories": [
         {
             "type": "github",
-            "url": "git@github.com:christianjbrown/php-gcp-function-lib.git"
-        },
-        {
-            "type": "github",
-            "url": "git@github.com:christianjbrown/php-user-friendly-exception-lib.git"
-        },
-        {
-            "type": "github",
             "url": "git@github.com:christianjbrown/php-api-client-lib.git"
         },
         {
@@ -89,7 +81,15 @@
         },
         {
             "type": "github",
+            "url": "git@github.com:christianjbrown/php-gcp-function-lib.git"
+        },
+        {
+            "type": "github",
             "url": "git@github.com:christianjbrown/php-smartthings-api-lib.git"
+        },
+        {
+            "type": "github",
+            "url": "git@github.com:christianjbrown/php-user-friendly-exception-lib.git"
         }
     ],
     "minimum-stability": "dev"
