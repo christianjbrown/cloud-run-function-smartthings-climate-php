@@ -15,23 +15,10 @@ final class DeviceReadingOutputTransformer implements DeviceReadingOutputTransfo
         // so a block's presence/absence is an independent code path.
         $data = [self::KEY_NAME => $deviceReading->getName()];
         $data += $this->roomName($deviceReading);
-        $data += $this->battery($deviceReading);
         $data += $this->temperature($deviceReading);
         $data += $this->humidity($deviceReading);
 
         return $data;
-    }
-
-    /**
-     * @return mixed[]
-     */
-    private function battery(DeviceReadingInterface $deviceReading): array
-    {
-        if (null === $deviceReading->getBatteryValue()) {
-            return [];
-        }
-
-        return [self::KEY_BATTERY_VALUE => $deviceReading->getBatteryValue()];
     }
 
     /**

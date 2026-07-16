@@ -6,8 +6,6 @@ namespace ChristianBrown\SmartThingsClimate;
 
 interface DeviceReadingInterface
 {
-    public function getBatteryValue(): ?int;
-
     public function getHumidityTimestamp(): ?int;
 
     public function getHumidityValue(): ?float;

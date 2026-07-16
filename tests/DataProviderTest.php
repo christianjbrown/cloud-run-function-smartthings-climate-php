@@ -14,8 +14,6 @@ use ChristianBrown\SmartThings\Api\LocationRoomApiInterface;
 use ChristianBrown\SmartThings\Model\DeviceComponentCapabilityInterface;
 use ChristianBrown\SmartThings\Model\DeviceComponentInterface;
 use ChristianBrown\SmartThings\Model\DeviceInterface;
-use ChristianBrown\SmartThings\Model\DeviceStatusBatteryBatteryInterface;
-use ChristianBrown\SmartThings\Model\DeviceStatusBatteryInterface;
 use ChristianBrown\SmartThings\Model\DeviceStatusInterface;
 use ChristianBrown\SmartThings\Model\DeviceStatusRelativeHumidityMeasurementHumidityInterface;
 use ChristianBrown\SmartThings\Model\DeviceStatusRelativeHumidityMeasurementInterface;
@@ -83,7 +81,7 @@ final class DataProviderTest extends TestCase
 
         $device1status = $this->createDeviceStatus($temperatureMeasurement1, null);
         $device3status = $this->createDeviceStatus(null, null);
-        $device4status = $this->createDeviceStatus($temperatureMeasurement4, null, 80);
+        $device4status = $this->createDeviceStatus($temperatureMeasurement4, null);
         $device5status = $this->createDeviceStatus(null, $humidityMeasurement5);
         $device6status = $this->createDeviceStatus($temperatureMeasurement6, $humidityMeasurement6);
 
@@ -124,7 +122,6 @@ final class DataProviderTest extends TestCase
                         self::assertInstanceOf(DeviceReadingInterface::class, $data[0]);
                         self::assertSame('test-device-1-mixed-components-inc-temp', $data[0]->getName());
                         self::assertNull($data[0]->getRoomName());
-                        self::assertNull($data[0]->getBatteryValue());
                         self::assertSame(42.0, $data[0]->getTemperatureValue());
                         self::assertSame($temperature1time, $data[0]->getTemperatureTimestamp());
                         self::assertTrue($data[0]->isTemperatureStale());
@@ -136,7 +133,6 @@ final class DataProviderTest extends TestCase
                         self::assertInstanceOf(DeviceReadingInterface::class, $data[1]);
                         self::assertSame('test-device-4-has-temp', $data[1]->getName());
                         self::assertSame('test-room-4', $data[1]->getRoomName());
-                        self::assertSame(80, $data[1]->getBatteryValue());
                         self::assertSame(98.0, $data[1]->getTemperatureValue());
                         self::assertSame($temperature4time, $data[1]->getTemperatureTimestamp());
                         self::assertFalse($data[1]->isTemperatureStale());
@@ -315,22 +311,6 @@ final class DataProviderTest extends TestCase
     /**
      * @throws Exception
      */
-    private function createBattery(int $value): DeviceStatusBatteryInterface
-    {
-        $batteryValue = self::createStub(DeviceStatusBatteryBatteryInterface::class);
-        $batteryValue->method('getValue')
-            ->willReturn($value);
-
-        $battery = self::createStub(DeviceStatusBatteryInterface::class);
-        $battery->method('getBattery')
-            ->willReturn($batteryValue);
-
-        return $battery;
-    }
-
-    /**
-     * @throws Exception
-     */
     private function createDevice(string $label, array $components, ?string $roomId = null): DeviceInterface
     {
         $device = self::createStub(DeviceInterface::class);
@@ -382,15 +362,13 @@ final class DataProviderTest extends TestCase
     /**
      * @throws Exception
      */
-    private function createDeviceStatus(?DeviceStatusTemperatureMeasurementInterface $temperatureMeasurement, ?DeviceStatusRelativeHumidityMeasurementInterface $humidityMeasurement, ?int $batteryValue = null): DeviceStatusInterface
+    private function createDeviceStatus(?DeviceStatusTemperatureMeasurementInterface $temperatureMeasurement, ?DeviceStatusRelativeHumidityMeasurementInterface $humidityMeasurement): DeviceStatusInterface
     {
         $deviceStatus = self::createStub(DeviceStatusInterface::class);
         $deviceStatus->method('getTemperatureMeasurement')
             ->willReturn($temperatureMeasurement);
         $deviceStatus->method('getRelativeHumidityMeasurement')
             ->willReturn($humidityMeasurement);
-        $deviceStatus->method('getBattery')
-            ->willReturn(null === $batteryValue ? null : $this->createBattery($batteryValue));
 
         return $deviceStatus;
     }

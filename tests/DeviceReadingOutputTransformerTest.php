@@ -21,9 +21,9 @@ final class DeviceReadingOutputTransformerTest extends TestCase
      * @throws Exception
      */
     #[DataProvider('provideTransformCases')]
-    public function testTransform(array $expected, ?string $roomName, ?int $batteryValue, ?float $temperatureValue, ?bool $temperatureStale, ?float $humidityValue, ?bool $humidityStale): void
+    public function testTransform(array $expected, ?string $roomName, ?float $temperatureValue, ?bool $temperatureStale, ?float $humidityValue, ?bool $humidityStale): void
     {
-        $reading = $this->createReading('test-name', $roomName, $batteryValue, $temperatureValue, $temperatureStale, $humidityValue, $humidityStale);
+        $reading = $this->createReading('test-name', $roomName, $temperatureValue, $temperatureStale, $humidityValue, $humidityStale);
 
         $actual = (new DeviceReadingOutputTransformer())->transform($reading);
 
@@ -31,8 +31,8 @@ final class DeviceReadingOutputTransformerTest extends TestCase
     }
 
     /**
-     * Each optional block (room, battery, temperature, humidity) is exercised
-     * both present and absent so every output path is covered.
+     * Each optional block (room, temperature, humidity) is exercised both
+     * present and absent so every output path is covered.
      *
      * @return iterable<string, mixed[]>
      */
@@ -42,21 +42,14 @@ final class DeviceReadingOutputTransformerTest extends TestCase
             [
                 DeviceReadingOutputTransformerInterface::KEY_NAME => 'test-name',
             ],
-            null, null, null, null, null, null,
+            null, null, null, null, null,
         ];
         yield 'room only' => [
             [
                 DeviceReadingOutputTransformerInterface::KEY_NAME => 'test-name',
                 DeviceReadingOutputTransformerInterface::KEY_ROOM_NAME => 'test-room',
             ],
-            'test-room', null, null, null, null, null,
-        ];
-        yield 'battery only' => [
-            [
-                DeviceReadingOutputTransformerInterface::KEY_NAME => 'test-name',
-                DeviceReadingOutputTransformerInterface::KEY_BATTERY_VALUE => 95,
-            ],
-            null, 95, null, null, null, null,
+            'test-room', null, null, null, null,
         ];
         yield 'temperature only' => [
             [
@@ -65,7 +58,7 @@ final class DeviceReadingOutputTransformerTest extends TestCase
                 DeviceReadingOutputTransformerInterface::KEY_TEMPERATURE_TIMESTAMP => 29000,
                 DeviceReadingOutputTransformerInterface::KEY_TEMPERATURE_STALE => false,
             ],
-            null, null, 42.2, false, null, null,
+            null, 42.2, false, null, null,
         ];
         yield 'humidity only' => [
             [
@@ -74,13 +67,12 @@ final class DeviceReadingOutputTransformerTest extends TestCase
                 DeviceReadingOutputTransformerInterface::KEY_HUMIDITY_TIMESTAMP => 28000,
                 DeviceReadingOutputTransformerInterface::KEY_HUMIDITY_STALE => false,
             ],
-            null, null, null, null, 55.0, false,
+            null, null, null, 55.0, false,
         ];
         yield 'everything present' => [
             [
                 DeviceReadingOutputTransformerInterface::KEY_NAME => 'test-name',
                 DeviceReadingOutputTransformerInterface::KEY_ROOM_NAME => 'test-room',
-                DeviceReadingOutputTransformerInterface::KEY_BATTERY_VALUE => 95,
                 DeviceReadingOutputTransformerInterface::KEY_TEMPERATURE_VALUE => 42.2,
                 DeviceReadingOutputTransformerInterface::KEY_TEMPERATURE_TIMESTAMP => 29000,
                 DeviceReadingOutputTransformerInterface::KEY_TEMPERATURE_STALE => false,
@@ -88,22 +80,20 @@ final class DeviceReadingOutputTransformerTest extends TestCase
                 DeviceReadingOutputTransformerInterface::KEY_HUMIDITY_TIMESTAMP => 28000,
                 DeviceReadingOutputTransformerInterface::KEY_HUMIDITY_STALE => false,
             ],
-            'test-room', 95, 42.2, false, 55.0, false,
+            'test-room', 42.2, false, 55.0, false,
         ];
     }
 
     /**
      * @throws Exception
      */
-    private function createReading(string $name, ?string $roomName, ?int $batteryValue, ?float $temperatureValue, ?bool $temperatureStale, ?float $humidityValue, ?bool $humidityStale): DeviceReadingInterface
+    private function createReading(string $name, ?string $roomName, ?float $temperatureValue, ?bool $temperatureStale, ?float $humidityValue, ?bool $humidityStale): DeviceReadingInterface
     {
         $reading = self::createStub(DeviceReadingInterface::class);
         $reading->method('getName')
             ->willReturn($name);
         $reading->method('getRoomName')
             ->willReturn($roomName);
-        $reading->method('getBatteryValue')
-            ->willReturn($batteryValue);
         $reading->method('getTemperatureValue')
             ->willReturn($temperatureValue);
         $reading->method('getTemperatureTimestamp')

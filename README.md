@@ -91,7 +91,6 @@ curl http://localhost:8080
         {
             "name": "Bedroom Sensor",
             "roomName": "Bedroom",
-            "batteryValue": 95,
             "temperatureValue": 19.5,
             "temperatureTimestamp": 1752580800,
             "temperatureStale": false,
@@ -111,7 +110,6 @@ curl http://localhost:8080
 
 - `devices` — one entry per device that reports temperature and/or humidity, sorted by `name`.
 - `roomName` — the SmartThings room the device belongs to. Present only for devices that are assigned to a room.
-- `batteryValue` — the device's battery level as a percentage. Present only for devices that report a battery reading.
 - `temperatureValue` / `temperatureTimestamp` / `temperatureStale` — the latest temperature, the Unix time of that reading, and whether it is more than 24 hours old. These keys are present only for devices that report temperature.
 - `humidityValue` / `humidityTimestamp` / `humidityStale` — the latest relative humidity (percent), the Unix time of that reading, and whether it is more than 24 hours old. Humidity carries its own timestamp and stale flag because SmartThings reports each measurement independently. These keys are present only for devices that report humidity.
 

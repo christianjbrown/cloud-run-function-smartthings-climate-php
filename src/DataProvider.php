@@ -66,7 +66,6 @@ final class DataProvider implements DataProviderInterface
         return new DeviceReading(
             $device->getLabel() ?? '',
             $this->resolveRoomName($device),
-            $this->resolveBattery($deviceStatus),
             $temperature,
             $temperatureTimestamp,
             $temperatureStale,
@@ -114,16 +113,6 @@ final class DataProvider implements DataProviderInterface
         }
 
         return $this->buildReading($device, $hasTemperature, $hasHumidity);
-    }
-
-    private function resolveBattery(DeviceStatusInterface $deviceStatus): ?int
-    {
-        $battery = $deviceStatus->getBattery();
-        if (null === $battery) {
-            return null;
-        }
-
-        return $battery->getBattery()->getValue();
     }
 
     /**

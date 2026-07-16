@@ -6,7 +6,6 @@ namespace ChristianBrown\SmartThingsClimate;
 
 interface DeviceReadingOutputTransformerInterface
 {
-    public const KEY_BATTERY_VALUE = 'batteryValue';
     public const KEY_HUMIDITY_STALE = 'humidityStale';
     public const KEY_HUMIDITY_TIMESTAMP = 'humidityTimestamp';
     public const KEY_HUMIDITY_VALUE = 'humidityValue';
