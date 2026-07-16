@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/christianjbrown/php-gcp-function-smartthings-climate/actions/workflows/ci.yml/badge.svg)](https://github.com/christianjbrown/php-gcp-function-smartthings-climate/actions/workflows/ci.yml)
 
-A small [Google Cloud Function](https://cloud.google.com/functions) (PHP) that reads the current temperature and relative humidity from your [SmartThings](https://www.smartthings.com/) devices and returns them as a single JSON payload, along with an average across all non-stale readings.
+A small [Google Cloud Function](https://cloud.google.com/functions) (PHP) that reads the current temperature and relative humidity from your [SmartThings](https://www.smartthings.com/) devices and returns them as a single JSON payload.
 
 It walks every device in your SmartThings account, keeps the ones that expose a `temperatureMeasurement` or `relativeHumidityMeasurement` capability, reads each one's latest temperature and/or humidity, resolves the room each device belongs to, flags readings older than 24 hours as stale, and returns the lot sorted by device name.
 
@@ -105,11 +105,7 @@ curl http://localhost:8080
             "temperatureTimestamp": 1752580800,
             "temperatureStale": false
         }
-    ],
-    "averageTempDegrees": 20.25,
-    "averageTempTimestamp": 1752580800,
-    "averageHumidity": 48,
-    "averageHumidityTimestamp": 1752580790
+    ]
 }
 ```
 
@@ -118,8 +114,8 @@ curl http://localhost:8080
 - `batteryValue` — the device's battery level as a percentage. Present only for devices that report a battery reading.
 - `temperatureValue` / `temperatureTimestamp` / `temperatureStale` — the latest temperature, the Unix time of that reading, and whether it is more than 24 hours old. These keys are present only for devices that report temperature.
 - `humidityValue` / `humidityTimestamp` / `humidityStale` — the latest relative humidity (percent), the Unix time of that reading, and whether it is more than 24 hours old. Humidity carries its own timestamp and stale flag because SmartThings reports each measurement independently. These keys are present only for devices that report humidity.
-- `averageTempDegrees` / `averageTempTimestamp` — the mean temperature across non-stale temperature readings and the earliest of their timestamps. Both are omitted when there are no non-stale temperature readings.
-- `averageHumidity` / `averageHumidityTimestamp` — the equivalent mean humidity across non-stale humidity readings. Both are omitted when there are no non-stale humidity readings.
+
+Averages (overall and per-room) are left to the consumer — this function just returns the raw per-device readings.
 
 
 
@@ -179,7 +175,7 @@ The entry point is `run()` in [`index.php`](index.php), which wires the pieces t
 - **`RefreshTokenManager`** (from [`christianjbrown/php-oauth2-client-lib`](https://github.com/christianjbrown/php-oauth2-client-lib)) returns a valid access token, refreshing (with client-secret Basic auth) and persisting the rotated token when needed.
 - **`SmartThings`** (from [`christianjbrown/php-smartthings-api-lib`](https://github.com/christianjbrown/php-smartthings-api-lib)), constructed with that access token, provides the device and device-status API clients.
 - **`DataProvider`** fetches devices, filters to those with a temperature and/or humidity capability, reads each status, resolves the room name for devices assigned to one, and builds `DeviceReading` value objects.
-- **`OutputTransformer`** sorts them, computes the non-stale temperature and humidity averages, and shapes the JSON response.
+- **`OutputTransformer`** sorts them and shapes the JSON response.
 - **`CloudFunction`** (from [`christianjbrown/php-gcp-function-lib`](https://github.com/christianjbrown/php-gcp-function-lib)) handles the HTTP request/response, header/origin gating, and caching headers.
 
 
