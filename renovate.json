@@ -1,0 +1,14 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "description": [
+    "The committed composer.lock pins the private dev-main christianjbrown/* sibling packages to a specific commit. They carry no version, so ordinary dependency updates never bump them and the deploy silently drifts behind the libraries (the exact gap the token-refresh robustness test surfaced).",
+    "Weekly lockFileMaintenance refreshes the whole lock — pulling every dev-main sibling to its latest main commit — and opens a PR whose CI reinstalls and runs the suite before it is merged (a merge redeploys the function).",
+    "Renovate must be installed on this account WITH read access to the private christianjbrown/* repositories, otherwise the lock refresh cannot resolve them."
+  ],
+  "dependencyDashboard": true,
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 6am on monday"]
+  }
+}
