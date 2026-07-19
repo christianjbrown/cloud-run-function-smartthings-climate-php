@@ -11,3 +11,5 @@ bin
 bin/
 vendor
 vendor/
+.phpstan.cache
+.phpstan.cache/
