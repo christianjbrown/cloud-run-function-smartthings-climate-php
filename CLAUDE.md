@@ -63,12 +63,24 @@ Everything lives directly under `src/` (no sub-layers). PSR-4: `ChristianBrown\S
 top-level `index.php` holds the framework entry point and is intentionally outside the namespace.
 
 - **`index.php`** — defines `run(ServerRequestInterface): ResponseInterface`, the Functions Framework
-  target. It reads `getenv()`, builds a `Config` via `ConfigTransformer`, builds a Doctrine entity
-  manager (`EntityManagerFactory`) over the DSN and two `DatabaseKeyValueStore`s keyed
-  `smartthings_access_token` / `smartthings_refresh_token`, obtains a live access token from a
-  `RefreshTokenManager`, constructs the `SmartThings` facade with it, pulls the device /
-  device-status / location-room clients, assembles the `DataProvider` and `OutputTransformer`, and
-  hands both to a `CloudFunction`, returning its `run()` response.
+  target. It is a thin **composition root only**: it reads `getenv()`, builds a `Config` via
+  `ConfigTransformer`, then constructs an anonymous `CloudFunctionFactoryInterface` whose `create()`
+  holds all the failable wiring (the Doctrine entity manager over the DSN, the two
+  `DatabaseKeyValueStore`s keyed `smartthings_access_token` / `smartthings_refresh_token`, the
+  `RefreshTokenManager` that obtains a live access token, the `SmartThings` facade + its device /
+  device-status / location-room clients, and the assembled `DataProvider` / `OutputTransformer` handed
+  to a `CloudFunction`). It hands that factory + the `FunctionConfig` to a `RequestHandler` and returns
+  `handle($request)`. All the `new` wiring lives here (outside the namespace, so it is excluded from
+  coverage/PHPStan/phpcs, which only scan `src`/`tests`); the testable orchestration lives in `src`.
+- **`RequestHandler`** / **`RequestHandlerInterface`** — the testable entry-point orchestration.
+  `handle()` calls the injected `CloudFunctionFactoryInterface::create()` and returns
+  `CloudFunction::run($request)`, wrapping **both** in one `try/catch (Throwable)`. Because token
+  acquisition / client construction happen in the factory *before* the `CloudFunction` exists, a failure
+  there (e.g. a revoked refresh token returning `invalid_grant`) would otherwise escape as a bare 500;
+  the catch instead `error_log()`s the cause and returns the framework's `JsonErrorResponse` envelope,
+  keeping the response contract consistent (CDN stale-if-error still shields visitors).
+- **`CloudFunctionFactoryInterface`** — the seam that defers the failable wiring so `RequestHandler` can
+  wrap it; implemented as an anonymous class in `index.php` (the composition root) and mocked in tests.
 - **`Config`** / **`ConfigInterface`** — a small holder for the OAuth client id/secret, token URL,
   database DSN and location id, plus the `FunctionConfigInterface` (from `php-gcp-function-lib`) that
   drives gating/caching.
