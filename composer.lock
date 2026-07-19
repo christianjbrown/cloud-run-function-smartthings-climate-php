@@ -230,12 +230,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/christianjbrown/php-key-value-store-lib.git",
-                "reference": "dcc55206bbf5fe65c32be274b05c73c243241fe5"
+                "reference": "4abf05d6afbbca740214eb15b32a17e813230ef3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/christianjbrown/php-key-value-store-lib/zipball/dcc55206bbf5fe65c32be274b05c73c243241fe5",
-                "reference": "dcc55206bbf5fe65c32be274b05c73c243241fe5",
+                "url": "https://api.github.com/repos/christianjbrown/php-key-value-store-lib/zipball/4abf05d6afbbca740214eb15b32a17e813230ef3",
+                "reference": "4abf05d6afbbca740214eb15b32a17e813230ef3",
                 "shasum": ""
             },
             "require": {
@@ -307,7 +307,7 @@
             "support": {
                 "source": "https://github.com/christianjbrown/php-key-value-store-lib/tree/main"
             },
-            "time": "2026-07-19T14:05:50+00:00"
+            "time": "2026-07-19T22:29:33+00:00"
         },
         {
             "name": "christianjbrown/php-oauth2-client-lib",
@@ -315,12 +315,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/christianjbrown/php-oauth2-client-lib.git",
-                "reference": "ec14dd6ffd39701e55ce315f28144b997bd2121e"
+                "reference": "46022bbef6476d4bd7a23bc4d066674e2b1e819e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/christianjbrown/php-oauth2-client-lib/zipball/ec14dd6ffd39701e55ce315f28144b997bd2121e",
-                "reference": "ec14dd6ffd39701e55ce315f28144b997bd2121e",
+                "url": "https://api.github.com/repos/christianjbrown/php-oauth2-client-lib/zipball/46022bbef6476d4bd7a23bc4d066674e2b1e819e",
+                "reference": "46022bbef6476d4bd7a23bc4d066674e2b1e819e",
                 "shasum": ""
             },
             "require": {
@@ -386,7 +386,7 @@
             "support": {
                 "source": "https://github.com/christianjbrown/php-oauth2-client-lib/tree/main"
             },
-            "time": "2026-07-19T14:06:08+00:00"
+            "time": "2026-07-19T22:34:11+00:00"
         },
         {
             "name": "christianjbrown/php-smartthings-api-lib",
