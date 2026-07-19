@@ -7,6 +7,7 @@ namespace ChristianBrown\SmartThingsClimate\Tests;
 use ChristianBrown\SmartThingsClimate\DeviceReadingInterface;
 use ChristianBrown\SmartThingsClimate\DeviceReadingOutputTransformer;
 use ChristianBrown\SmartThingsClimate\DeviceReadingOutputTransformerInterface;
+use ChristianBrown\SmartThingsClimate\MeasurementInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\Exception;
@@ -89,24 +90,35 @@ final class DeviceReadingOutputTransformerTest extends TestCase
      */
     private function createReading(string $name, ?string $roomName, ?float $temperatureValue, ?bool $temperatureStale, ?float $humidityValue, ?bool $humidityStale): DeviceReadingInterface
     {
+        $temperature = null === $temperatureValue ? null : $this->createMeasurement($temperatureValue, 29000, $temperatureStale);
+        $humidity = null === $humidityValue ? null : $this->createMeasurement($humidityValue, 28000, $humidityStale);
+
         $reading = self::createStub(DeviceReadingInterface::class);
         $reading->method('getName')
             ->willReturn($name);
         $reading->method('getRoomName')
             ->willReturn($roomName);
-        $reading->method('getTemperatureValue')
-            ->willReturn($temperatureValue);
-        $reading->method('getTemperatureTimestamp')
-            ->willReturn(null === $temperatureValue ? null : 29000);
-        $reading->method('isTemperatureStale')
-            ->willReturn($temperatureStale);
-        $reading->method('getHumidityValue')
-            ->willReturn($humidityValue);
-        $reading->method('getHumidityTimestamp')
-            ->willReturn(null === $humidityValue ? null : 28000);
-        $reading->method('isHumidityStale')
-            ->willReturn($humidityStale);
+        $reading->method('getTemperature')
+            ->willReturn($temperature);
+        $reading->method('getHumidity')
+            ->willReturn($humidity);
 
         return $reading;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function createMeasurement(?float $value, ?int $timestamp, ?bool $stale): MeasurementInterface
+    {
+        $measurement = self::createStub(MeasurementInterface::class);
+        $measurement->method('getValue')
+            ->willReturn($value);
+        $measurement->method('getTimestamp')
+            ->willReturn($timestamp);
+        $measurement->method('isStale')
+            ->willReturn($stale);
+
+        return $measurement;
     }
 }

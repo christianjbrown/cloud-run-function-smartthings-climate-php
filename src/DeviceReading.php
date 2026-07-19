@@ -6,35 +6,22 @@ namespace ChristianBrown\SmartThingsClimate;
 
 final class DeviceReading implements DeviceReadingInterface
 {
-    private ?bool $humidityStale;
-    private ?int $humidityTimestamp;
-    private ?float $humidityValue;
+    private ?MeasurementInterface $humidity;
     private string $name;
     private ?string $roomName;
-    private ?bool $temperatureStale;
-    private ?int $temperatureTimestamp;
-    private ?float $temperatureValue;
+    private ?MeasurementInterface $temperature;
 
-    public function __construct(string $name, ?string $roomName, ?float $temperatureValue, ?int $temperatureTimestamp, ?bool $temperatureStale, ?float $humidityValue, ?int $humidityTimestamp, ?bool $humidityStale)
+    public function __construct(string $name, ?string $roomName, ?MeasurementInterface $temperature, ?MeasurementInterface $humidity)
     {
+        $this->humidity = $humidity;
         $this->name = $name;
         $this->roomName = $roomName;
-        $this->temperatureValue = $temperatureValue;
-        $this->temperatureTimestamp = $temperatureTimestamp;
-        $this->temperatureStale = $temperatureStale;
-        $this->humidityValue = $humidityValue;
-        $this->humidityTimestamp = $humidityTimestamp;
-        $this->humidityStale = $humidityStale;
+        $this->temperature = $temperature;
     }
 
-    public function getHumidityTimestamp(): ?int
+    public function getHumidity(): ?MeasurementInterface
     {
-        return $this->humidityTimestamp;
-    }
-
-    public function getHumidityValue(): ?float
-    {
-        return $this->humidityValue;
+        return $this->humidity;
     }
 
     public function getName(): string
@@ -47,23 +34,8 @@ final class DeviceReading implements DeviceReadingInterface
         return $this->roomName;
     }
 
-    public function getTemperatureTimestamp(): ?int
+    public function getTemperature(): ?MeasurementInterface
     {
-        return $this->temperatureTimestamp;
-    }
-
-    public function getTemperatureValue(): ?float
-    {
-        return $this->temperatureValue;
-    }
-
-    public function isHumidityStale(): ?bool
-    {
-        return $this->humidityStale;
-    }
-
-    public function isTemperatureStale(): ?bool
-    {
-        return $this->temperatureStale;
+        return $this->temperature;
     }
 }

@@ -6,6 +6,8 @@ namespace ChristianBrown\SmartThingsClimate\Tests;
 
 use ChristianBrown\SmartThingsClimate\DataProvider;
 use ChristianBrown\SmartThingsClimate\DeviceReading;
+use ChristianBrown\SmartThingsClimate\Measurement;
+use ChristianBrown\SmartThingsClimate\MeasurementInterface;
 use ChristianBrown\SmartThingsClimate\DeviceReadingInterface;
 use ChristianBrown\SmartThingsClimate\OutputTransformerInterface;
 use ChristianBrown\SmartThings\Api\DeviceApiInterface;
@@ -29,6 +31,7 @@ use function time;
 
 #[CoversClass(DataProvider::class)]
 #[CoversClass(DeviceReading::class)]
+#[CoversClass(Measurement::class)]
 final class DataProviderTest extends TestCase
 {
     /**
@@ -122,43 +125,49 @@ final class DataProviderTest extends TestCase
                         self::assertInstanceOf(DeviceReadingInterface::class, $data[0]);
                         self::assertSame('test-device-1-mixed-components-inc-temp', $data[0]->getName());
                         self::assertNull($data[0]->getRoomName());
-                        self::assertSame(42.0, $data[0]->getTemperatureValue());
-                        self::assertSame($temperature1time, $data[0]->getTemperatureTimestamp());
-                        self::assertTrue($data[0]->isTemperatureStale());
-                        self::assertNull($data[0]->getHumidityValue());
-                        self::assertNull($data[0]->getHumidityTimestamp());
-                        self::assertNull($data[0]->isHumidityStale());
+                        $temperature = $data[0]->getTemperature();
+                        self::assertInstanceOf(MeasurementInterface::class, $temperature);
+                        self::assertSame(42.0, $temperature->getValue());
+                        self::assertSame($temperature1time, $temperature->getTimestamp());
+                        self::assertTrue($temperature->isStale());
+                        self::assertNull($data[0]->getHumidity());
 
                         // device-4: temperature only, fresh
                         self::assertInstanceOf(DeviceReadingInterface::class, $data[1]);
                         self::assertSame('test-device-4-has-temp', $data[1]->getName());
                         self::assertSame('test-room-4', $data[1]->getRoomName());
-                        self::assertSame(98.0, $data[1]->getTemperatureValue());
-                        self::assertSame($temperature4time, $data[1]->getTemperatureTimestamp());
-                        self::assertFalse($data[1]->isTemperatureStale());
-                        self::assertNull($data[1]->getHumidityValue());
+                        $temperature = $data[1]->getTemperature();
+                        self::assertInstanceOf(MeasurementInterface::class, $temperature);
+                        self::assertSame(98.0, $temperature->getValue());
+                        self::assertSame($temperature4time, $temperature->getTimestamp());
+                        self::assertFalse($temperature->isStale());
+                        self::assertNull($data[1]->getHumidity());
 
                         // device-5: humidity only, fresh
                         self::assertInstanceOf(DeviceReadingInterface::class, $data[2]);
                         self::assertSame('test-device-5-humidity-only', $data[2]->getName());
                         self::assertSame('test-room-5', $data[2]->getRoomName());
-                        self::assertNull($data[2]->getTemperatureValue());
-                        self::assertNull($data[2]->getTemperatureTimestamp());
-                        self::assertNull($data[2]->isTemperatureStale());
-                        self::assertSame(55.0, $data[2]->getHumidityValue());
-                        self::assertSame($humidity5time, $data[2]->getHumidityTimestamp());
-                        self::assertFalse($data[2]->isHumidityStale());
+                        self::assertNull($data[2]->getTemperature());
+                        $humidity = $data[2]->getHumidity();
+                        self::assertInstanceOf(MeasurementInterface::class, $humidity);
+                        self::assertSame(55.0, $humidity->getValue());
+                        self::assertSame($humidity5time, $humidity->getTimestamp());
+                        self::assertFalse($humidity->isStale());
 
                         // device-6: temperature (fresh) and humidity (stale)
                         self::assertInstanceOf(DeviceReadingInterface::class, $data[3]);
                         self::assertSame('test-device-6-temp-and-humidity', $data[3]->getName());
                         self::assertSame('test-room-6', $data[3]->getRoomName());
-                        self::assertSame(70.0, $data[3]->getTemperatureValue());
-                        self::assertSame($temperature6time, $data[3]->getTemperatureTimestamp());
-                        self::assertFalse($data[3]->isTemperatureStale());
-                        self::assertSame(60.0, $data[3]->getHumidityValue());
-                        self::assertSame($humidity6time, $data[3]->getHumidityTimestamp());
-                        self::assertTrue($data[3]->isHumidityStale());
+                        $temperature = $data[3]->getTemperature();
+                        self::assertInstanceOf(MeasurementInterface::class, $temperature);
+                        self::assertSame(70.0, $temperature->getValue());
+                        self::assertSame($temperature6time, $temperature->getTimestamp());
+                        self::assertFalse($temperature->isStale());
+                        $humidity = $data[3]->getHumidity();
+                        self::assertInstanceOf(MeasurementInterface::class, $humidity);
+                        self::assertSame(60.0, $humidity->getValue());
+                        self::assertSame($humidity6time, $humidity->getTimestamp());
+                        self::assertTrue($humidity->isStale());
 
                         return true;
                     }
@@ -295,7 +304,9 @@ final class DataProviderTest extends TestCase
                         self::assertInstanceOf(DeviceReadingInterface::class, $data[0]);
                         self::assertSame('test-device', $data[0]->getName());
                         self::assertSame('test-room', $data[0]->getRoomName());
-                        self::assertSame(20.0, $data[0]->getTemperatureValue());
+                        $temperature = $data[0]->getTemperature();
+                        self::assertInstanceOf(MeasurementInterface::class, $temperature);
+                        self::assertSame(20.0, $temperature->getValue());
 
                         return true;
                     }

@@ -26,14 +26,15 @@ final class DeviceReadingOutputTransformer implements DeviceReadingOutputTransfo
      */
     private function humidity(DeviceReadingInterface $deviceReading): array
     {
-        if (null === $deviceReading->getHumidityValue()) {
+        $humidity = $deviceReading->getHumidity();
+        if (null === $humidity) {
             return [];
         }
 
         return [
-            self::KEY_HUMIDITY_VALUE => $deviceReading->getHumidityValue(),
-            self::KEY_HUMIDITY_TIMESTAMP => $deviceReading->getHumidityTimestamp(),
-            self::KEY_HUMIDITY_STALE => $deviceReading->isHumidityStale(),
+            self::KEY_HUMIDITY_VALUE => $humidity->getValue(),
+            self::KEY_HUMIDITY_TIMESTAMP => $humidity->getTimestamp(),
+            self::KEY_HUMIDITY_STALE => $humidity->isStale(),
         ];
     }
 
@@ -54,14 +55,15 @@ final class DeviceReadingOutputTransformer implements DeviceReadingOutputTransfo
      */
     private function temperature(DeviceReadingInterface $deviceReading): array
     {
-        if (null === $deviceReading->getTemperatureValue()) {
+        $temperature = $deviceReading->getTemperature();
+        if (null === $temperature) {
             return [];
         }
 
         return [
-            self::KEY_TEMPERATURE_VALUE => $deviceReading->getTemperatureValue(),
-            self::KEY_TEMPERATURE_TIMESTAMP => $deviceReading->getTemperatureTimestamp(),
-            self::KEY_TEMPERATURE_STALE => $deviceReading->isTemperatureStale(),
+            self::KEY_TEMPERATURE_VALUE => $temperature->getValue(),
+            self::KEY_TEMPERATURE_TIMESTAMP => $temperature->getTimestamp(),
+            self::KEY_TEMPERATURE_STALE => $temperature->isStale(),
         ];
     }
 }

@@ -54,12 +54,12 @@ final class DataProvider implements DataProviderInterface
     {
         $deviceStatus = $this->deviceStatusApi->getOneByDevice($device);
 
-        [$temperature, $temperatureTimestamp, $temperatureStale] = $this->resolveTemperature($deviceStatus, $hasTemperature);
-        [$humidity, $humidityTimestamp, $humidityStale] = $this->resolveHumidity($deviceStatus, $hasHumidity);
+        $temperature = $this->resolveTemperature($deviceStatus, $hasTemperature);
+        $humidity = $this->resolveHumidity($deviceStatus, $hasHumidity);
 
         // array_filter (rather than `null === … && null === …`) so both the
         // "has a reading" and "no reading" outcomes are reachable code paths.
-        if ([] === array_filter([$temperature, $humidity], static fn ($value): bool => null !== $value)) {
+        if ([] === array_filter([$temperature, $humidity], static fn (?MeasurementInterface $measurement): bool => null !== $measurement)) {
             return null;
         }
 
@@ -67,11 +67,7 @@ final class DataProvider implements DataProviderInterface
             $device->getLabel() ?? '',
             $this->resolveRoomName($device),
             $temperature,
-            $temperatureTimestamp,
-            $temperatureStale,
-            $humidity,
-            $humidityTimestamp,
-            $humidityStale
+            $humidity
         );
     }
 
@@ -115,23 +111,20 @@ final class DataProvider implements DataProviderInterface
         return $this->buildReading($device, $hasTemperature, $hasHumidity);
     }
 
-    /**
-     * @return array{0: null|float, 1: null|int, 2: null|bool} The [value, timestamp, stale] of the reading, or nulls
-     */
-    private function resolveHumidity(DeviceStatusInterface $deviceStatus, bool $hasHumidity): array
+    private function resolveHumidity(DeviceStatusInterface $deviceStatus, bool $hasHumidity): ?MeasurementInterface
     {
         if (!$hasHumidity) {
-            return [null, null, null];
+            return null;
         }
         $measurement = $deviceStatus->getRelativeHumidityMeasurement();
         if (!$measurement instanceof DeviceStatusRelativeHumidityMeasurementInterface) {
-            return [null, null, null];
+            return null;
         }
 
         $value = $measurement->getHumidity();
         $timestamp = $value->getTimestamp();
 
-        return [$value->getValue(), $timestamp, $timestamp < $this->now - self::STALE_THRESHOLD];
+        return new Measurement($value->getValue(), $timestamp, $timestamp < $this->now - self::STALE_THRESHOLD);
     }
 
     private function resolveRoomName(DeviceInterface $device): ?string
@@ -143,22 +136,19 @@ final class DataProvider implements DataProviderInterface
         return $this->locationRoomApi->getOneByDevice($device)->getName();
     }
 
-    /**
-     * @return array{0: null|float, 1: null|int, 2: null|bool} The [value, timestamp, stale] of the reading, or nulls
-     */
-    private function resolveTemperature(DeviceStatusInterface $deviceStatus, bool $hasTemperature): array
+    private function resolveTemperature(DeviceStatusInterface $deviceStatus, bool $hasTemperature): ?MeasurementInterface
     {
         if (!$hasTemperature) {
-            return [null, null, null];
+            return null;
         }
         $measurement = $deviceStatus->getTemperatureMeasurement();
         if (!$measurement instanceof DeviceStatusTemperatureMeasurementInterface) {
-            return [null, null, null];
+            return null;
         }
 
         $value = $measurement->getTemperature();
         $timestamp = $value->getTimestamp();
 
-        return [$value->getValue(), $timestamp, $timestamp < $this->now - self::STALE_THRESHOLD];
+        return new Measurement($value->getValue(), $timestamp, $timestamp < $this->now - self::STALE_THRESHOLD);
     }
 }
