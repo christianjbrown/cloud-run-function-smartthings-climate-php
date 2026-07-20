@@ -12,3 +12,11 @@ rules:
   no-empty-servers: off  # the server is declared per-operation (servers: [{ url: / }])
   security-defined: off  # auth is request-header gating (401), not an OpenAPI security scheme
   info-license: off      # the licence lives in composer.json / LICENSE, not in the spec
+
+# Redoc rendering options for the published docs (build-docs). Auto-expand the 200
+# response and fully expand its JSON sample so the happy-path payload is visible on
+# load without a click.
+theme:
+  openapi:
+    expandResponses: '200'
+    jsonSampleExpandLevel: all
