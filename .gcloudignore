@@ -13,3 +13,5 @@ node_modules
 package.json
 package-lock.json
 openapi.html
+_site/
+redocly.yaml
