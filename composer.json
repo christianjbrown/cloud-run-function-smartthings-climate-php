@@ -51,7 +51,7 @@
     "scripts": {
         "start": [
             "Composer\\Config::disableProcessTimeout",
-            "clear && (export $(grep -v '^#' .local.env | xargs) && FUNCTION_SOURCE=index.php FUNCTION_TARGET=run FUNCTION_SIGNATURE_TYPE=http php -d error_reporting=\"E_ALL & ~E_DEPRECATED\" -S localhost:${PORT:-8080} ./vendor/bin/router.php)"
+            "clear && (export $(grep -v '^#' .local.env | xargs) && FUNCTION_SOURCE=index.php FUNCTION_TARGET=run FUNCTION_SIGNATURE_TYPE=http php -d error_reporting=\"E_ALL & ~E_DEPRECATED\" -S localhost:${PORT:-8080} ./bin/router.php)"
         ],
         "test": [
             "clear && XDEBUG_MODE=coverage php -d memory_limit=-1 ./bin/phpunit && open ./.phpunit.cache/code-coverage-html/index.html"
