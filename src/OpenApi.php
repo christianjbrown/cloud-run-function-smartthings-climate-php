@@ -52,6 +52,65 @@ use OpenApi\Attributes as OA;
                         ],
                     ),
                 ],
+                // A real 200 body captured from a live request, with the device/room
+                // labels genericised (this is a public repo); the numeric readings and
+                // timestamps are exactly as returned. Keys come from the same constants
+                // the response is built from, so the sample cannot drift from the schema.
+                example: [
+                    ResponseInterface::RESPONSE_API_KEY_DATA => [
+                        OutputTransformerInterface::KEY_DEVICES => [
+                            [
+                                DeviceReadingOutputTransformerInterface::KEY_NAME => 'Button',
+                                DeviceReadingOutputTransformerInterface::KEY_ROOM_NAME => 'Living Room',
+                                DeviceReadingOutputTransformerInterface::KEY_TEMPERATURE_VALUE => 25.1,
+                                DeviceReadingOutputTransformerInterface::KEY_TEMPERATURE_TIMESTAMP => 1784571323,
+                                DeviceReadingOutputTransformerInterface::KEY_TEMPERATURE_STALE => false,
+                            ],
+                            [
+                                DeviceReadingOutputTransformerInterface::KEY_NAME => 'Button',
+                                DeviceReadingOutputTransformerInterface::KEY_ROOM_NAME => 'Office',
+                                DeviceReadingOutputTransformerInterface::KEY_TEMPERATURE_VALUE => 24.8,
+                                DeviceReadingOutputTransformerInterface::KEY_TEMPERATURE_TIMESTAMP => 1784567960,
+                                DeviceReadingOutputTransformerInterface::KEY_TEMPERATURE_STALE => false,
+                            ],
+                            [
+                                DeviceReadingOutputTransformerInterface::KEY_NAME => 'Door sensor',
+                                DeviceReadingOutputTransformerInterface::KEY_ROOM_NAME => 'Hallway',
+                                DeviceReadingOutputTransformerInterface::KEY_TEMPERATURE_VALUE => 22.3,
+                                DeviceReadingOutputTransformerInterface::KEY_TEMPERATURE_TIMESTAMP => 1784571388,
+                                DeviceReadingOutputTransformerInterface::KEY_TEMPERATURE_STALE => false,
+                            ],
+                            [
+                                DeviceReadingOutputTransformerInterface::KEY_NAME => 'Hygrometer',
+                                DeviceReadingOutputTransformerInterface::KEY_ROOM_NAME => 'Bedroom',
+                                DeviceReadingOutputTransformerInterface::KEY_TEMPERATURE_VALUE => 24.5,
+                                DeviceReadingOutputTransformerInterface::KEY_TEMPERATURE_TIMESTAMP => 1784566164,
+                                DeviceReadingOutputTransformerInterface::KEY_TEMPERATURE_STALE => false,
+                                DeviceReadingOutputTransformerInterface::KEY_HUMIDITY_VALUE => 43,
+                                DeviceReadingOutputTransformerInterface::KEY_HUMIDITY_TIMESTAMP => 1784570405,
+                                DeviceReadingOutputTransformerInterface::KEY_HUMIDITY_STALE => false,
+                            ],
+                            [
+                                DeviceReadingOutputTransformerInterface::KEY_NAME => 'Motion sensor',
+                                DeviceReadingOutputTransformerInterface::KEY_ROOM_NAME => 'Hallway',
+                                DeviceReadingOutputTransformerInterface::KEY_TEMPERATURE_VALUE => 25.9,
+                                DeviceReadingOutputTransformerInterface::KEY_TEMPERATURE_TIMESTAMP => 1784571267,
+                                DeviceReadingOutputTransformerInterface::KEY_TEMPERATURE_STALE => false,
+                            ],
+                            [
+                                DeviceReadingOutputTransformerInterface::KEY_NAME => 'Motion sensor',
+                                DeviceReadingOutputTransformerInterface::KEY_ROOM_NAME => 'Living Room',
+                                DeviceReadingOutputTransformerInterface::KEY_TEMPERATURE_VALUE => 25.1,
+                                DeviceReadingOutputTransformerInterface::KEY_TEMPERATURE_TIMESTAMP => 1784570955,
+                                DeviceReadingOutputTransformerInterface::KEY_TEMPERATURE_STALE => false,
+                            ],
+                        ],
+                    ],
+                    ResponseInterface::RESPONSE_API_KEY_SUCCESS => true,
+                    ResponseInterface::RESPONSE_API_KEY_TIMESTAMP_ISO8601 => '2026-07-20T18:19:48+00:00',
+                    ResponseInterface::RESPONSE_API_KEY_TIMESTAMP_UNIX => 1784571588,
+                    ResponseInterface::RESPONSE_API_KEY_VERSION => 'get-smartthings-climate-00058-gxq',
+                ],
             ),
         ),
         new OA\Response(
