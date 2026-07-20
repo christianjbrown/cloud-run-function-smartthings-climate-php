@@ -8,7 +8,7 @@ use ChristianBrown\OAuth2Client\Lock\LockInterface;
 
 interface MySqlAdvisoryLockInterface extends LockInterface
 {
-    public const ERROR_NOT_ACQUIRED_SPRINTF = 'Could not acquire the advisory lock "%s" within %d seconds';
-    public const SQL_GET_LOCK = 'SELECT GET_LOCK(?, ?)';
-    public const SQL_RELEASE_LOCK = 'SELECT RELEASE_LOCK(?)';
+    public const string ERROR_NOT_ACQUIRED_SPRINTF = 'Could not acquire the advisory lock "%s" within %d seconds';
+    public const string SQL_GET_LOCK = 'SELECT GET_LOCK(?, ?)';
+    public const string SQL_RELEASE_LOCK = 'SELECT RELEASE_LOCK(?)';
 }

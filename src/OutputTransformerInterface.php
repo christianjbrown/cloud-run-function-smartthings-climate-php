@@ -6,7 +6,7 @@ namespace ChristianBrown\SmartThingsClimate;
 
 interface OutputTransformerInterface
 {
-    public const KEY_DEVICES = 'devices';
+    public const string KEY_DEVICES = 'devices';
 
     /**
      * @param DeviceReadingInterface[] $deviceTemperatures

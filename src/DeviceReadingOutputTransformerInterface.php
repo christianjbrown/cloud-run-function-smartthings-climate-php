@@ -6,14 +6,14 @@ namespace ChristianBrown\SmartThingsClimate;
 
 interface DeviceReadingOutputTransformerInterface
 {
-    public const KEY_HUMIDITY_STALE = 'humidityStale';
-    public const KEY_HUMIDITY_TIMESTAMP = 'humidityTimestamp';
-    public const KEY_HUMIDITY_VALUE = 'humidityValue';
-    public const KEY_NAME = 'name';
-    public const KEY_ROOM_NAME = 'roomName';
-    public const KEY_TEMPERATURE_STALE = 'temperatureStale';
-    public const KEY_TEMPERATURE_TIMESTAMP = 'temperatureTimestamp';
-    public const KEY_TEMPERATURE_VALUE = 'temperatureValue';
+    public const string KEY_HUMIDITY_STALE = 'humidityStale';
+    public const string KEY_HUMIDITY_TIMESTAMP = 'humidityTimestamp';
+    public const string KEY_HUMIDITY_VALUE = 'humidityValue';
+    public const string KEY_NAME = 'name';
+    public const string KEY_ROOM_NAME = 'roomName';
+    public const string KEY_TEMPERATURE_STALE = 'temperatureStale';
+    public const string KEY_TEMPERATURE_TIMESTAMP = 'temperatureTimestamp';
+    public const string KEY_TEMPERATURE_VALUE = 'temperatureValue';
 
     /**
      * @return mixed[]
