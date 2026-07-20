@@ -1,8 +1,8 @@
-# SmartThings Climate Google Cloud Function
+# SmartThings Climate Google Cloud Run Function
 
 [![CI](https://github.com/christianjbrown/php-gcp-function-smartthings-climate/actions/workflows/ci.yml/badge.svg)](https://github.com/christianjbrown/php-gcp-function-smartthings-climate/actions/workflows/ci.yml)
 
-A small [Google Cloud Function](https://cloud.google.com/functions) (PHP) that reads the current temperature and relative humidity from your [SmartThings](https://www.smartthings.com/) devices and returns them as a single JSON payload.
+A small [Google Cloud Run function](https://cloud.google.com/run) (PHP) that reads the current temperature and relative humidity from your [SmartThings](https://www.smartthings.com/) devices and returns them as a single JSON payload.
 
 It walks every device in your SmartThings account, keeps the ones that expose a `temperatureMeasurement` or `relativeHumidityMeasurement` capability, reads each one's latest temperature and/or humidity, resolves the room each device belongs to, flags readings older than 24 hours as stale, and returns the lot sorted by device name.
 
@@ -42,7 +42,7 @@ Configuration is read entirely from environment variables.
 | `SMARTTHINGS_OAUTH_TOKEN_URL` | ✅ | The SmartThings OAuth token endpoint (`https://api.smartthings.com/oauth/token`). |
 | `SMARTTHINGS_DATABASE_DSN` | ✅ | Doctrine DSN for the MySQL database holding the OAuth token store (see [Authentication](#lock-authentication)). |
 | `SMARTTHINGS_LOCATION_ID` | ✅ | The SmartThings location whose devices are read; readings are scoped to this location. |
-| `K_REVISION` | ✅ | Set automatically by the Cloud Functions/Cloud Run runtime; only needs setting yourself when running locally. |
+| `K_REVISION` | ✅ | Set automatically by the Cloud Run runtime; only needs setting yourself when running locally. |
 | `REQUIRED_HEADER_KEY` | — | If set (with `REQUIRED_HEADER_VALUE`), requests must send this header to be served. |
 | `REQUIRED_HEADER_VALUE` | — | Expected value for `REQUIRED_HEADER_KEY`. |
 | `REQUIRED_ORIGIN` | — | Restricts responses to this CORS origin. |
@@ -147,23 +147,26 @@ composer fix-style         # auto-fix style in src/ and tests/
 composer fix-style-diff    # auto-fix changed files only
 ```
 
-### :page_facing_up: API docs (dev-only)
+## :books: API documentation
 
-The committed `openapi.yaml` can be previewed and rendered as HTML with [Redoc](https://redocly.com/) via `@redocly/cli`. This tooling is dev-only and never ships to GCP — `node_modules/`, `package.json`, `package-lock.json` and the built `openapi.html` are all in `.gcloudignore`, so the deployed function stays pure-PHP:
+The committed `openapi.yaml` is generated from the `#[OA\...]` attributes in `src/`
+(`composer openapi:generate`). Dev-only [Redoc](https://redocly.com/redoc) tooling
+(`@redocly/cli`) renders and lints it — it is separate from the PHP runtime and excluded
+from both git and the GCP deploy, so it never affects the deployed function.
 
 ```bash
-npm install            # install the docs tooling (once)
-npm run docs:preview   # live preview in the browser
-npm run docs:build     # build a static openapi.html (git-ignored)
-npm run docs:lint      # lint the spec
+npm install            # one-time: installs the docs tooling (Node/npm)
+npm run docs:preview   # live browser preview of openapi.yaml (local server)
+npm run docs:build     # write a shareable static openapi.html (git-ignored build artifact)
+npm run docs:lint      # lint openapi.yaml
 ```
 
 
 
 ## :rocket: CI & deployment
 
-- **`.github/workflows/ci.yml`** runs on pull requests to `main`: `composer update`, PHPCS, and PHPUnit.
-- **`.github/workflows/deploy.yml`** runs on push to `main`: deploys to Google Cloud Functions 2nd gen (`php85` runtime, `europe-west2`) via Workload Identity Federation, grants public (`allUsers`) invoker access on the underlying Cloud Run service, attaches the shared Cloud SQL instance (`--set-cloudsql-instances`) so the OAuth token store is reachable, then smoke-tests the deployed URL.
+- **`.github/workflows/ci.yml`** runs on pushes and pull requests to `main`: `composer install`, PHPCS, PHPStan, PHPUnit, and an OpenAPI spec-drift check.
+- **`.github/workflows/deploy.yml`** runs on push to `main`: deploys the Cloud Run function (`php85` runtime, `europe-west2`) via Workload Identity Federation, grants public (`allUsers`) invoker access on the underlying Cloud Run service, attaches the shared Cloud SQL instance (`--set-cloudsql-instances`) so the OAuth token store is reachable, then smoke-tests the deployed URL.
 
 Both workflows install the private `christianjbrown/*` dependencies using a `COMPOSER_AUTH` repository secret — a Composer auth JSON containing a GitHub token with read access to those repos:
 
