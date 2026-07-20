@@ -34,7 +34,9 @@
     "require-dev": {
         "christianjbrown/php-code-quality-scripts": "dev-main",
         "phpstan/phpstan": "^2.0",
-        "phpunit/phpunit": "^13.0"
+        "phpunit/phpunit": "^13.0",
+        "zircote/swagger-php": "^6.4",
+        "league/openapi-psr7-validator": "^0.24.0"
     },
     "autoload": {
         "psr-4": {
@@ -56,6 +58,9 @@
         ],
         "stan": [
             "clear && ./bin/phpstan analyse"
+        ],
+        "openapi:generate": [
+            "php tools/generate-openapi.php"
         ],
         "check-style": [
             "clear && ./bin/php-cs ./src ./tests"

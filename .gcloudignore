@@ -1,0 +1,11 @@
+.git/
+.gitignore
+.gcloudignore
+.local.env
+vendor/
+bin/
+.phpunit.cache/
+.phpstan.cache/
+.idea/
+.claude/
+tools/

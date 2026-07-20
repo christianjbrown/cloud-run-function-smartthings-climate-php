@@ -1,0 +1,134 @@
+openapi: 3.0.0
+info:
+  title: 'SmartThings Climate Cloud Function'
+  description: 'Reads the current temperature and relative humidity from the SmartThings devices in a fixed location and returns them as a single JSON envelope.'
+  version: 1.0.0
+paths:
+  /:
+    get:
+      summary: 'Get the current climate readings for the configured location.'
+      description: "Returns the current temperature and relative humidity readings for the SmartThings devices in the function's configured location."
+      operationId: getClimate
+      responses:
+        '200':
+          description: 'The current climate readings for the configured location.'
+          headers:
+            Access-Control-Allow-Methods:
+              description: 'Allowed CORS methods.'
+              schema:
+                type: string
+            Access-Control-Allow-Origin:
+              description: 'Configured allowed origin (present when a required origin is configured).'
+              schema:
+                type: string
+            Cache-Control:
+              description: 'CDN/browser cache directives (present when cache TTLs are configured).'
+              schema:
+                type: string
+            Surrogate-Control:
+              description: 'Surrogate cache directives (present when cache TTLs are configured).'
+              schema:
+                type: string
+            Vary:
+              description: 'Vary list (present when a required origin is configured).'
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                required:
+                  - success
+                  - timestamp_unix
+                  - timestamp_iso8601
+                  - version
+                  - data
+                properties:
+                  success: { type: boolean }
+                  timestamp_unix: { type: integer }
+                  timestamp_iso8601: { type: string, format: date-time }
+                  version: { type: string }
+                  data: { $ref: '#/components/schemas/ClimateData' }
+                type: object
+                additionalProperties: false
+        '401':
+          description: 'The request failed header authorization.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '500':
+          description: 'An unhandled error occurred: the OAuth refresh-token flow failed (e.g. a revoked refresh token returning invalid_grant), the token store could not be reached, the upstream SmartThings API failed, or the response could not be encoded.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+      servers:
+        -
+          url: /
+components:
+  schemas:
+    DeviceReading:
+      description: "One device's readings. The device name is always present; the room name and each measurement block (value/timestamp/stale) appear only when that value is available. A whole-valued measurement is serialised without a decimal point, so its type is `number`, not `integer`."
+      required:
+        - name
+      properties:
+        name:
+          description: 'The device label.'
+          type: string
+        roomName:
+          description: 'The name of the room the device is in.'
+          type: string
+        temperatureValue:
+          description: "The temperature reading, in the device's reported unit."
+          type: number
+        temperatureTimestamp:
+          description: 'When the temperature was read (Unix seconds).'
+          type: integer
+        temperatureStale:
+          description: 'Whether the temperature reading is older than the stale threshold.'
+          type: boolean
+        humidityValue:
+          description: 'The relative humidity reading (percent).'
+          type: number
+        humidityTimestamp:
+          description: 'When the humidity was read (Unix seconds).'
+          type: integer
+        humidityStale:
+          description: 'Whether the humidity reading is older than the stale threshold.'
+          type: boolean
+      type: object
+      additionalProperties: false
+    ClimateData:
+      description: 'The current climate readings, one entry per SmartThings device that exposes a temperature or relative-humidity measurement.'
+      required:
+        - devices
+      properties:
+        devices:
+          description: 'The per-device readings, sorted by device name.'
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceReading'
+      type: object
+      additionalProperties: false
+    ErrorEnvelope:
+      description: 'The JSON error envelope returned for a failed request (an authorization failure or an unhandled error).'
+      required:
+        - success
+        - timestamp_unix
+        - timestamp_iso8601
+        - version
+        - error
+      properties:
+        success:
+          type: boolean
+        timestamp_unix:
+          type: integer
+        timestamp_iso8601:
+          type: string
+          format: date-time
+        version:
+          type: string
+        error:
+          type: string
+      type: object
+      additionalProperties: false
