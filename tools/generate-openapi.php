@@ -7,13 +7,17 @@ use OpenApi\Generator;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-// Scan the typed `#[OA\...]` attributes under `src/` and emit the OpenAPI 3.0
-// document. Pinning the version to 3.0.0 keeps it inside the broadest validator
-// support. The result is written to the committed `openapi.yaml`; CI regenerates
-// it and fails on any diff, so the spec cannot drift from the attributes.
+// Scan the typed `#[OA\...]` attributes under `src/` (plus the shared envelope
+// schema components declared in the `php-gcp-function-lib` sibling) and emit the
+// OpenAPI 3.0 document. Pinning the version to 3.0.0 keeps it inside the broadest
+// validator support. The result is written to the committed `openapi.yaml`; CI
+// regenerates it and fails on any diff, so the spec cannot drift from the attributes.
 $openapi = (new Generator())
     ->setVersion(OpenApi::VERSION_3_0_0)
-    ->generate([__DIR__ . '/../src']);
+    ->generate([
+        __DIR__ . '/../src',
+        __DIR__ . '/../vendor/christianjbrown/php-gcp-function-lib/src',
+    ]);
 
 if (!$openapi instanceof OpenApi) {
     fwrite(STDERR, "Failed to generate the OpenAPI document from src/.\n");

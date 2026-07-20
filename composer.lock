@@ -152,12 +152,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/christianjbrown/php-gcp-function-lib.git",
-                "reference": "4e0008d50ba36a51249a3f2832043c958e5871da"
+                "reference": "10d276306b3fa9ae7c3103579259ad99f0b52059"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/christianjbrown/php-gcp-function-lib/zipball/4e0008d50ba36a51249a3f2832043c958e5871da",
-                "reference": "4e0008d50ba36a51249a3f2832043c958e5871da",
+                "url": "https://api.github.com/repos/christianjbrown/php-gcp-function-lib/zipball/10d276306b3fa9ae7c3103579259ad99f0b52059",
+                "reference": "10d276306b3fa9ae7c3103579259ad99f0b52059",
                 "shasum": ""
             },
             "require": {
@@ -167,8 +167,10 @@
             },
             "require-dev": {
                 "christianjbrown/php-code-quality-scripts": "dev-main",
+                "opis/json-schema": "^2.4",
                 "phpstan/phpstan": "^2.0",
-                "phpunit/phpunit": "^13.0"
+                "phpunit/phpunit": "^13.0",
+                "zircote/swagger-php": "^6.4"
             },
             "default-branch": true,
             "type": "library",
@@ -222,7 +224,7 @@
             "support": {
                 "source": "https://github.com/christianjbrown/php-gcp-function-lib/tree/main"
             },
-            "time": "2026-07-20T13:16:13+00:00"
+            "time": "2026-07-20T15:11:53+00:00"
         },
         {
             "name": "christianjbrown/php-key-value-store-lib",

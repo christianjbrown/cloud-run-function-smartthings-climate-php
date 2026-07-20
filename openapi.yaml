@@ -36,20 +36,9 @@ paths:
           content:
             application/json:
               schema:
-                required:
-                  - success
-                  - timestamp_unix
-                  - timestamp_iso8601
-                  - version
-                  - data
-                properties:
-                  success: { type: boolean }
-                  timestamp_unix: { type: integer }
-                  timestamp_iso8601: { type: string, format: date-time }
-                  version: { type: string }
-                  data: { $ref: '#/components/schemas/ClimateData' }
-                type: object
-                additionalProperties: false
+                allOf:
+                  - { $ref: '#/components/schemas/SuccessEnvelope' }
+                  - { properties: { data: { $ref: '#/components/schemas/ClimateData' } }, type: object }
         '401':
           description: 'The request failed header authorization.'
           content:
@@ -111,7 +100,7 @@ components:
       type: object
       additionalProperties: false
     ErrorEnvelope:
-      description: 'The JSON error envelope returned for a failed request (an authorization failure or an unhandled error).'
+      description: 'The complete JSON error envelope returned by every consuming function for a failed request (an authorization failure or an unhandled error). Identical for every function.'
       required:
         - success
         - timestamp_unix
@@ -120,15 +109,47 @@ components:
         - error
       properties:
         success:
+          description: 'Always false for an error response.'
           type: boolean
         timestamp_unix:
+          description: 'When the response was generated (Unix seconds).'
           type: integer
         timestamp_iso8601:
+          description: 'When the response was generated (ISO 8601).'
           type: string
           format: date-time
         version:
+          description: 'The Cloud Run revision that produced the response.'
           type: string
         error:
+          description: 'A human-readable description of what went wrong.'
           type: string
+      type: object
+      additionalProperties: false
+    SuccessEnvelope:
+      description: 'The shared base of the JSON success envelope returned by every consuming function. The `data` property is a generic object placeholder; each function tightens it to its own data schema by composing this base with `allOf`, e.g. `allOf: [{$ref: "#/components/schemas/SuccessEnvelope"}, {properties: {data: {$ref: "#/components/schemas/YourData"}}}]`.'
+      required:
+        - success
+        - timestamp_unix
+        - timestamp_iso8601
+        - version
+        - data
+      properties:
+        success:
+          description: 'Always true for a success response.'
+          type: boolean
+        timestamp_unix:
+          description: 'When the response was generated (Unix seconds).'
+          type: integer
+        timestamp_iso8601:
+          description: 'When the response was generated (ISO 8601).'
+          type: string
+          format: date-time
+        version:
+          description: 'The Cloud Run revision that produced the response.'
+          type: string
+        data:
+          description: 'The function-specific payload. Each function overrides this via `allOf` with its own data schema.'
+          type: object
       type: object
       additionalProperties: false
