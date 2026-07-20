@@ -50,8 +50,10 @@ the `SMARTTHINGS_OAUTH_*` credentials, `SMARTTHINGS_DATABASE_DSN`, `SMARTTHINGS_
 `K_REVISION` set (and a reachable database with a seeded refresh token) — see `README.md` for the full
 env-var list.
 
-Style tooling comes from the `christianjbrown/php-code-quality-scripts` dev dependency (php-cs-fixer
-+ PHP_CodeSniffer, **Symfony2 coding standard**); the `bin/php-cs*` scripts are thin wrappers over it.
+Style tooling comes from the `christianjbrown/php-code-quality-scripts` dev dependency: `check-style`
+runs **PHP_CodeSniffer 4** with the `ChristianBrown` standard (slevomat sniffs plus PSR/PEAR/Squiz/Generic)
+for linting, and **php-cs-fixer** (`@PhpCsFixer`/`@Symfony`) handles formatting; the `bin/php-cs*` scripts
+are thin wrappers over it.
 Static analysis is **PHPStan at `level: max`** (`phpstan.neon.dist`). Always run `composer fix-style`
 first, then `composer check-style` to surface anything left to fix by hand, then `composer stan` and
 `composer test` before finishing.
@@ -87,7 +89,7 @@ top-level `index.php` holds the framework entry point and is intentionally outsi
 - **`ConfigTransformer`** / **`ConfigTransformerInterface`** — builds a `Config` from the environment
   array. A single `extractRequiredString()` helper guards each required env key (`SMARTTHINGS_OAUTH_*`,
   `SMARTTHINGS_DATABASE_DSN`, `SMARTTHINGS_LOCATION_ID`) with sequential presence/type checks (kept in
-  one helper so the transformer's cyclomatic complexity stays within the Symfony2 limit), delegating
+  one helper so the transformer's cyclomatic complexity stays within the `ChristianBrown` standard's limit), delegating
   the rest of the env to the injected `FunctionConfigTransformer`.
 - **`Database\EntityManagerFactory`** / **`Database\Entity\RefreshToken`** — the copied-in ORM plumbing:
   the factory builds a Doctrine `EntityManager` from the DSN (native lazy objects enabled for PHP 8.4+),
