@@ -88,6 +88,22 @@ final class DeviceReadingOutputTransformerTest extends TestCase
     /**
      * @throws Exception
      */
+    private function createMeasurement(?float $value, ?int $timestamp, ?bool $stale): MeasurementInterface
+    {
+        $measurement = self::createStub(MeasurementInterface::class);
+        $measurement->method('getValue')
+            ->willReturn($value);
+        $measurement->method('getTimestamp')
+            ->willReturn($timestamp);
+        $measurement->method('isStale')
+            ->willReturn($stale);
+
+        return $measurement;
+    }
+
+    /**
+     * @throws Exception
+     */
     private function createReading(string $name, ?string $roomName, ?float $temperatureValue, ?bool $temperatureStale, ?float $humidityValue, ?bool $humidityStale): DeviceReadingInterface
     {
         $temperature = null === $temperatureValue ? null : $this->createMeasurement($temperatureValue, 29000, $temperatureStale);
@@ -104,21 +120,5 @@ final class DeviceReadingOutputTransformerTest extends TestCase
             ->willReturn($humidity);
 
         return $reading;
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function createMeasurement(?float $value, ?int $timestamp, ?bool $stale): MeasurementInterface
-    {
-        $measurement = self::createStub(MeasurementInterface::class);
-        $measurement->method('getValue')
-            ->willReturn($value);
-        $measurement->method('getTimestamp')
-            ->willReturn($timestamp);
-        $measurement->method('isStale')
-            ->willReturn($stale);
-
-        return $measurement;
     }
 }

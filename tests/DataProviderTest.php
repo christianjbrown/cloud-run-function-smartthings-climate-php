@@ -4,12 +4,6 @@ declare(strict_types=1);
 
 namespace ChristianBrown\SmartThingsClimate\Tests;
 
-use ChristianBrown\SmartThingsClimate\DataProvider;
-use ChristianBrown\SmartThingsClimate\DeviceReading;
-use ChristianBrown\SmartThingsClimate\Measurement;
-use ChristianBrown\SmartThingsClimate\MeasurementInterface;
-use ChristianBrown\SmartThingsClimate\DeviceReadingInterface;
-use ChristianBrown\SmartThingsClimate\OutputTransformerInterface;
 use ChristianBrown\SmartThings\Api\DeviceApiInterface;
 use ChristianBrown\SmartThings\Api\DeviceStatusApiInterface;
 use ChristianBrown\SmartThings\Api\LocationRoomApiInterface;
@@ -22,6 +16,12 @@ use ChristianBrown\SmartThings\Model\DeviceStatusRelativeHumidityMeasurementInte
 use ChristianBrown\SmartThings\Model\DeviceStatusTemperatureMeasurementInterface;
 use ChristianBrown\SmartThings\Model\DeviceStatusTemperatureMeasurementTemperatureInterface;
 use ChristianBrown\SmartThings\Model\LocationRoomInterface;
+use ChristianBrown\SmartThingsClimate\DataProvider;
+use ChristianBrown\SmartThingsClimate\DeviceReading;
+use ChristianBrown\SmartThingsClimate\DeviceReadingInterface;
+use ChristianBrown\SmartThingsClimate\Measurement;
+use ChristianBrown\SmartThingsClimate\MeasurementInterface;
+use ChristianBrown\SmartThingsClimate\OutputTransformerInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
@@ -320,6 +320,8 @@ final class DataProviderTest extends TestCase
     }
 
     /**
+     * @phpstan-param mixed[] $components
+     *
      * @throws Exception
      */
     private function createDevice(string $label, array $components, ?string $roomId = null): DeviceInterface

@@ -18,6 +18,24 @@ final class OutputTransformerTest extends TestCase
     /**
      * @throws Exception
      */
+    public function testEmptyReadingsProducesOnlyAnEmptyDeviceList(): void
+    {
+        $deviceReadingOutputTransformer = self::createStub(DeviceReadingOutputTransformerInterface::class);
+
+        $transformer = new OutputTransformer($deviceReadingOutputTransformer);
+
+        $expected = [
+            OutputTransformerInterface::KEY_DEVICES => [],
+        ];
+
+        $actual = $transformer->transform([]);
+
+        self::assertSame($expected, $actual);
+    }
+
+    /**
+     * @throws Exception
+     */
     public function testReturnsTheTransformedDevicesSortedByName(): void
     {
         $reading2 = $this->createReading('b-device');
@@ -43,24 +61,6 @@ final class OutputTransformerTest extends TestCase
 
         // Passed out of order to exercise the sort.
         $actual = $transformer->transform([$reading2, $reading1]);
-
-        self::assertSame($expected, $actual);
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function testEmptyReadingsProducesOnlyAnEmptyDeviceList(): void
-    {
-        $deviceReadingOutputTransformer = self::createStub(DeviceReadingOutputTransformerInterface::class);
-
-        $transformer = new OutputTransformer($deviceReadingOutputTransformer);
-
-        $expected = [
-            OutputTransformerInterface::KEY_DEVICES => [],
-        ];
-
-        $actual = $transformer->transform([]);
 
         self::assertSame($expected, $actual);
     }

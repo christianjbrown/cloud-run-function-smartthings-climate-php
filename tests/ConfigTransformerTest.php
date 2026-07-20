@@ -48,23 +48,6 @@ final class ConfigTransformerTest extends TestCase
     }
 
     /**
-     * Each required key is exercised through both guard paths: a null value
-     * (empty) and a non-string value (fails the type check).
-     *
-     * @return array<string, array{0: string}>
-     */
-    public static function invalidKeyProvider(): array
-    {
-        return [
-            ConfigTransformerInterface::ENV_CLIENT_ID => [ConfigTransformerInterface::ENV_CLIENT_ID],
-            ConfigTransformerInterface::ENV_CLIENT_SECRET => [ConfigTransformerInterface::ENV_CLIENT_SECRET],
-            ConfigTransformerInterface::ENV_DATABASE_DSN => [ConfigTransformerInterface::ENV_DATABASE_DSN],
-            ConfigTransformerInterface::ENV_LOCATION_ID => [ConfigTransformerInterface::ENV_LOCATION_ID],
-            ConfigTransformerInterface::ENV_TOKEN_URL => [ConfigTransformerInterface::ENV_TOKEN_URL],
-        ];
-    }
-
-    /**
      * @throws Exception
      */
     #[DataProvider('invalidKeyProvider')]
@@ -96,6 +79,22 @@ final class ConfigTransformerTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage(sprintf('%s not set or not a string', $key));
         $transformer->transform($env);
+    }
+
+    /**
+     * Each required key is exercised through both guard paths: a null value
+     * (empty) and a non-string value (fails the type check).
+     *
+     * @return iterable<string, array{0: string}>
+     */
+    public static function invalidKeyProvider(): iterable
+    {
+
+        yield ConfigTransformerInterface::ENV_CLIENT_ID => [ConfigTransformerInterface::ENV_CLIENT_ID];
+        yield ConfigTransformerInterface::ENV_CLIENT_SECRET => [ConfigTransformerInterface::ENV_CLIENT_SECRET];
+        yield ConfigTransformerInterface::ENV_DATABASE_DSN => [ConfigTransformerInterface::ENV_DATABASE_DSN];
+        yield ConfigTransformerInterface::ENV_LOCATION_ID => [ConfigTransformerInterface::ENV_LOCATION_ID];
+        yield ConfigTransformerInterface::ENV_TOKEN_URL => [ConfigTransformerInterface::ENV_TOKEN_URL];
     }
 
     /**
