@@ -104,6 +104,5 @@
             "type": "github",
             "url": "git@github.com:christianjbrown/php-user-friendly-exception-lib.git"
         }
-    ],
-    "minimum-stability": "dev"
+    ]
 }
