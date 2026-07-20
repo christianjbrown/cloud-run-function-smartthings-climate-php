@@ -147,6 +147,17 @@ composer fix-style         # auto-fix style in src/ and tests/
 composer fix-style-diff    # auto-fix changed files only
 ```
 
+### :page_facing_up: API docs (dev-only)
+
+The committed `openapi.yaml` can be previewed and rendered as HTML with [Redoc](https://redocly.com/) via `@redocly/cli`. This tooling is dev-only and never ships to GCP — `node_modules/`, `package.json`, `package-lock.json` and the built `openapi.html` are all in `.gcloudignore`, so the deployed function stays pure-PHP:
+
+```bash
+npm install            # install the docs tooling (once)
+npm run docs:preview   # live preview in the browser
+npm run docs:build     # build a static openapi.html (git-ignored)
+npm run docs:lint      # lint the spec
+```
+
 
 
 ## :rocket: CI & deployment

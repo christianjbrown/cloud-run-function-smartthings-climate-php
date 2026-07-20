@@ -9,3 +9,7 @@ bin/
 .idea/
 .claude/
 tools/
+node_modules
+package.json
+package-lock.json
+openapi.html

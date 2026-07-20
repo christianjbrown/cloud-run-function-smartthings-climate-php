@@ -44,6 +44,26 @@ gitignored and Composer-installed, so run `composer install` first. Unlike the l
 | Auto-fix code style | `composer fix-style` |
 | Check / fix style on git diff only | `composer check-style-diff` / `composer fix-style-diff` |
 
+### OpenAPI docs (dev-only, npm)
+
+The committed `openapi.yaml` (generated from the `#[OA\...]` attributes in `src/` — see the Architecture
+notes) can be previewed and rendered with [Redoc](https://redocly.com/) via `@redocly/cli`. This tooling
+is **dev-only**: `package.json`, `package-lock.json`, `node_modules/` and the built `openapi.html` are all
+in `.gcloudignore`, so the deploy upload stays pure-PHP and the php85 buildpack never sees a Node app.
+There are **no runtime dependencies** — nothing here ships to GCP or runs in the deployed function.
+
+| Task | Command |
+| --- | --- |
+| Install the docs tooling (once) | `npm install` |
+| Live preview in the browser | `npm run docs:preview` |
+| Build static `openapi.html` (git-ignored) | `npm run docs:build` |
+| Lint the spec | `npm run docs:lint` |
+
+`npm run docs:lint` runs Redocly's opinionated `recommended` ruleset and reports findings for the
+minimal, generated, unauthenticated single-endpoint spec (e.g. `security-defined`); these are
+informational and are **not** a CI gate. Do not "fix" them by hand-editing `openapi.yaml` — it is
+regenerated from `src/` and CI fails on any drift (`composer openapi:generate` + `git diff --exit-code`).
+
 `composer start` exports `.local.env` (git-ignored) and serves the function at `http://localhost:8080`
 (override with `PORT`) via `FUNCTION_TARGET=run` on the Functions Framework router. A local run needs
 the `SMARTTHINGS_OAUTH_*` credentials, `SMARTTHINGS_DATABASE_DSN`, `SMARTTHINGS_LOCATION_ID` and
