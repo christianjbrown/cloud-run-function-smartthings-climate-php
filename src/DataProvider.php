@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace ChristianBrown\SmartThingsClimate;
 
+use ChristianBrown\Database\ClimateMeasurementRecorderInterface;
+use ChristianBrown\Database\Entity\SmartThingsClimate;
 use ChristianBrown\SmartThings\Api\DeviceApiInterface;
 use ChristianBrown\SmartThings\Api\DeviceStatusApiInterface;
 use ChristianBrown\SmartThings\Api\LocationRoomApiInterface;
@@ -13,16 +15,21 @@ use ChristianBrown\SmartThings\Model\DeviceInterface;
 use ChristianBrown\SmartThings\Model\DeviceStatusInterface;
 use ChristianBrown\SmartThings\Model\DeviceStatusRelativeHumidityMeasurementInterface;
 use ChristianBrown\SmartThings\Model\DeviceStatusTemperatureMeasurementInterface;
+use DateTimeImmutable;
 use Psr\Http\Message\ServerRequestInterface;
+use Throwable;
 
 use function array_filter;
 use function array_map;
 use function array_merge;
 use function array_values;
+use function error_log;
 use function in_array;
 
 final class DataProvider implements DataProviderInterface
 {
+    private ClimateAverageCalculatorInterface $climateAverageCalculator;
+    private ClimateMeasurementRecorderInterface $climateMeasurementRecorder;
     private DeviceApiInterface $devicesApi;
     private DeviceStatusApiInterface $deviceStatusApi;
     private string $locationId;
@@ -30,12 +37,14 @@ final class DataProvider implements DataProviderInterface
     private int $now;
     private OutputTransformerInterface $outputTransformer;
 
-    public function __construct(DeviceApiInterface $devicesApi, DeviceStatusApiInterface $deviceStatusApi, LocationRoomApiInterface $locationRoomApi, OutputTransformerInterface $outputTransformer, string $locationId)
+    public function __construct(DeviceApiInterface $devicesApi, DeviceStatusApiInterface $deviceStatusApi, LocationRoomApiInterface $locationRoomApi, OutputTransformerInterface $outputTransformer, ClimateAverageCalculatorInterface $climateAverageCalculator, ClimateMeasurementRecorderInterface $climateMeasurementRecorder, string $locationId)
     {
         $this->devicesApi = $devicesApi;
         $this->deviceStatusApi = $deviceStatusApi;
         $this->locationRoomApi = $locationRoomApi;
         $this->outputTransformer = $outputTransformer;
+        $this->climateAverageCalculator = $climateAverageCalculator;
+        $this->climateMeasurementRecorder = $climateMeasurementRecorder;
         $this->locationId = $locationId;
         $this->now = time();
     }
@@ -45,12 +54,14 @@ final class DataProvider implements DataProviderInterface
      */
     public function getData(ServerRequestInterface $request): array
     {
-        $readings = array_map(
+        $readings = array_values(array_filter(array_map(
             fn (DeviceInterface $device): ?DeviceReading => $this->processDevice($device),
             $this->devicesApi->getMultiple($this->locationId)
-        );
+        )));
 
-        return $this->outputTransformer->transform(array_values(array_filter($readings)));
+        $this->recordClimate($readings);
+
+        return $this->outputTransformer->transform($readings);
     }
 
     private function buildReading(DeviceInterface $device, bool $hasTemperature, bool $hasHumidity): ?DeviceReading
@@ -112,6 +123,35 @@ final class DataProvider implements DataProviderInterface
         }
 
         return $this->buildReading($device, $hasTemperature, $hasHumidity);
+    }
+
+    /**
+     * Best-effort persistence of the average house temperature/humidity. The
+     * write is wrapped so a database failure is logged, never propagated — it
+     * must not disturb the function's response.
+     *
+     * @param DeviceReadingInterface[] $readings
+     */
+    private function recordClimate(array $readings): void
+    {
+        $temperature = $this->climateAverageCalculator->averageTemperature($readings);
+        $humidity = $this->climateAverageCalculator->averageHumidity($readings);
+
+        // Nothing worth recording when every reading is absent or stale.
+        if ([] === array_filter([$temperature, $humidity], static fn (?float $value): bool => null !== $value)) {
+            return;
+        }
+
+        try {
+            $this->climateMeasurementRecorder->record(
+                (new SmartThingsClimate())
+                    ->setRecordedAt(new DateTimeImmutable())
+                    ->setTemperature($temperature)
+                    ->setHumidity($humidity)
+            );
+        } catch (Throwable $exception) {
+            error_log('SmartThings climate write failed: '.$exception->getMessage());
+        }
     }
 
     private function resolveHumidity(DeviceStatusInterface $deviceStatus, bool $hasHumidity): ?MeasurementInterface

@@ -20,16 +20,15 @@
     "require": {
         "php": "^8.5",
         "christianjbrown/php-api-client-lib": "dev-main",
+        "christianjbrown/php-christianbrown-database-orm": "dev-main",
         "christianjbrown/php-gcp-function-lib": "dev-main",
         "christianjbrown/php-key-value-store-lib": "dev-main",
         "christianjbrown/php-oauth2-client-lib": "dev-main",
         "christianjbrown/php-smartthings-api-lib": "dev-main",
         "christianjbrown/php-user-friendly-exception-lib": "dev-main",
         "doctrine/dbal": "^4.4.3",
-        "doctrine/orm": "^3.6.7",
         "google/cloud-functions-framework": "^1.1",
-        "psr/http-client": "^1.0",
-        "symfony/cache": "^8.0"
+        "psr/http-client": "^1.0"
     },
     "require-dev": {
         "christianjbrown/php-code-quality-scripts": "dev-main",
@@ -88,6 +87,10 @@
         {
             "type": "github",
             "url": "git@github.com:christianjbrown/php-api-client-lib.git"
+        },
+        {
+            "type": "github",
+            "url": "git@github.com:christianjbrown/php-christianbrown-database-orm.git"
         },
         {
             "type": "github",

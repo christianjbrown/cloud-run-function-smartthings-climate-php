@@ -22,10 +22,18 @@ DBAL directly for the token store's persistence. It runs on Google's
 
 **Authentication.** The function no longer uses a static SmartThings token. On each request it obtains
 an OAuth access token via the refresh-token grant (`RefreshTokenManager`), reading and writing both the
-access token and the rotating refresh token to a shared MySQL key-value table. The minimal ORM plumbing
-for this — `EntityManagerFactory` and the `RefreshToken` entity — is **copied into this repo** under
-`src/Database/` rather than depended on: other services (e.g. `underpinned-*`) may share the same
-physical database for cost, but there is deliberately **no code coupling** between them.
+access token and the rotating refresh token to a shared MySQL key-value table. The ORM plumbing for this
+— the `EntityManagerFactory` and the `RefreshToken` entity — now lives in the shared
+`christianjbrown/php-christianbrown-database-orm` package (`ChristianBrown\Database\…`), which this app
+depends on; it is the single home for every entity on the shared `christianbrown` schema, so the
+Met Office weather function and a future historical-climate reader can reuse the same mappings. Only the
+`MySqlAdvisoryLock` (used to serialise token refreshes) remains local under `src/Database/`.
+
+**Climate history.** On each request the function also records the average house temperature and
+humidity to the shared `smartthings_climate` table (append-only, one row per origin request), reusing
+the same `EntityManager`/connection already opened for the token store. The write is best-effort:
+`DataProvider` wraps it in a `try/catch` and `error_log()`s failures so a database problem never
+disturbs the response (see `ClimateAverageCalculator` and the shared `ClimateMeasurementRecorder`).
 
 ## Commands
 
@@ -111,14 +119,23 @@ top-level `index.php` holds the framework entry point and is intentionally outsi
   `SMARTTHINGS_DATABASE_DSN`, `SMARTTHINGS_LOCATION_ID`) with sequential presence/type checks (kept in
   one helper so the transformer's cyclomatic complexity stays within the `ChristianBrown` standard's limit), delegating
   the rest of the env to the injected `FunctionConfigTransformer`.
-- **`Database\EntityManagerFactory`** / **`Database\Entity\RefreshToken`** — the copied-in ORM plumbing:
-  the factory builds a Doctrine `EntityManager` from the DSN (native lazy objects enabled for PHP 8.4+),
-  and `RefreshToken` maps the shared `refresh_tokens` key-value table via the abstract entity from
-  `php-key-value-store-lib`.
+- **Shared ORM (`ChristianBrown\Database\…`)** — the `EntityManagerFactory` (Doctrine `EntityManager`
+  from the DSN, native lazy objects enabled), the `RefreshToken` entity (mapping the shared
+  `refresh_tokens` key-value table), the `SmartThingsClimate` entity, and the
+  `ClimateMeasurementRecorder` all come from the `php-christianbrown-database-orm` package — not this
+  repo. `index.php` builds one `EntityManager` and shares it between the token stores and the recorder.
+- **`Database\MySqlAdvisoryLock`** — the one piece of local DB plumbing: a `GET_LOCK`/`RELEASE_LOCK`
+  advisory lock (on the token store's connection) that serialises refresh-token rotation across
+  instances.
+- **`ClimateAverageCalculator`** / **`ClimateAverageCalculatorInterface`** — computes the average
+  non-stale temperature and humidity across the `DeviceReading`s; returns `null` for a metric when no
+  fresh reading exists.
 - **`DataProvider`** — implements the lib's `DataProviderInterface`. `getData()` lists devices, and for
   each keeps those exposing a `temperatureMeasurement` or `relativeHumidityMeasurement` capability,
   reads its status, resolves the room name (for devices with a room) and battery, flags readings older
-  than `STALE_THRESHOLD` (24h) as stale, and builds `DeviceReading` value objects.
+  than `STALE_THRESHOLD` (24h) as stale, and builds `DeviceReading` value objects. It then records the
+  average climate to the database (best-effort, isolated by `try/catch`) before handing the readings to
+  the `OutputTransformer`.
 - **`DeviceReading`** / **`DeviceReadingInterface`** — a plain typed DTO for one device's label, room,
   battery, temperature/humidity values, timestamps, and stale flags.
 - **`OutputTransformer`** — sorts the readings by label, maps each through

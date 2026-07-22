@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace ChristianBrown\SmartThingsClimate\Tests;
 
+use ChristianBrown\Database\ClimateMeasurementRecorderInterface;
+use ChristianBrown\Database\Entity\SmartThingsClimate;
 use ChristianBrown\SmartThings\Api\DeviceApiInterface;
 use ChristianBrown\SmartThings\Api\DeviceStatusApiInterface;
 use ChristianBrown\SmartThings\Api\LocationRoomApiInterface;
@@ -16,18 +18,25 @@ use ChristianBrown\SmartThings\Model\DeviceStatusRelativeHumidityMeasurementInte
 use ChristianBrown\SmartThings\Model\DeviceStatusTemperatureMeasurementInterface;
 use ChristianBrown\SmartThings\Model\DeviceStatusTemperatureMeasurementTemperatureInterface;
 use ChristianBrown\SmartThings\Model\LocationRoomInterface;
+use ChristianBrown\SmartThingsClimate\ClimateAverageCalculatorInterface;
 use ChristianBrown\SmartThingsClimate\DataProvider;
 use ChristianBrown\SmartThingsClimate\DeviceReading;
 use ChristianBrown\SmartThingsClimate\DeviceReadingInterface;
 use ChristianBrown\SmartThingsClimate\Measurement;
 use ChristianBrown\SmartThingsClimate\MeasurementInterface;
 use ChristianBrown\SmartThingsClimate\OutputTransformerInterface;
+use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
+use RuntimeException;
 
+use function ini_set;
+use function sys_get_temp_dir;
+use function tempnam;
 use function time;
+use function unlink;
 
 #[CoversClass(DataProvider::class)]
 #[CoversClass(DeviceReading::class)]
@@ -175,9 +184,99 @@ final class DataProviderTest extends TestCase
             )
             ->willReturn(['test-actual-output']);
 
-        $dataProvider = new DataProvider($deviceApi, $deviceStatusApi, $locationRoomApi, $outputTransformer, 'test-location-id');
+        $dataProvider = new DataProvider($deviceApi, $deviceStatusApi, $locationRoomApi, $outputTransformer, self::createStub(ClimateAverageCalculatorInterface::class), self::createStub(ClimateMeasurementRecorderInterface::class), 'test-location-id');
 
         $actual = $dataProvider->getData($request);
+
+        self::assertSame(['test-actual-output'], $actual);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testAverageClimateIsRecorded(): void
+    {
+        $request = self::createStub(ServerRequestInterface::class);
+
+        $deviceApi = self::createStub(DeviceApiInterface::class);
+        $deviceApi->method('getMultiple')
+            ->willReturn([]);
+
+        $deviceStatusApi = self::createStub(DeviceStatusApiInterface::class);
+        $locationRoomApi = self::createStub(LocationRoomApiInterface::class);
+
+        $outputTransformer = self::createStub(OutputTransformerInterface::class);
+        $outputTransformer->method('transform')
+            ->willReturn(['test-actual-output']);
+
+        $climateAverageCalculator = self::createStub(ClimateAverageCalculatorInterface::class);
+        $climateAverageCalculator->method('averageTemperature')
+            ->willReturn(21.5);
+        $climateAverageCalculator->method('averageHumidity')
+            ->willReturn(47.0);
+
+        $climateMeasurementRecorder = self::createMock(ClimateMeasurementRecorderInterface::class);
+        $climateMeasurementRecorder->expects(self::once())
+            ->method('record')
+            ->with(
+                self::callback(
+                    static function (SmartThingsClimate $reading): bool {
+                        self::assertSame(21.5, $reading->getTemperature());
+                        self::assertSame(47.0, $reading->getHumidity());
+                        self::assertInstanceOf(DateTimeImmutable::class, $reading->getRecordedAt());
+
+                        return true;
+                    }
+                )
+            );
+
+        $dataProvider = new DataProvider($deviceApi, $deviceStatusApi, $locationRoomApi, $outputTransformer, $climateAverageCalculator, $climateMeasurementRecorder, 'test-location-id');
+
+        self::assertSame(['test-actual-output'], $dataProvider->getData($request));
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testClimateWriteFailureIsSwallowed(): void
+    {
+        $request = self::createStub(ServerRequestInterface::class);
+
+        $deviceApi = self::createStub(DeviceApiInterface::class);
+        $deviceApi->method('getMultiple')
+            ->willReturn([]);
+
+        $deviceStatusApi = self::createStub(DeviceStatusApiInterface::class);
+        $locationRoomApi = self::createStub(LocationRoomApiInterface::class);
+
+        $outputTransformer = self::createStub(OutputTransformerInterface::class);
+        $outputTransformer->method('transform')
+            ->willReturn(['test-actual-output']);
+
+        $climateAverageCalculator = self::createStub(ClimateAverageCalculatorInterface::class);
+        $climateAverageCalculator->method('averageTemperature')
+            ->willReturn(21.5);
+        $climateAverageCalculator->method('averageHumidity')
+            ->willReturn(47.0);
+
+        $climateMeasurementRecorder = self::createStub(ClimateMeasurementRecorderInterface::class);
+        $climateMeasurementRecorder->method('record')
+            ->willThrowException(new RuntimeException('test-database-failure'));
+
+        $dataProvider = new DataProvider($deviceApi, $deviceStatusApi, $locationRoomApi, $outputTransformer, $climateAverageCalculator, $climateMeasurementRecorder, 'test-location-id');
+
+        // The write failure is logged via error_log() for Cloud Logging; divert it
+        // to a temp file so the strict-output check does not see it as unexpected
+        // output.
+        $errorLog = (string) tempnam(sys_get_temp_dir(), 'data-provider-test');
+        $previousErrorLog = (string) ini_set('error_log', $errorLog);
+
+        try {
+            $actual = $dataProvider->getData($request);
+        } finally {
+            ini_set('error_log', $previousErrorLog);
+            unlink($errorLog);
+        }
 
         self::assertSame(['test-actual-output'], $actual);
     }
@@ -207,7 +306,7 @@ final class DataProviderTest extends TestCase
             ->with([])
             ->willReturn(['test-actual-output']);
 
-        $dataProvider = new DataProvider($deviceApi, $deviceStatusApi, $locationRoomApi, $outputTransformer, 'test-location-id');
+        $dataProvider = new DataProvider($deviceApi, $deviceStatusApi, $locationRoomApi, $outputTransformer, self::createStub(ClimateAverageCalculatorInterface::class), self::createStub(ClimateMeasurementRecorderInterface::class), 'test-location-id');
 
         self::assertSame(['test-actual-output'], $dataProvider->getData($request));
     }
@@ -239,7 +338,7 @@ final class DataProviderTest extends TestCase
             ->with([])
             ->willReturn(['test-actual-output']);
 
-        $dataProvider = new DataProvider($deviceApi, $deviceStatusApi, $locationRoomApi, $outputTransformer, 'test-location-id');
+        $dataProvider = new DataProvider($deviceApi, $deviceStatusApi, $locationRoomApi, $outputTransformer, self::createStub(ClimateAverageCalculatorInterface::class), self::createStub(ClimateMeasurementRecorderInterface::class), 'test-location-id');
 
         self::assertSame(['test-actual-output'], $dataProvider->getData($request));
     }
@@ -264,7 +363,7 @@ final class DataProviderTest extends TestCase
             ->with([])
             ->willReturn(['test-actual-output']);
 
-        $dataProvider = new DataProvider($deviceApi, $deviceStatusApi, $locationRoomApi, $outputTransformer, 'test-location-id');
+        $dataProvider = new DataProvider($deviceApi, $deviceStatusApi, $locationRoomApi, $outputTransformer, self::createStub(ClimateAverageCalculatorInterface::class), self::createStub(ClimateMeasurementRecorderInterface::class), 'test-location-id');
 
         self::assertSame(['test-actual-output'], $dataProvider->getData($request));
     }
@@ -314,7 +413,7 @@ final class DataProviderTest extends TestCase
             )
             ->willReturn(['test-actual-output']);
 
-        $dataProvider = new DataProvider($deviceApi, $deviceStatusApi, $locationRoomApi, $outputTransformer, 'test-location-id');
+        $dataProvider = new DataProvider($deviceApi, $deviceStatusApi, $locationRoomApi, $outputTransformer, self::createStub(ClimateAverageCalculatorInterface::class), self::createStub(ClimateMeasurementRecorderInterface::class), 'test-location-id');
 
         self::assertSame(['test-actual-output'], $dataProvider->getData($request));
     }

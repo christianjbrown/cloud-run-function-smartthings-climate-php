@@ -5,6 +5,9 @@ declare(strict_types=1);
 date_default_timezone_set('UTC');
 
 use ChristianBrown\ApiClient\ApiClient;
+use ChristianBrown\Database\ClimateMeasurementRecorder;
+use ChristianBrown\Database\Entity\RefreshToken;
+use ChristianBrown\Database\EntityManagerFactory;
 use ChristianBrown\GcpFunction\CloudFunction;
 use ChristianBrown\GcpFunction\CloudFunctionInterface;
 use ChristianBrown\GcpFunction\FunctionConfigTransformer;
@@ -12,11 +15,10 @@ use ChristianBrown\KeyValueStore\DatabaseKeyValueStore;
 use ChristianBrown\OAuth2Client\RefreshTokenManager;
 use ChristianBrown\OAuth2Client\Transformer\AccessTokenTransformer;
 use ChristianBrown\SmartThings\SmartThings;
+use ChristianBrown\SmartThingsClimate\ClimateAverageCalculator;
 use ChristianBrown\SmartThingsClimate\CloudFunctionFactoryInterface;
 use ChristianBrown\SmartThingsClimate\ConfigInterface;
 use ChristianBrown\SmartThingsClimate\ConfigTransformer;
-use ChristianBrown\SmartThingsClimate\Database\Entity\RefreshToken;
-use ChristianBrown\SmartThingsClimate\Database\EntityManagerFactory;
 use ChristianBrown\SmartThingsClimate\Database\MySqlAdvisoryLock;
 use ChristianBrown\SmartThingsClimate\DataProvider;
 use ChristianBrown\SmartThingsClimate\DeviceReadingOutputTransformer;
@@ -87,7 +89,15 @@ function run(ServerRequestInterface $request): ResponseInterface
             $deviceReadingOutputTransformer = new DeviceReadingOutputTransformer();
             $outputTransformer = new OutputTransformer($deviceReadingOutputTransformer);
 
-            $dataProvider = new DataProvider($devicesApi, $devicesStatusApi, $locationRoomApi, $outputTransformer, $config->getLocationId());
+            // Persist the average house temperature/humidity on the same entity
+            // manager (and open connection) already used for the token store, so
+            // the climate write reuses the existing connection. The write is
+            // best-effort — DataProvider isolates it so a failure never disturbs
+            // the response.
+            $climateAverageCalculator = new ClimateAverageCalculator();
+            $climateMeasurementRecorder = new ClimateMeasurementRecorder($entityManager);
+
+            $dataProvider = new DataProvider($devicesApi, $devicesStatusApi, $locationRoomApi, $outputTransformer, $climateAverageCalculator, $climateMeasurementRecorder, $config->getLocationId());
 
             return new CloudFunction($dataProvider, $config->getFunctionConfig());
         }
