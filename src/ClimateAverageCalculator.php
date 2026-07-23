@@ -17,7 +17,7 @@ final class ClimateAverageCalculator implements ClimateAverageCalculatorInterfac
      */
     public function averageHumidity(array $deviceReadings): ?float
     {
-        return $this->average(array_map(
+        return self::average(array_map(
             static fn (DeviceReadingInterface $deviceReading): ?MeasurementInterface => $deviceReading->getHumidity(),
             $deviceReadings
         ));
@@ -28,7 +28,7 @@ final class ClimateAverageCalculator implements ClimateAverageCalculatorInterfac
      */
     public function averageTemperature(array $deviceReadings): ?float
     {
-        return $this->average(array_map(
+        return self::average(array_map(
             static fn (DeviceReadingInterface $deviceReading): ?MeasurementInterface => $deviceReading->getTemperature(),
             $deviceReadings
         ));
@@ -37,7 +37,7 @@ final class ClimateAverageCalculator implements ClimateAverageCalculatorInterfac
     /**
      * @param array<?MeasurementInterface> $measurements
      */
-    private function average(array $measurements): ?float
+    private static function average(array $measurements): ?float
     {
         $values = array_values(array_filter(
             array_map(

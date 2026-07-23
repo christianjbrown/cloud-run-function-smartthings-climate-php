@@ -88,7 +88,7 @@ final class DataProvider implements DataProviderInterface
     /**
      * @return string[]
      */
-    private function capabilityIds(DeviceInterface $device): array
+    private static function capabilityIds(DeviceInterface $device): array
     {
         return array_merge(
             [],
@@ -105,9 +105,9 @@ final class DataProvider implements DataProviderInterface
     /**
      * @return array{0: bool, 1: bool} Whether the device supports [temperature, relative humidity] measurement
      */
-    private function detectSupportedMeasurements(DeviceInterface $device): array
+    private static function detectSupportedMeasurements(DeviceInterface $device): array
     {
-        $capabilityIds = $this->capabilityIds($device);
+        $capabilityIds = self::capabilityIds($device);
 
         return [
             in_array(self::ID_VALUE_TEMPERATURE_MEASUREMENT, $capabilityIds, true),
@@ -117,7 +117,7 @@ final class DataProvider implements DataProviderInterface
 
     private function processDevice(DeviceInterface $device): ?DeviceReading
     {
-        [$hasTemperature, $hasHumidity] = $this->detectSupportedMeasurements($device);
+        [$hasTemperature, $hasHumidity] = self::detectSupportedMeasurements($device);
         if ([] === array_filter([$hasTemperature, $hasHumidity])) {
             return null;
         }

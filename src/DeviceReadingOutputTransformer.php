@@ -14,9 +14,9 @@ final class DeviceReadingOutputTransformer implements DeviceReadingOutputTransfo
         // Each optional block is a self-contained helper unioned onto the base,
         // so a block's presence/absence is an independent code path.
         $data = [self::KEY_NAME => $deviceReading->getName()];
-        $data += $this->roomName($deviceReading);
-        $data += $this->temperature($deviceReading);
-        $data += $this->humidity($deviceReading);
+        $data += self::roomName($deviceReading);
+        $data += self::temperature($deviceReading);
+        $data += self::humidity($deviceReading);
 
         return $data;
     }
@@ -24,7 +24,7 @@ final class DeviceReadingOutputTransformer implements DeviceReadingOutputTransfo
     /**
      * @return mixed[]
      */
-    private function humidity(DeviceReadingInterface $deviceReading): array
+    private static function humidity(DeviceReadingInterface $deviceReading): array
     {
         $humidity = $deviceReading->getHumidity();
         if (null === $humidity) {
@@ -41,7 +41,7 @@ final class DeviceReadingOutputTransformer implements DeviceReadingOutputTransfo
     /**
      * @return mixed[]
      */
-    private function roomName(DeviceReadingInterface $deviceReading): array
+    private static function roomName(DeviceReadingInterface $deviceReading): array
     {
         if (null === $deviceReading->getRoomName()) {
             return [];
@@ -53,7 +53,7 @@ final class DeviceReadingOutputTransformer implements DeviceReadingOutputTransfo
     /**
      * @return mixed[]
      */
-    private function temperature(DeviceReadingInterface $deviceReading): array
+    private static function temperature(DeviceReadingInterface $deviceReading): array
     {
         $temperature = $deviceReading->getTemperature();
         if (null === $temperature) {

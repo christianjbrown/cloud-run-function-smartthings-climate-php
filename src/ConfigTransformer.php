@@ -24,11 +24,11 @@ final class ConfigTransformer implements ConfigTransformerInterface
      */
     public function transform(array $env): ConfigInterface
     {
-        $clientId = $this->extractRequiredString($env, self::ENV_CLIENT_ID);
-        $clientSecret = $this->extractRequiredString($env, self::ENV_CLIENT_SECRET);
-        $databaseDsn = $this->extractRequiredString($env, self::ENV_DATABASE_DSN);
-        $locationId = $this->extractRequiredString($env, self::ENV_LOCATION_ID);
-        $tokenUrl = $this->extractRequiredString($env, self::ENV_TOKEN_URL);
+        $clientId = self::extractRequiredString($env, self::ENV_CLIENT_ID);
+        $clientSecret = self::extractRequiredString($env, self::ENV_CLIENT_SECRET);
+        $databaseDsn = self::extractRequiredString($env, self::ENV_DATABASE_DSN);
+        $locationId = self::extractRequiredString($env, self::ENV_LOCATION_ID);
+        $tokenUrl = self::extractRequiredString($env, self::ENV_TOKEN_URL);
 
         $requestConfig = $this->functionConfigTransformer->transform($env);
 
@@ -38,7 +38,7 @@ final class ConfigTransformer implements ConfigTransformerInterface
     /**
      * @param mixed[] $env
      */
-    private function extractRequiredString(array $env, string $key): string
+    private static function extractRequiredString(array $env, string $key): string
     {
         // Split into sequential guards (rather than a single `||`) so each
         // failure path is independently reachable for path coverage.
