@@ -38,10 +38,15 @@ paths:
               schema:
                 allOf:
                   - { $ref: '#/components/schemas/SuccessEnvelope' }
-                  - { properties: { data: { $ref: '#/components/schemas/ClimateData' } }, type: object }
+                  - { properties: { data: { description: 'The current climate readings, one entry per SmartThings device that exposes a temperature or relative-humidity measurement, sorted by device name.', type: array, items: { $ref: '#/components/schemas/DeviceReading' } } }, type: object }
               example:
                 data:
-                  devices: [{ name: Button, roomName: 'Living Room', temperatureValue: 25.1, temperatureTimestamp: 1784571323, temperatureStale: false }, { name: Button, roomName: Office, temperatureValue: 24.8, temperatureTimestamp: 1784567960, temperatureStale: false }, { name: 'Door sensor', roomName: Hallway, temperatureValue: 22.3, temperatureTimestamp: 1784571388, temperatureStale: false }, { name: Hygrometer, roomName: Bedroom, temperatureValue: 24.5, temperatureTimestamp: 1784566164, temperatureStale: false, humidityValue: 43, humidityTimestamp: 1784570405, humidityStale: false }, { name: 'Motion sensor', roomName: Hallway, temperatureValue: 25.9, temperatureTimestamp: 1784571267, temperatureStale: false }, { name: 'Motion sensor', roomName: 'Living Room', temperatureValue: 25.1, temperatureTimestamp: 1784570955, temperatureStale: false }]
+                  - { name: Button, roomName: 'Living Room', temperatureValue: 25.1, temperatureTimestamp: 1784571323, temperatureStale: false }
+                  - { name: Button, roomName: Office, temperatureValue: 24.8, temperatureTimestamp: 1784567960, temperatureStale: false }
+                  - { name: 'Door sensor', roomName: Hallway, temperatureValue: 22.3, temperatureTimestamp: 1784571388, temperatureStale: false }
+                  - { name: Hygrometer, roomName: Bedroom, temperatureValue: 24.5, temperatureTimestamp: 1784566164, temperatureStale: false, humidityValue: 43, humidityTimestamp: 1784570405, humidityStale: false }
+                  - { name: 'Motion sensor', roomName: Hallway, temperatureValue: 25.9, temperatureTimestamp: 1784571267, temperatureStale: false }
+                  - { name: 'Motion sensor', roomName: 'Living Room', temperatureValue: 25.1, temperatureTimestamp: 1784570955, temperatureStale: false }
                 success: true
                 timestamp_iso8601: '2026-07-20T18:19:48+00:00'
                 timestamp_unix: 1784571588
@@ -94,18 +99,6 @@ components:
           type: boolean
       type: object
       additionalProperties: false
-    ClimateData:
-      description: 'The current climate readings, one entry per SmartThings device that exposes a temperature or relative-humidity measurement.'
-      required:
-        - devices
-      properties:
-        devices:
-          description: 'The per-device readings, sorted by device name.'
-          type: array
-          items:
-            $ref: '#/components/schemas/DeviceReading'
-      type: object
-      additionalProperties: false
     ErrorEnvelope:
       description: 'The complete JSON error envelope returned by every consuming function for a failed request (an authorization failure or an unhandled error). Identical for every function.'
       required:
@@ -136,13 +129,12 @@ components:
       type: object
       additionalProperties: false
     SuccessEnvelope:
-      description: 'The shared base of the JSON success envelope returned by every consuming function. The `data` property is a generic object placeholder; each function tightens it to its own data schema by composing this base with `allOf`, e.g. `allOf: [{$ref: "#/components/schemas/SuccessEnvelope"}, {properties: {data: {$ref: "#/components/schemas/YourData"}}}]`.'
+      description: 'The shared base of the JSON success envelope returned by every consuming function. The `data` property is a generic, untyped payload placeholder — a function tightens it to its own object or array schema by composing this base with `allOf`, e.g. `allOf: [{$ref: "#/components/schemas/SuccessEnvelope"}, {properties: {data: {$ref: "#/components/schemas/YourData"}}}]`. It is omitted from `required` because a function with an empty payload emits no `data` key at all.'
       required:
         - success
         - timestamp_unix
         - timestamp_iso8601
         - version
-        - data
       properties:
         success:
           description: 'Always true for a success response.'
@@ -160,7 +152,6 @@ components:
           description: 'The Cloud Run revision that produced the response.'
           type: string
         data:
-          description: 'The function-specific payload. Each function overrides this via `allOf` with its own data schema.'
-          type: object
+          description: 'The function-specific payload (object or array). Each function overrides this via `allOf` with its own data schema.'
       type: object
       additionalProperties: false

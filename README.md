@@ -86,29 +86,27 @@ curl http://localhost:8080
 ### Response
 
 ```json
-{
-    "devices": [
-        {
-            "name": "Bedroom Sensor",
-            "roomName": "Bedroom",
-            "temperatureValue": 19.5,
-            "temperatureTimestamp": 1752580800,
-            "temperatureStale": false,
-            "humidityValue": 48,
-            "humidityTimestamp": 1752580790,
-            "humidityStale": false
-        },
-        {
-            "name": "Living Room",
-            "temperatureValue": 21.0,
-            "temperatureTimestamp": 1752580800,
-            "temperatureStale": false
-        }
-    ]
-}
+[
+    {
+        "name": "Bedroom Sensor",
+        "roomName": "Bedroom",
+        "temperatureValue": 19.5,
+        "temperatureTimestamp": 1752580800,
+        "temperatureStale": false,
+        "humidityValue": 48,
+        "humidityTimestamp": 1752580790,
+        "humidityStale": false
+    },
+    {
+        "name": "Living Room",
+        "temperatureValue": 21.0,
+        "temperatureTimestamp": 1752580800,
+        "temperatureStale": false
+    }
+]
 ```
 
-- `devices` — one entry per device that reports temperature and/or humidity, sorted by `name`.
+- The response is an array with one entry per device that reports temperature and/or humidity, sorted by `name`.
 - `roomName` — the SmartThings room the device belongs to. Present only for devices that are assigned to a room.
 - `temperatureValue` / `temperatureTimestamp` / `temperatureStale` — the latest temperature, the Unix time of that reading, and whether it is more than 24 hours old. These keys are present only for devices that report temperature.
 - `humidityValue` / `humidityTimestamp` / `humidityStale` — the latest relative humidity (percent), the Unix time of that reading, and whether it is more than 24 hours old. Humidity carries its own timestamp and stale flag because SmartThings reports each measurement independently. These keys are present only for devices that report humidity.

@@ -30,6 +30,6 @@ final class OutputTransformer implements OutputTransformerInterface
             $deviceReadings
         );
 
-        return [self::KEY_DEVICES => $devicesData];
+        return $devicesData;
     }
 }

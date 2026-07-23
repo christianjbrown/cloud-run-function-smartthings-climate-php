@@ -7,7 +7,6 @@ namespace ChristianBrown\SmartThingsClimate\Tests;
 use ChristianBrown\SmartThingsClimate\DeviceReadingInterface;
 use ChristianBrown\SmartThingsClimate\DeviceReadingOutputTransformerInterface;
 use ChristianBrown\SmartThingsClimate\OutputTransformer;
-use ChristianBrown\SmartThingsClimate\OutputTransformerInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
@@ -18,15 +17,13 @@ final class OutputTransformerTest extends TestCase
     /**
      * @throws Exception
      */
-    public function testEmptyReadingsProducesOnlyAnEmptyDeviceList(): void
+    public function testEmptyReadingsProducesAnEmptyArray(): void
     {
         $deviceReadingOutputTransformer = self::createStub(DeviceReadingOutputTransformerInterface::class);
 
         $transformer = new OutputTransformer($deviceReadingOutputTransformer);
 
-        $expected = [
-            OutputTransformerInterface::KEY_DEVICES => [],
-        ];
+        $expected = [];
 
         $actual = $transformer->transform([]);
 
@@ -53,10 +50,8 @@ final class OutputTransformerTest extends TestCase
         $transformer = new OutputTransformer($deviceReadingOutputTransformer);
 
         $expected = [
-            OutputTransformerInterface::KEY_DEVICES => [
-                ['a-device'],
-                ['b-device'],
-            ],
+            ['a-device'],
+            ['b-device'],
         ];
 
         // Passed out of order to exercise the sort.
