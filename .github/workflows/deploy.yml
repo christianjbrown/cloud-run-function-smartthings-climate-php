@@ -40,7 +40,7 @@ jobs:
           service_timeout: '60s'
           ingress_settings: 'ALLOW_ALL'
           build_environment_variables: 'COMPOSER_AUTH=${{ secrets.COMPOSER_AUTH }}'
-          environment_variables: 'USE_CACHE_TTL=300,USE_CACHE_BUT_REQUEST_TTL=600,USE_CACHE_IF_ERROR_TTL=3600,REQUIRED_HEADER_KEY=X-Request-Auth,REQUIRED_ORIGIN=${{ vars.REQUIRED_ORIGIN }},SMARTTHINGS_OAUTH_TOKEN_URL=https://api.smartthings.com/oauth/token,ALLOW_LOCAL_ORIGINS=true'
+          environment_variables: 'USE_CACHE_TTL=300,USE_CACHE_BUT_REQUEST_TTL=600,USE_CACHE_IF_ERROR_TTL=3600,REQUIRED_HEADER_KEY=X-Request-Auth,REQUIRED_ORIGIN=${{ vars.REQUIRED_ORIGIN }},SMARTTHINGS_OAUTH_TOKEN_URL=https://api.smartthings.com/oauth/token,ALLOW_LOCAL_ORIGINS=true,SURROGATE_KEY=${{ vars.GCP_CLOUD_FUNCTION_ENDPOINT }}'
           secrets: |-
             SMARTTHINGS_OAUTH_CLIENT_ID=projects/${{ vars.GCP_PROJECT_ID }}/secrets/SMARTTHINGS_OAUTH_CLIENT_ID/versions/latest
             SMARTTHINGS_OAUTH_CLIENT_SECRET=projects/${{ vars.GCP_PROJECT_ID }}/secrets/SMARTTHINGS_OAUTH_CLIENT_SECRET/versions/latest
@@ -75,15 +75,18 @@ jobs:
         run: 'curl "${{ steps.deploy.outputs.url }}"'
 
       # Bust the Fastly edge cache so the new revision is served immediately
-      # instead of waiting out the CDN's default_ttl. Hard-purges the single
-      # public URL that fronts this function (FASTLY_CDN_HOST + the function's
-      # endpoint path). Runs only if every prior step — including the deploy —
-      # succeeded, since Actions aborts the job on the first failing step.
-      # Uses FASTLY_PURGE_API_KEY — a purge-only token, deliberately scoped
-      # lower than the full-access FASTLY_API_KEY used to manage the service.
+      # instead of waiting out the CDN's default_ttl. Surrogate-key purge: the
+      # function emits `Surrogate-Key: <endpoint>` on every cached response, so
+      # purging that key invalidates all of this function's cached objects in
+      # one call (and would cover any subpaths, unlike the former exact-URL
+      # purge). The key matches the SURROGATE_KEY env var above. Runs only if
+      # every prior step — including the deploy — succeeded, since Actions
+      # aborts the job on the first failing step. Uses FASTLY_PURGE_API_KEY — a
+      # purge-only token (needs purge_select), deliberately scoped lower than
+      # the full-access FASTLY_API_KEY used to manage the service.
       - name: 'Purge Fastly cache'
         run: |
           curl --fail-with-body --silent --show-error -X POST \
             -H "Fastly-Key: ${{ secrets.FASTLY_PURGE_API_KEY }}" \
             -H "Accept: application/json" \
-            "https://api.fastly.com/purge/${{ vars.FASTLY_CDN_HOST }}/${{ vars.GCP_CLOUD_FUNCTION_ENDPOINT }}"
+            "https://api.fastly.com/service/${{ vars.FASTLY_SERVICE_ID }}/purge/${{ vars.GCP_CLOUD_FUNCTION_ENDPOINT }}"
