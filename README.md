@@ -1,6 +1,6 @@
 # SmartThings Climate Google Cloud Run Function
 
-[![CI](https://github.com/christianjbrown/php-gcp-function-smartthings-climate/actions/workflows/ci.yml/badge.svg)](https://github.com/christianjbrown/php-gcp-function-smartthings-climate/actions/workflows/ci.yml)
+[![CI](https://github.com/christianjbrown/cloud-run-function-smartthings-climate-php/actions/workflows/ci.yml/badge.svg)](https://github.com/christianjbrown/cloud-run-function-smartthings-climate-php/actions/workflows/ci.yml)
 
 A small [Google Cloud Run function](https://cloud.google.com/run) (PHP) that reads the current temperature and relative humidity from your [SmartThings](https://www.smartthings.com/) devices and returns them as a single JSON payload.
 
@@ -24,8 +24,8 @@ It walks every device in your SmartThings account, keeps the ones that expose a 
 ## :building_construction: Installation
 
 ```bash
-git clone git@github.com:christianjbrown/php-gcp-function-smartthings-climate.git
-cd php-gcp-function-smartthings-climate
+git clone git@github.com:christianjbrown/cloud-run-function-smartthings-climate-php.git
+cd cloud-run-function-smartthings-climate
 composer install
 ```
 
@@ -181,12 +181,12 @@ The OAuth client id/secret, database DSN, and request-gating values are supplied
 The entry point is `run()` in [`index.php`](index.php), which wires the pieces together:
 
 - **`ConfigTransformer`** reads the environment into a `Config` (OAuth client credentials + token URL + database DSN + location + request/caching config).
-- **`EntityManagerFactory`** / **`RefreshToken`** (in `src/Database/`) build a Doctrine entity manager over the DSN and map the shared key-value token table; two `DatabaseKeyValueStore`s (from [`christianjbrown/php-key-value-store-lib`](https://github.com/christianjbrown/php-key-value-store-lib)) back the access and refresh tokens.
-- **`RefreshTokenManager`** (from [`christianjbrown/php-oauth2-client-lib`](https://github.com/christianjbrown/php-oauth2-client-lib)) returns a valid access token, refreshing (with client-secret Basic auth) and persisting the rotated token when needed.
-- **`SmartThings`** (from [`christianjbrown/php-smartthings-api-lib`](https://github.com/christianjbrown/php-smartthings-api-lib)), constructed with that access token, provides the device and device-status API clients.
+- **`EntityManagerFactory`** / **`RefreshToken`** (in `src/Database/`) build a Doctrine entity manager over the DSN and map the shared key-value token table; two `DatabaseKeyValueStore`s (from [`christianjbrown/key-value-store`](https://github.com/christianjbrown/key-value-store-php)) back the access and refresh tokens.
+- **`RefreshTokenManager`** (from [`christianjbrown/oauth2-client`](https://github.com/christianjbrown/oauth2-client-php)) returns a valid access token, refreshing (with client-secret Basic auth) and persisting the rotated token when needed.
+- **`SmartThings`** (from [`christianjbrown/smartthings-api-sdk`](https://github.com/christianjbrown/smartthings-api-sdk-php)), constructed with that access token, provides the device and device-status API clients.
 - **`DataProvider`** fetches devices, filters to those with a temperature and/or humidity capability, reads each status, resolves the room name for devices assigned to one, and builds `DeviceReading` value objects.
 - **`OutputTransformer`** sorts them and shapes the JSON response.
-- **`CloudFunction`** (from [`christianjbrown/php-gcp-function-lib`](https://github.com/christianjbrown/php-gcp-function-lib)) handles the HTTP request/response, header/origin gating, and caching headers.
+- **`CloudFunction`** (from [`christianjbrown/cloud-run-function-lib`](https://github.com/christianjbrown/cloud-run-function-lib-php)) handles the HTTP request/response, header/origin gating, and caching headers.
 
 
 

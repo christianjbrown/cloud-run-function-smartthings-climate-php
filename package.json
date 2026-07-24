@@ -1,7 +1,7 @@
 {
-  "name": "php-gcp-function-smartthings-climate-docs",
+  "name": "cloud-run-function-smartthings-climate-php-docs",
   "version": "1.0.0",
-  "description": "Dev-only OpenAPI documentation tooling (Redoc) for the SmartThings Climate Cloud Function. Not part of the deployed PHP runtime.",
+  "description": "Dev-only OpenAPI documentation tooling (Redoc) for the SmartThings Climate Cloud Run function. Not part of the deployed PHP runtime.",
   "private": true,
   "license": "MIT",
   "scripts": {
