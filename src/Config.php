@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ChristianBrown\SmartThingsClimate;
 
-use ChristianBrown\GcpFunction\FunctionConfigInterface;
+use ChristianBrown\CloudRunFunction\FunctionConfigInterface;
 
 final class Config implements ConfigInterface
 {

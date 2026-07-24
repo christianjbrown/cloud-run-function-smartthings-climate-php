@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace ChristianBrown\SmartThingsClimate\Tests;
 
-use ChristianBrown\GcpFunction\CloudFunction;
-use ChristianBrown\GcpFunction\DataProviderInterface as BaseDataProviderInterface;
-use ChristianBrown\GcpFunction\FunctionConfig;
-use ChristianBrown\GcpFunction\FunctionConfigInterface;
-use ChristianBrown\SmartThingsClimate\CloudFunctionFactoryInterface;
+use ChristianBrown\CloudRunFunction\CloudRunFunction;
+use ChristianBrown\CloudRunFunction\DataProviderInterface as BaseDataProviderInterface;
+use ChristianBrown\CloudRunFunction\FunctionConfig;
+use ChristianBrown\CloudRunFunction\FunctionConfigInterface;
+use ChristianBrown\SmartThingsClimate\CloudRunFunctionFactoryInterface;
 use ChristianBrown\SmartThingsClimate\DeviceReadingInterface;
 use ChristianBrown\SmartThingsClimate\DeviceReadingOutputTransformer;
 use ChristianBrown\SmartThingsClimate\MeasurementInterface;
@@ -62,7 +62,7 @@ final class ContractTest extends TestCase
      */
     public function testDataProviderFailureErrorResponseMatchesContract(): void
     {
-        // An upstream failure inside CloudFunction::run() (e.g. the SmartThings API
+        // An upstream failure inside CloudRunFunction::run() (e.g. the SmartThings API
         // erroring) surfaces from getData() and is caught as an unhandled 500.
         $dataProvider = self::createStub(BaseDataProviderInterface::class);
         $dataProvider->method('getData')
@@ -80,9 +80,9 @@ final class ContractTest extends TestCase
     public function testFactoryFailureErrorResponseMatchesContract(): void
     {
         // A revoked refresh token (invalid_grant) surfaces from the factory's token
-        // acquisition, before the CloudFunction exists — the handler converts it into
+        // acquisition, before the CloudRunFunction exists — the handler converts it into
         // the framework's JSON error envelope, not a bare 500.
-        $cloudFunctionFactory = self::createStub(CloudFunctionFactoryInterface::class);
+        $cloudFunctionFactory = self::createStub(CloudRunFunctionFactoryInterface::class);
         $cloudFunctionFactory->method('create')
             ->willThrowException(new RuntimeException('invalid_grant'));
 
@@ -198,9 +198,9 @@ final class ContractTest extends TestCase
      */
     private function buildResponse(FunctionConfigInterface $config, BaseDataProviderInterface $dataProvider, ServerRequestInterface $request): ResponseInterface
     {
-        $cloudFunction = new CloudFunction($dataProvider, $config);
+        $cloudFunction = new CloudRunFunction($dataProvider, $config);
 
-        $cloudFunctionFactory = self::createStub(CloudFunctionFactoryInterface::class);
+        $cloudFunctionFactory = self::createStub(CloudRunFunctionFactoryInterface::class);
         $cloudFunctionFactory->method('create')
             ->willReturn($cloudFunction);
 

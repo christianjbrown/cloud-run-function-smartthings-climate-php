@@ -8,15 +8,15 @@ use ChristianBrown\ApiClient\ApiClient;
 use ChristianBrown\Database\ClimateMeasurementRecorder;
 use ChristianBrown\Database\Entity\RefreshToken;
 use ChristianBrown\Database\EntityManagerFactory;
-use ChristianBrown\GcpFunction\CloudFunction;
-use ChristianBrown\GcpFunction\CloudFunctionInterface;
-use ChristianBrown\GcpFunction\FunctionConfigTransformer;
+use ChristianBrown\CloudRunFunction\CloudRunFunction;
+use ChristianBrown\CloudRunFunction\CloudRunFunctionInterface;
+use ChristianBrown\CloudRunFunction\FunctionConfigTransformer;
 use ChristianBrown\KeyValueStore\DatabaseKeyValueStore;
 use ChristianBrown\OAuth2Client\RefreshTokenManager;
 use ChristianBrown\OAuth2Client\Transformer\AccessTokenTransformer;
 use ChristianBrown\SmartThings\SmartThings;
 use ChristianBrown\SmartThingsClimate\ClimateAverageCalculator;
-use ChristianBrown\SmartThingsClimate\CloudFunctionFactoryInterface;
+use ChristianBrown\SmartThingsClimate\CloudRunFunctionFactoryInterface;
 use ChristianBrown\SmartThingsClimate\ConfigInterface;
 use ChristianBrown\SmartThingsClimate\ConfigTransformer;
 use ChristianBrown\SmartThingsClimate\Database\MySqlAdvisoryLock;
@@ -41,10 +41,10 @@ function run(ServerRequestInterface $request): ResponseInterface
 
     // The OAuth token acquisition and SmartThings client construction happen inside
     // the factory (not here), so that RequestHandler::handle() wraps them in the same
-    // try/catch as CloudFunction::run() and a failure there (e.g. a revoked refresh
+    // try/catch as CloudRunFunction::run() and a failure there (e.g. a revoked refresh
     // token returning invalid_grant) returns the framework's JSON error envelope
     // rather than escaping as a bare 500.
-    $cloudFunctionFactory = new class ($config) implements CloudFunctionFactoryInterface {
+    $cloudFunctionFactory = new class ($config) implements CloudRunFunctionFactoryInterface {
         private ConfigInterface $config;
 
         public function __construct(ConfigInterface $config)
@@ -52,7 +52,7 @@ function run(ServerRequestInterface $request): ResponseInterface
             $this->config = $config;
         }
 
-        public function create(): CloudFunctionInterface
+        public function create(): CloudRunFunctionInterface
         {
             $config = $this->config;
 
@@ -99,7 +99,7 @@ function run(ServerRequestInterface $request): ResponseInterface
 
             $dataProvider = new DataProvider($devicesApi, $devicesStatusApi, $locationRoomApi, $outputTransformer, $climateAverageCalculator, $climateMeasurementRecorder, $config->getLocationId());
 
-            return new CloudFunction($dataProvider, $config->getFunctionConfig());
+            return new CloudRunFunction($dataProvider, $config->getFunctionConfig());
         }
     };
 
