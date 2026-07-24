@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: 'SmartThings Climate Cloud Function'
+  title: 'SmartThings Climate Cloud Run function'
   description: 'Reads the current temperature and relative humidity from the SmartThings devices in a fixed location and returns them as a single JSON envelope.'
   version: 1.0.0
 paths:

@@ -12,11 +12,11 @@ a library** — it wires the sibling `christianjbrown/*` libraries together behi
 the `run()` function in `index.php` builds the config, constructs a `SmartThings` client and a
 `CloudFunction`, and returns the PSR-7 response.
 
-The app consumes private `dev-main` sibling packages: `php-gcp-function-lib` (the HTTP
-envelope/gating/caching framework), `php-smartthings-api-lib` (the read-only SmartThings client),
-`php-oauth2-client-lib` (the OAuth refresh-token manager), `php-key-value-store-lib` (the DB-backed
-token store), `php-api-client-lib` (the JSON request sender used by the token manager),
-`php-user-friendly-exception-lib`, and `php-code-quality-scripts` (dev). It also pulls Doctrine ORM +
+The app consumes private `dev-main` sibling packages: `cloud-run-function-lib` (the HTTP
+envelope/gating/caching framework), `smartthings-api-sdk` (the read-only SmartThings client),
+`oauth2-client` (the OAuth refresh-token manager), `key-value-store` (the DB-backed
+token store), `api-client` (the JSON request sender used by the token manager),
+`user-friendly-exception`, and `code-quality-scripts` (dev). It also pulls Doctrine ORM +
 DBAL directly for the token store's persistence. It runs on Google's
 [Functions Framework](https://github.com/GoogleCloudPlatform/functions-framework-php) locally.
 
@@ -24,7 +24,7 @@ DBAL directly for the token store's persistence. It runs on Google's
 an OAuth access token via the refresh-token grant (`RefreshTokenManager`), reading and writing both the
 access token and the rotating refresh token to a shared MySQL key-value table. The ORM plumbing for this
 — the `EntityManagerFactory` and the `RefreshToken` entity — now lives in the shared
-`christianjbrown/php-christianbrown-database-orm` package (`ChristianBrown\Database\…`), which this app
+`christianjbrown/christianbrown-database-orm` package (`ChristianBrown\Database\…`), which this app
 depends on; it is the single home for every entity on the shared `christianbrown` schema, so the
 Met Office weather function and a future historical-climate reader can reuse the same mappings. Only the
 `MySqlAdvisoryLock` (used to serialise token refreshes) remains local under `src/Database/`.
@@ -78,7 +78,7 @@ the `SMARTTHINGS_OAUTH_*` credentials, `SMARTTHINGS_DATABASE_DSN`, `SMARTTHINGS_
 `K_REVISION` set (and a reachable database with a seeded refresh token) — see `README.md` for the full
 env-var list.
 
-Style tooling comes from the `christianjbrown/php-code-quality-scripts` dev dependency: `check-style`
+Style tooling comes from the `christianjbrown/code-quality-scripts` dev dependency: `check-style`
 runs **PHP_CodeSniffer 4** with the `ChristianBrown` standard (slevomat sniffs plus PSR/PEAR/Squiz/Generic)
 for linting, and **php-cs-fixer** (`@PhpCsFixer`/`@Symfony`) handles formatting; the `bin/php-cs*` scripts
 are thin wrappers over it.
@@ -112,7 +112,7 @@ top-level `index.php` holds the framework entry point and is intentionally outsi
 - **`CloudFunctionFactoryInterface`** — the seam that defers the failable wiring so `RequestHandler` can
   wrap it; implemented as an anonymous class in `index.php` (the composition root) and mocked in tests.
 - **`Config`** / **`ConfigInterface`** — a small holder for the OAuth client id/secret, token URL,
-  database DSN and location id, plus the `FunctionConfigInterface` (from `php-gcp-function-lib`) that
+  database DSN and location id, plus the `FunctionConfigInterface` (from `cloud-run-function-lib`) that
   drives gating/caching.
 - **`ConfigTransformer`** / **`ConfigTransformerInterface`** — builds a `Config` from the environment
   array. A single `extractRequiredString()` helper guards each required env key (`SMARTTHINGS_OAUTH_*`,
@@ -122,7 +122,7 @@ top-level `index.php` holds the framework entry point and is intentionally outsi
 - **Shared ORM (`ChristianBrown\Database\…`)** — the `EntityManagerFactory` (Doctrine `EntityManager`
   from the DSN, native lazy objects enabled), the `RefreshToken` entity (mapping the shared
   `refresh_tokens` key-value table), the `SmartThingsClimate` entity, and the
-  `ClimateMeasurementRecorder` all come from the `php-christianbrown-database-orm` package — not this
+  `ClimateMeasurementRecorder` all come from the `christianbrown-database-orm` package — not this
   repo. `index.php` builds one `EntityManager` and shares it between the token stores and the recorder.
 - **`Database\MySqlAdvisoryLock`** — the one piece of local DB plumbing: a `GET_LOCK`/`RELEASE_LOCK`
   advisory lock (on the token store's connection) that serialises refresh-token rotation across
@@ -165,7 +165,7 @@ top-level `index.php` holds the framework entry point and is intentionally outsi
   independently reachable path — keep this pattern, it exists to hit 100% path coverage.
 - **A method that does not use `$this` must be `static`** (called via `self::`) — a stateless helper is
   static. Enforced for private methods by the shared `RequireStaticPrivateMethodRule` PHPStan rule (via
-  `php-code-quality-scripts`' `config/phpstan.neon`); interface/override methods stay instance.
+  `code-quality-scripts`' `config/phpstan.neon`); interface/override methods stay instance.
 
 ## Testing
 
