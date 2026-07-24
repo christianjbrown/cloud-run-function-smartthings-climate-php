@@ -186,7 +186,7 @@ The entry point is `run()` in [`index.php`](index.php), which wires the pieces t
 - **`SmartThings`** (from [`christianjbrown/smartthings-api-sdk`](https://github.com/christianjbrown/smartthings-api-sdk-php)), constructed with that access token, provides the device and device-status API clients.
 - **`DataProvider`** fetches devices, filters to those with a temperature and/or humidity capability, reads each status, resolves the room name for devices assigned to one, and builds `DeviceReading` value objects.
 - **`OutputTransformer`** sorts them and shapes the JSON response.
-- **`CloudFunction`** (from [`christianjbrown/cloud-run-function-lib`](https://github.com/christianjbrown/cloud-run-function-lib-php)) handles the HTTP request/response, header/origin gating, and caching headers.
+- **`CloudRunFunction`** (from [`christianjbrown/cloud-run-function-lib`](https://github.com/christianjbrown/cloud-run-function-lib-php)) handles the HTTP request/response, header/origin gating, and caching headers.
 
 
 
