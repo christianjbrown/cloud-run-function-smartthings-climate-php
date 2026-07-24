@@ -15,7 +15,7 @@ use OpenApi\Attributes as OA;
  * committed `openapi.yaml`. Keeping the top-level `#[OA\Info]`/`#[OA\Server]` and
  * the `#[OA\Get]` operation here means the HTTP contract is generated from the same
  * typed code that produces the responses, so it cannot silently drift. The success
- * response composes the shared `SuccessEnvelope` (declared in `php-gcp-function-lib`)
+ * response composes the shared `SuccessEnvelope` (declared in `cloud-run-function-lib`)
  * with this function's `ClimateData` schema via `allOf`, narrowing only the generic
  * `data` placeholder; the error responses reference the shared `ErrorEnvelope`. It
  * has no executable lines and is excluded from coverage in `phpunit.xml`, like a
@@ -24,7 +24,7 @@ use OpenApi\Attributes as OA;
 #[OA\Info(
     version: '1.0.0',
     description: 'Reads the current temperature and relative humidity from the SmartThings devices in a fixed location and returns them as a single JSON envelope.',
-    title: 'SmartThings Climate Cloud Function',
+    title: 'SmartThings Climate Cloud Run function',
 )]
 #[OA\Server(url: '/')]
 #[OA\Get(
