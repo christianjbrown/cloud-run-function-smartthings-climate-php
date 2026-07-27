@@ -71,12 +71,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/christianjbrown/api-client-php.git",
-                "reference": "52f7c0bd6207d7c7cac8224259f82305dcafa8d0"
+                "reference": "0524c9f705c8458b749553da884f2d6c3e310bed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/christianjbrown/api-client-php/zipball/52f7c0bd6207d7c7cac8224259f82305dcafa8d0",
-                "reference": "52f7c0bd6207d7c7cac8224259f82305dcafa8d0",
+                "url": "https://api.github.com/repos/christianjbrown/api-client-php/zipball/0524c9f705c8458b749553da884f2d6c3e310bed",
+                "reference": "0524c9f705c8458b749553da884f2d6c3e310bed",
                 "shasum": ""
             },
             "require": {
@@ -144,20 +144,20 @@
             "support": {
                 "source": "https://github.com/christianjbrown/api-client-php/tree/main"
             },
-            "time": "2026-07-24T13:53:48+00:00"
+            "time": "2026-07-24T16:43:06+00:00"
         },
         {
             "name": "christianjbrown/christianbrown-database-orm",
             "version": "dev-main",
             "source": {
                 "type": "git",
-                "url": "git@github.com:christianjbrown/christianbrown-database-orm-php.git",
-                "reference": "e40e530d96563582aaf4b1af178237dd31a6d12d"
+                "url": "https://github.com/christianjbrown/christianbrown-database-orm-php.git",
+                "reference": "3019174f48ce2c6e671ea6e1e49af4ef5ddbcd7d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/christianjbrown/christianbrown-database-orm-php/zipball/e40e530d96563582aaf4b1af178237dd31a6d12d",
-                "reference": "e40e530d96563582aaf4b1af178237dd31a6d12d",
+                "url": "https://api.github.com/repos/christianjbrown/christianbrown-database-orm-php/zipball/3019174f48ce2c6e671ea6e1e49af4ef5ddbcd7d",
+                "reference": "3019174f48ce2c6e671ea6e1e49af4ef5ddbcd7d",
                 "shasum": ""
             },
             "require": {
@@ -223,7 +223,7 @@
             "support": {
                 "source": "https://github.com/christianjbrown/christianbrown-database-orm-php/tree/main"
             },
-            "time": "2026-07-24T13:58:12+00:00"
+            "time": "2026-07-24T16:11:47+00:00"
         },
         {
             "name": "christianjbrown/cloud-run-function-lib",
@@ -231,12 +231,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/christianjbrown/cloud-run-function-lib-php.git",
-                "reference": "de83d3844da4358377ce51785e0a75b649018448"
+                "reference": "b883ebef21ee3602f6ac6f1c46ff8b394f1f65b6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/christianjbrown/cloud-run-function-lib-php/zipball/de83d3844da4358377ce51785e0a75b649018448",
-                "reference": "de83d3844da4358377ce51785e0a75b649018448",
+                "url": "https://api.github.com/repos/christianjbrown/cloud-run-function-lib-php/zipball/b883ebef21ee3602f6ac6f1c46ff8b394f1f65b6",
+                "reference": "b883ebef21ee3602f6ac6f1c46ff8b394f1f65b6",
                 "shasum": ""
             },
             "require": {
@@ -303,7 +303,7 @@
             "support": {
                 "source": "https://github.com/christianjbrown/cloud-run-function-lib-php/tree/main"
             },
-            "time": "2026-07-24T14:38:06+00:00"
+            "time": "2026-07-24T16:43:14+00:00"
         },
         {
             "name": "christianjbrown/key-value-store",
@@ -311,12 +311,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/christianjbrown/key-value-store-php.git",
-                "reference": "ed430b682569900fe69bdfa3ec762b51b96d27cf"
+                "reference": "df8c04b73f4f4704cbbe06fe25178d79b5d4188c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/christianjbrown/key-value-store-php/zipball/ed430b682569900fe69bdfa3ec762b51b96d27cf",
-                "reference": "ed430b682569900fe69bdfa3ec762b51b96d27cf",
+                "url": "https://api.github.com/repos/christianjbrown/key-value-store-php/zipball/df8c04b73f4f4704cbbe06fe25178d79b5d4188c",
+                "reference": "df8c04b73f4f4704cbbe06fe25178d79b5d4188c",
                 "shasum": ""
             },
             "require": {
@@ -387,7 +387,7 @@
             "support": {
                 "source": "https://github.com/christianjbrown/key-value-store-php/tree/main"
             },
-            "time": "2026-07-24T13:52:51+00:00"
+            "time": "2026-07-24T16:43:41+00:00"
         },
         {
             "name": "christianjbrown/oauth2-client",
@@ -395,12 +395,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/christianjbrown/oauth2-client-php.git",
-                "reference": "0c886b10d66d6dacb38eecd290286f143ef7a8c0"
+                "reference": "a8d298927939ec4ad16ad63bc518b0dcff595861"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/christianjbrown/oauth2-client-php/zipball/0c886b10d66d6dacb38eecd290286f143ef7a8c0",
-                "reference": "0c886b10d66d6dacb38eecd290286f143ef7a8c0",
+                "url": "https://api.github.com/repos/christianjbrown/oauth2-client-php/zipball/a8d298927939ec4ad16ad63bc518b0dcff595861",
+                "reference": "a8d298927939ec4ad16ad63bc518b0dcff595861",
                 "shasum": ""
             },
             "require": {
@@ -466,7 +466,7 @@
             "support": {
                 "source": "https://github.com/christianjbrown/oauth2-client-php/tree/main"
             },
-            "time": "2026-07-24T13:57:29+00:00"
+            "time": "2026-07-24T16:43:53+00:00"
         },
         {
             "name": "christianjbrown/smartthings-api-sdk",
@@ -474,12 +474,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/christianjbrown/smartthings-api-sdk-php.git",
-                "reference": "7f430f61237f81adea44a21b4501aebf82ce2a6a"
+                "reference": "b7aa705ea29d113ac42ee30f2bd6867cffcf6273"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/christianjbrown/smartthings-api-sdk-php/zipball/7f430f61237f81adea44a21b4501aebf82ce2a6a",
-                "reference": "7f430f61237f81adea44a21b4501aebf82ce2a6a",
+                "url": "https://api.github.com/repos/christianjbrown/smartthings-api-sdk-php/zipball/b7aa705ea29d113ac42ee30f2bd6867cffcf6273",
+                "reference": "b7aa705ea29d113ac42ee30f2bd6867cffcf6273",
                 "shasum": ""
             },
             "require": {
@@ -544,7 +544,7 @@
             "support": {
                 "source": "https://github.com/christianjbrown/smartthings-api-sdk-php/tree/main"
             },
-            "time": "2026-07-24T13:59:51+00:00"
+            "time": "2026-07-24T16:44:01+00:00"
         },
         {
             "name": "christianjbrown/user-friendly-exception",
@@ -552,12 +552,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/christianjbrown/user-friendly-exception-php.git",
-                "reference": "d1886ec7c5f42618a8338d8d88306621b62f622d"
+                "reference": "866c288147d77fcebb4fc9614e8d575af18f47a0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/christianjbrown/user-friendly-exception-php/zipball/d1886ec7c5f42618a8338d8d88306621b62f622d",
-                "reference": "d1886ec7c5f42618a8338d8d88306621b62f622d",
+                "url": "https://api.github.com/repos/christianjbrown/user-friendly-exception-php/zipball/866c288147d77fcebb4fc9614e8d575af18f47a0",
+                "reference": "866c288147d77fcebb4fc9614e8d575af18f47a0",
                 "shasum": ""
             },
             "require": {
@@ -617,7 +617,7 @@
             "support": {
                 "source": "https://github.com/christianjbrown/user-friendly-exception-php/tree/main"
             },
-            "time": "2026-07-24T13:50:12+00:00"
+            "time": "2026-07-24T16:44:09+00:00"
         },
         {
             "name": "cloudevents/sdk-php",
@@ -1494,29 +1494,30 @@
         },
         {
             "name": "google/auth",
-            "version": "v1.52.0",
+            "version": "v1.53.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-auth-library-php.git",
-                "reference": "7a7e5ab2ff2d9449a252eab587d4dae978c22a77"
+                "reference": "d677d0b0c4bd52ab222a85df8e74e0d491c0cc5a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-auth-library-php/zipball/7a7e5ab2ff2d9449a252eab587d4dae978c22a77",
-                "reference": "7a7e5ab2ff2d9449a252eab587d4dae978c22a77",
+                "url": "https://api.github.com/repos/googleapis/google-auth-library-php/zipball/d677d0b0c4bd52ab222a85df8e74e0d491c0cc5a",
+                "reference": "d677d0b0c4bd52ab222a85df8e74e0d491c0cc5a",
                 "shasum": ""
             },
             "require": {
                 "firebase/php-jwt": "^6.0||^7.0",
-                "guzzlehttp/guzzle": "^7.4.5",
-                "guzzlehttp/psr7": "^2.4.5",
+                "guzzlehttp/guzzle": "^7.8.2||^8.0",
+                "guzzlehttp/psr7": "^2.6.3||^3.0",
                 "php": "^8.1",
                 "psr/cache": "^2.0||^3.0",
+                "psr/http-client": "^1.0",
                 "psr/http-message": "^1.1||^2.0",
                 "psr/log": "^2.0||^3.0"
             },
             "require-dev": {
-                "guzzlehttp/promises": "^2.0",
+                "guzzlehttp/promises": "^2.0.3||^3.0",
                 "kelvinmo/simplejwt": "^1.1.0",
                 "phpseclib/phpseclib": "^3.0.35",
                 "phpspec/prophecy-phpunit": "^2.1",
@@ -1550,9 +1551,9 @@
             "support": {
                 "docs": "https://cloud.google.com/php/docs/reference/auth/latest",
                 "issues": "https://github.com/googleapis/google-auth-library-php/issues",
-                "source": "https://github.com/googleapis/google-auth-library-php/tree/v1.52.0"
+                "source": "https://github.com/googleapis/google-auth-library-php/tree/v1.53.0"
             },
-            "time": "2026-06-23T16:43:15+00:00"
+            "time": "2026-07-22T22:36:10+00:00"
         },
         {
             "name": "google/cloud-functions-framework",
@@ -1954,16 +1955,16 @@
         },
         {
             "name": "guzzlehttp/guzzle",
-            "version": "7.15.1",
+            "version": "7.15.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "61443dfb33c62f308ee8add20f45b4d6e4bf8d2f"
+                "reference": "744101956d78b7c1384d0cbf379db13e859167bf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/61443dfb33c62f308ee8add20f45b4d6e4bf8d2f",
-                "reference": "61443dfb33c62f308ee8add20f45b4d6e4bf8d2f",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/744101956d78b7c1384d0cbf379db13e859167bf",
+                "reference": "744101956d78b7c1384d0cbf379db13e859167bf",
                 "shasum": ""
             },
             "require": {
@@ -2062,7 +2063,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/guzzle/issues",
-                "source": "https://github.com/guzzle/guzzle/tree/7.15.1"
+                "source": "https://github.com/guzzle/guzzle/tree/7.15.2"
             },
             "funding": [
                 {
@@ -2078,7 +2079,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-07-18T11:23:11+00:00"
+            "time": "2026-07-26T23:23:20+00:00"
         },
         {
             "name": "guzzlehttp/promises",
@@ -4158,12 +4159,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/christianjbrown/code-quality-scripts-php.git",
-                "reference": "608f77260458cfafe208e6e9e398998dd4c9ce12"
+                "reference": "ddb8fe7e45e94a49526b3113d66cc9b3ff6cfedf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/christianjbrown/code-quality-scripts-php/zipball/608f77260458cfafe208e6e9e398998dd4c9ce12",
-                "reference": "608f77260458cfafe208e6e9e398998dd4c9ce12",
+                "url": "https://api.github.com/repos/christianjbrown/code-quality-scripts-php/zipball/ddb8fe7e45e94a49526b3113d66cc9b3ff6cfedf",
+                "reference": "ddb8fe7e45e94a49526b3113d66cc9b3ff6cfedf",
                 "shasum": ""
             },
             "require": {
@@ -4246,7 +4247,7 @@
             "support": {
                 "source": "https://github.com/christianjbrown/code-quality-scripts-php/tree/main"
             },
-            "time": "2026-07-24T13:48:48+00:00"
+            "time": "2026-07-24T16:43:23+00:00"
         },
         {
             "name": "clue/ndjson-react",
@@ -4881,16 +4882,16 @@
         },
         {
             "name": "friendsofphp/php-cs-fixer",
-            "version": "v3.95.15",
+            "version": "v3.95.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer.git",
-                "reference": "3e47e5d50046f87e3244acde2fe655d1a3b72555"
+                "reference": "0ee88422118f3cc59c8c3def222ba7f1493b6d5b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/3e47e5d50046f87e3244acde2fe655d1a3b72555",
-                "reference": "3e47e5d50046f87e3244acde2fe655d1a3b72555",
+                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/0ee88422118f3cc59c8c3def222ba7f1493b6d5b",
+                "reference": "0ee88422118f3cc59c8c3def222ba7f1493b6d5b",
                 "shasum": ""
             },
             "require": {
@@ -4930,10 +4931,10 @@
                 "php-coveralls/php-coveralls": "^2.9.1",
                 "php-cs-fixer/phpunit-constraint-isidenticalstring": "^1.8",
                 "php-cs-fixer/phpunit-constraint-xmlmatchesxsd": "^1.8",
-                "phpunit/phpunit": "^9.6.35 || ^10.5.64 || ^11.5.56 || ^12.5.31",
+                "phpunit/phpunit": "^9.6.35 || ^10.5.64 || ^11.5.56 || ^12.5.31 || ^13.0.6",
                 "symfony/polyfill-php85": "^1.38",
-                "symfony/var-dumper": "^5.4.48 || ^6.4.36 || ^7.4.8 || ^8.1.0",
-                "symfony/yaml": "^5.4.53 || ^6.4.41 || ^7.4.13 || ^8.1.0"
+                "symfony/var-dumper": "^5.4.48 || ^6.4.36 || ^7.4.8 || ^8.1.1",
+                "symfony/yaml": "^5.4.53 || ^6.4.41 || ^7.4.13 || ^8.1.1"
             },
             "suggest": {
                 "ext-dom": "For handling output formats in XML",
@@ -4974,7 +4975,7 @@
             ],
             "support": {
                 "issues": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/issues",
-                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.95.15"
+                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.95.17"
             },
             "funding": [
                 {
@@ -4982,7 +4983,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-07-15T09:51:47+00:00"
+            "time": "2026-07-24T13:54:39+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -5660,11 +5661,11 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "2.2.5",
+            "version": "2.2.6",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/909c1e5fef7989ac0d0c1c5c42e32a5c4f6198a0",
-                "reference": "909c1e5fef7989ac0d0c1c5c42e32a5c4f6198a0",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/a6e9b5a9420f6109c091e87d82683bd1a80b87ed",
+                "reference": "a6e9b5a9420f6109c091e87d82683bd1a80b87ed",
                 "shasum": ""
             },
             "require": {
@@ -5720,7 +5721,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-07-05T06:31:06+00:00"
+            "time": "2026-07-26T21:22:49+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
