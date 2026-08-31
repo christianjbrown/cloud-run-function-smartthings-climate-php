@@ -4160,12 +4160,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/christianjbrown/code-quality-scripts-php.git",
-                "reference": "ddb8fe7e45e94a49526b3113d66cc9b3ff6cfedf"
+                "reference": "9e4c40231777b76540183838089f896e9ab0fea0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/christianjbrown/code-quality-scripts-php/zipball/ddb8fe7e45e94a49526b3113d66cc9b3ff6cfedf",
-                "reference": "ddb8fe7e45e94a49526b3113d66cc9b3ff6cfedf",
+                "url": "https://api.github.com/repos/christianjbrown/code-quality-scripts-php/zipball/9e4c40231777b76540183838089f896e9ab0fea0",
+                "reference": "9e4c40231777b76540183838089f896e9ab0fea0",
                 "shasum": ""
             },
             "require": {
@@ -4175,7 +4175,7 @@
                 "friendsofphp/php-cs-fixer": "^3.74",
                 "php": "^8.5",
                 "slevomat/coding-standard": "^8.30",
-                "squizlabs/php_codesniffer": "^4.0.1"
+                "squizlabs/php_codesniffer": "^4.0.2"
             },
             "require-dev": {
                 "phpstan/phpstan": "^2.0",
@@ -4248,7 +4248,7 @@
             "support": {
                 "source": "https://github.com/christianjbrown/code-quality-scripts-php/tree/main"
             },
-            "time": "2026-07-24T16:43:23+00:00"
+            "time": "2026-08-31T21:33:57+00:00"
         },
         {
             "name": "clue/ndjson-react",
