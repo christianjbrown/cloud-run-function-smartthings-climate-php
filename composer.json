@@ -19,19 +19,19 @@
     ],
     "require": {
         "php": "^8.5",
-        "christianjbrown/api-client": "dev-main",
+        "christianjbrown/api-client": "^1.0",
         "christianjbrown/christianbrown-database-orm": "dev-main",
         "christianjbrown/cloud-run-function-lib": "dev-main",
-        "christianjbrown/key-value-store": "dev-main",
-        "christianjbrown/oauth2-client": "dev-main",
-        "christianjbrown/smartthings-api-sdk": "dev-main",
+        "christianjbrown/key-value-store": "^1.0",
+        "christianjbrown/oauth2-client": "^1.0",
+        "christianjbrown/smartthings-api-sdk": "^1.0",
         "christianjbrown/user-friendly-exception": "dev-main",
         "doctrine/dbal": "^4.4.3",
         "google/cloud-functions-framework": "^1.1",
         "psr/http-client": "^1.0"
     },
     "require-dev": {
-        "christianjbrown/code-quality-scripts": "dev-main",
+        "christianjbrown/code-quality-scripts": "^1.0",
         "phpstan/phpstan": "^2.0",
         "phpunit/phpunit": "^13.0",
         "zircote/swagger-php": "^6.4",
@@ -86,31 +86,11 @@
     "repositories": [
         {
             "type": "github",
-            "url": "git@github.com:christianjbrown/api-client-php.git"
-        },
-        {
-            "type": "github",
             "url": "git@github.com:christianjbrown/christianbrown-database-orm-php.git"
         },
         {
             "type": "github",
-            "url": "git@github.com:christianjbrown/code-quality-scripts-php.git"
-        },
-        {
-            "type": "github",
             "url": "git@github.com:christianjbrown/cloud-run-function-lib-php.git"
-        },
-        {
-            "type": "github",
-            "url": "git@github.com:christianjbrown/key-value-store-php.git"
-        },
-        {
-            "type": "github",
-            "url": "git@github.com:christianjbrown/oauth2-client-php.git"
-        },
-        {
-            "type": "github",
-            "url": "git@github.com:christianjbrown/smartthings-api-sdk-php.git"
         },
         {
             "type": "github",
