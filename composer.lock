@@ -399,16 +399,16 @@
         },
         {
             "name": "christianjbrown/smartthings-api-sdk",
-            "version": "v1.0.0",
+            "version": "v1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/christianjbrown/smartthings-api-sdk-php.git",
-                "reference": "f82c506d81df1f806a2d74a2ce4d10e1e9d0b131"
+                "reference": "af3d1e6a4d32e5e128cb182ec8b6edde2056bef4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/christianjbrown/smartthings-api-sdk-php/zipball/f82c506d81df1f806a2d74a2ce4d10e1e9d0b131",
-                "reference": "f82c506d81df1f806a2d74a2ce4d10e1e9d0b131",
+                "url": "https://api.github.com/repos/christianjbrown/smartthings-api-sdk-php/zipball/af3d1e6a4d32e5e128cb182ec8b6edde2056bef4",
+                "reference": "af3d1e6a4d32e5e128cb182ec8b6edde2056bef4",
                 "shasum": ""
             },
             "require": {
@@ -438,7 +438,7 @@
                     "name": "Christian Brown"
                 }
             ],
-            "description": "A strongly-typed, read-only PHP 8.5+ client for the SmartThings API that returns typed model objects instead of raw arrays.",
+            "description": "A strongly-typed PHP 8.5+ client for the SmartThings API that returns typed model objects instead of raw arrays.",
             "keywords": [
                 "api",
                 "client",
@@ -448,9 +448,9 @@
             ],
             "support": {
                 "issues": "https://github.com/christianjbrown/smartthings-api-sdk-php/issues",
-                "source": "https://github.com/christianjbrown/smartthings-api-sdk-php/tree/v1.0.0"
+                "source": "https://github.com/christianjbrown/smartthings-api-sdk-php/tree/v1.2.0"
             },
-            "time": "2026-09-28T14:17:55+00:00"
+            "time": "2026-09-28T18:07:19+00:00"
         },
         {
             "name": "christianjbrown/user-friendly-exception",
