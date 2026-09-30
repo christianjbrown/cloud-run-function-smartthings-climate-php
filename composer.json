@@ -24,7 +24,7 @@
         "christianjbrown/cloud-run-function-lib": "dev-main",
         "christianjbrown/key-value-store": "^1.0",
         "christianjbrown/oauth2-client": "^1.0",
-        "christianjbrown/smartthings-api-sdk": "^1.0",
+        "christianjbrown/smartthings-api-sdk": "^2.0",
         "christianjbrown/user-friendly-exception": "dev-main",
         "doctrine/dbal": "^4.4.3",
         "google/cloud-functions-framework": "^1.1",
