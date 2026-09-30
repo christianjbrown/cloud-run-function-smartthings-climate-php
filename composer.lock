@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5c89811f6daf45007126de28ad673610",
+    "content-hash": "3747e24bae355e09618eefaee6958b86",
     "packages": [
         {
             "name": "brick/math",
@@ -399,25 +399,27 @@
         },
         {
             "name": "christianjbrown/smartthings-api-sdk",
-            "version": "v1.2.0",
+            "version": "v2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/christianjbrown/smartthings-api-sdk-php.git",
-                "reference": "af3d1e6a4d32e5e128cb182ec8b6edde2056bef4"
+                "reference": "ff557686b1e0799a31fcee1807519184202076a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/christianjbrown/smartthings-api-sdk-php/zipball/af3d1e6a4d32e5e128cb182ec8b6edde2056bef4",
-                "reference": "af3d1e6a4d32e5e128cb182ec8b6edde2056bef4",
+                "url": "https://api.github.com/repos/christianjbrown/smartthings-api-sdk-php/zipball/ff557686b1e0799a31fcee1807519184202076a9",
+                "reference": "ff557686b1e0799a31fcee1807519184202076a9",
                 "shasum": ""
             },
             "require": {
                 "christianjbrown/api-client": "^1.0",
+                "guzzlehttp/guzzle": "^7.15",
                 "php": "^8.5",
                 "psr/container": "^2.0",
                 "symfony/dependency-injection": "^8.0"
             },
             "require-dev": {
+                "brianium/paratest": "^7.25",
                 "christianjbrown/code-quality-scripts": "^1.0",
                 "phpstan/phpstan": "^2.0",
                 "phpstan/phpstan-phpunit": "^2.0",
@@ -448,9 +450,9 @@
             ],
             "support": {
                 "issues": "https://github.com/christianjbrown/smartthings-api-sdk-php/issues",
-                "source": "https://github.com/christianjbrown/smartthings-api-sdk-php/tree/v1.2.0"
+                "source": "https://github.com/christianjbrown/smartthings-api-sdk-php/tree/v2.0.0"
             },
-            "time": "2026-09-28T18:07:19+00:00"
+            "time": "2026-09-30T05:42:57+00:00"
         },
         {
             "name": "christianjbrown/user-friendly-exception",
