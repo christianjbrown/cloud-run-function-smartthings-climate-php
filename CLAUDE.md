@@ -32,7 +32,7 @@ Met Office weather function and a future historical-climate reader can reuse the
 **Climate history.** On each request the function also records the average house temperature and
 humidity to the shared `smartthings_climate` table (append-only, one row per origin request), reusing
 the same `EntityManager`/connection already opened for the token store. The write is best-effort:
-`DataProvider` wraps it in a `try/catch` and `error_log()`s failures so a database problem never
+`ClimateRecorder` wraps it in a `try/catch` and `error_log()`s failures so a database problem never
 disturbs the response (see `ClimateAverageCalculator` and the shared `ClimateMeasurementRecorder`).
 
 ## Commands
@@ -130,12 +130,14 @@ top-level `index.php` holds the framework entry point and is intentionally outsi
 - **`ClimateAverageCalculator`** / **`ClimateAverageCalculatorInterface`** — computes the average
   non-stale temperature and humidity across the `DeviceReading`s; returns `null` for a metric when no
   fresh reading exists.
-- **`DataProvider`** — implements the lib's `DataProviderInterface`. `getData()` lists devices, and for
-  each keeps those exposing a `temperatureMeasurement` or `relativeHumidityMeasurement` capability,
-  reads its status, resolves the room name (for devices with a room) and battery, flags readings older
-  than `STALE_THRESHOLD` (24h) as stale, and builds `DeviceReading` value objects. It then records the
-  average climate to the database (best-effort, isolated by `try/catch`) before handing the readings to
-  the `OutputTransformer`.
+- **`DataProvider`** — implements the lib's `DataProviderInterface` and only orchestrates, through five
+  injected interfaces. `DeviceFetcher` lists the location's devices; `MeasurementCapabilityDetector`
+  returns a `SupportedMeasurements` for each (does it expose a `temperatureMeasurement` or
+  `relativeHumidityMeasurement` capability); `DeviceReadingBuilder` reads the status, resolves the room
+  name, and flags readings older than `STALE_THRESHOLD` (24h) as stale against an injected PSR-20 clock
+  read per call; `ClimateRecorder` averages and records the climate to the database (best-effort,
+  isolated by `try/catch`, timestamped from the same clock); then the `OutputTransformer` formats the
+  readings. `index.php` wires them with a shared `NativeClock`.
 - **`DeviceReading`** / **`DeviceReadingInterface`** — a plain typed DTO for one device's label, room,
   battery, temperature/humidity values, timestamps, and stale flags.
 - **`OutputTransformer`** — sorts the readings by label, maps each through
