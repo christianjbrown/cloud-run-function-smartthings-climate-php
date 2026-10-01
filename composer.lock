@@ -382,16 +382,16 @@
         },
         {
             "name": "christianjbrown/smartthings-api-sdk",
-            "version": "v3.0.0",
+            "version": "v3.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/christianjbrown/smartthings-api-sdk-php.git",
-                "reference": "2cb27f9bec9afeb4a5716d08415ae47e59f6357c"
+                "reference": "863c634bb4ca6754236a0fd93498f2944ecc0875"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/christianjbrown/smartthings-api-sdk-php/zipball/2cb27f9bec9afeb4a5716d08415ae47e59f6357c",
-                "reference": "2cb27f9bec9afeb4a5716d08415ae47e59f6357c",
+                "url": "https://api.github.com/repos/christianjbrown/smartthings-api-sdk-php/zipball/863c634bb4ca6754236a0fd93498f2944ecc0875",
+                "reference": "863c634bb4ca6754236a0fd93498f2944ecc0875",
                 "shasum": ""
             },
             "require": {
@@ -433,9 +433,9 @@
             ],
             "support": {
                 "issues": "https://github.com/christianjbrown/smartthings-api-sdk-php/issues",
-                "source": "https://github.com/christianjbrown/smartthings-api-sdk-php/tree/v3.0.0"
+                "source": "https://github.com/christianjbrown/smartthings-api-sdk-php/tree/v3.0.1"
             },
-            "time": "2026-10-01T02:29:53+00:00"
+            "time": "2026-10-01T11:38:13+00:00"
         },
         {
             "name": "christianjbrown/user-friendly-exception",
