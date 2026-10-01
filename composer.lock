@@ -319,21 +319,21 @@
         },
         {
             "name": "christianjbrown/oauth2-client",
-            "version": "v1.0.0",
+            "version": "v1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/christianjbrown/oauth2-client-php.git",
-                "reference": "6afd26d8855b244ffdb63affed73fabf7c35a410"
+                "reference": "b497d5e50427376a72342b714d76a982838fa949"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/christianjbrown/oauth2-client-php/zipball/6afd26d8855b244ffdb63affed73fabf7c35a410",
-                "reference": "6afd26d8855b244ffdb63affed73fabf7c35a410",
+                "url": "https://api.github.com/repos/christianjbrown/oauth2-client-php/zipball/b497d5e50427376a72342b714d76a982838fa949",
+                "reference": "b497d5e50427376a72342b714d76a982838fa949",
                 "shasum": ""
             },
             "require": {
                 "christianjbrown/api-client": "^1.0",
-                "christianjbrown/key-value-store": "^1.0",
+                "christianjbrown/key-value-store": "^1.0 || ^2.0",
                 "php": "^8.5",
                 "psr/http-client": "^1.0"
             },
@@ -368,9 +368,9 @@
             ],
             "support": {
                 "issues": "https://github.com/christianjbrown/oauth2-client-php/issues",
-                "source": "https://github.com/christianjbrown/oauth2-client-php/tree/v1.0.0"
+                "source": "https://github.com/christianjbrown/oauth2-client-php/tree/v1.0.1"
             },
-            "time": "2026-09-28T11:35:53+00:00"
+            "time": "2026-09-30T12:34:43+00:00"
         },
         {
             "name": "christianjbrown/smartthings-api-sdk",
