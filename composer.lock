@@ -68,16 +68,16 @@
         },
         {
             "name": "christianjbrown/api-client",
-            "version": "v3.0.0",
+            "version": "v3.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/christianjbrown/api-client-php.git",
-                "reference": "8c0f3e6249b19753cf229f5a9ccc02bcfa3a5357"
+                "reference": "f15f1a9d73a5708af37d4620856a50db9dd197b0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/christianjbrown/api-client-php/zipball/8c0f3e6249b19753cf229f5a9ccc02bcfa3a5357",
-                "reference": "8c0f3e6249b19753cf229f5a9ccc02bcfa3a5357",
+                "url": "https://api.github.com/repos/christianjbrown/api-client-php/zipball/f15f1a9d73a5708af37d4620856a50db9dd197b0",
+                "reference": "f15f1a9d73a5708af37d4620856a50db9dd197b0",
                 "shasum": ""
             },
             "require": {
@@ -121,9 +121,9 @@
             ],
             "support": {
                 "issues": "https://github.com/christianjbrown/api-client-php/issues",
-                "source": "https://github.com/christianjbrown/api-client-php/tree/v3.0.0"
+                "source": "https://github.com/christianjbrown/api-client-php/tree/v3.0.1"
             },
-            "time": "2026-10-01T00:59:12+00:00"
+            "time": "2026-10-01T11:29:39+00:00"
         },
         {
             "name": "christianjbrown/christianbrown-database-orm",
