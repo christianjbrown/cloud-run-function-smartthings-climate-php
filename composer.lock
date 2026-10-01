@@ -4163,16 +4163,16 @@
     "packages-dev": [
         {
             "name": "christianjbrown/code-quality-scripts",
-            "version": "v1.2.0",
+            "version": "v1.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/christianjbrown/code-quality-scripts-php.git",
-                "reference": "c5340bfdd4ec401dff90055f05b0d11b7aae3fff"
+                "reference": "9b2bcdba22f8424f11e40c60edf40fa5404d86cd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/christianjbrown/code-quality-scripts-php/zipball/c5340bfdd4ec401dff90055f05b0d11b7aae3fff",
-                "reference": "c5340bfdd4ec401dff90055f05b0d11b7aae3fff",
+                "url": "https://api.github.com/repos/christianjbrown/code-quality-scripts-php/zipball/9b2bcdba22f8424f11e40c60edf40fa5404d86cd",
+                "reference": "9b2bcdba22f8424f11e40c60edf40fa5404d86cd",
                 "shasum": ""
             },
             "require": {
@@ -4224,9 +4224,9 @@
             ],
             "support": {
                 "issues": "https://github.com/christianjbrown/code-quality-scripts-php/issues",
-                "source": "https://github.com/christianjbrown/code-quality-scripts-php/tree/v1.2.0"
+                "source": "https://github.com/christianjbrown/code-quality-scripts-php/tree/v1.2.1"
             },
-            "time": "2026-10-01T00:53:11+00:00"
+            "time": "2026-10-01T11:30:00+00:00"
         },
         {
             "name": "clue/ndjson-react",
