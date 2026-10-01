@@ -12,7 +12,7 @@ a library** — it wires the sibling `christianjbrown/*` libraries together behi
 the `run()` function in `index.php` builds the config, constructs a `SmartThings` client and a
 `CloudRunFunction`, and returns the PSR-7 response.
 
-The app consumes private `dev-main` sibling packages: `cloud-run-function-lib` (the HTTP
+The app consumes sibling packages from Packagist: `cloud-run-function-lib` (the HTTP
 envelope/gating/caching framework), `smartthings-api-sdk` (the read-only SmartThings client),
 `oauth2-client` (the OAuth refresh-token manager), `key-value-store` (the DB-backed
 token store), `api-client` (the JSON request sender used by the token manager),

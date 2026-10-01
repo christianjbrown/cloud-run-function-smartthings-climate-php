@@ -21,11 +21,11 @@
         "php": "^8.5",
         "christianjbrown/api-client": "^1.0",
         "christianjbrown/christianbrown-database-orm": "dev-main",
-        "christianjbrown/cloud-run-function-lib": "dev-main",
+        "christianjbrown/cloud-run-function-lib": "^1.0",
         "christianjbrown/key-value-store": "^1.0",
         "christianjbrown/oauth2-client": "^1.0",
         "christianjbrown/smartthings-api-sdk": "^2.0",
-        "christianjbrown/user-friendly-exception": "dev-main",
+        "christianjbrown/user-friendly-exception": "^1.0",
         "doctrine/dbal": "^4.4.3",
         "google/cloud-functions-framework": "^1.1",
         "psr/http-client": "^1.0"
@@ -87,14 +87,6 @@
         {
             "type": "github",
             "url": "git@github.com:christianjbrown/christianbrown-database-orm-php.git"
-        },
-        {
-            "type": "github",
-            "url": "git@github.com:christianjbrown/cloud-run-function-lib-php.git"
-        },
-        {
-            "type": "github",
-            "url": "git@github.com:christianjbrown/user-friendly-exception-php.git"
         }
     ]
 }
