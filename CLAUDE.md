@@ -9,8 +9,8 @@ A deployable **Google Cloud Run function** (PHP 8.5+, `php85` runtime) that read
 and relative humidity from your [SmartThings](https://www.smartthings.com/) devices and returns them
 as a single JSON envelope, with an average across all non-stale readings. It is an **application, not
 a library** — it wires the sibling `christianjbrown/*` libraries together behind an HTTP entry point:
-the `run()` function in `index.php` builds the config, constructs a `SmartThings` client and a
-`CloudRunFunction`, and returns the PSR-7 response.
+the `run()` function in `index.php` builds the config, constructs a `SmartThings` client (via `SmartThingsFactory`) and a
+`CloudRunFunction` (via `CloudRunFunctionFactory`), and returns the PSR-7 response.
 
 The app consumes sibling packages from Packagist: `cloud-run-function-lib` (the HTTP
 envelope/gating/caching framework), `smartthings-api-sdk` (the read-only SmartThings client),
@@ -82,7 +82,7 @@ Style tooling comes from the `christianjbrown/code-quality-scripts` dev dependen
 runs **PHP_CodeSniffer 4** with the `ChristianBrown` standard (slevomat sniffs plus PSR/PEAR/Squiz/Generic)
 for linting, and **php-cs-fixer** (`@PhpCsFixer`/`@Symfony`) handles formatting; the `bin/php-cs*` scripts
 are thin wrappers over it.
-Static analysis is **PHPStan at `level: max`** (`phpstan.neon.dist`). Always run `composer fix-style`
+Static analysis is **PHPStan at `level: max`** (`phpstan.neon.dist`), over `src`, `tests` and `index.php`, so a broken constructor call in the composition root fails CI. Always run `composer fix-style`
 first, then `composer check-style` to surface anything left to fix by hand, then `composer stan` and
 `composer test` before finishing.
 
@@ -97,7 +97,7 @@ top-level `index.php` holds the framework entry point and is intentionally outsi
   `ConfigTransformer`, then constructs an anonymous `CloudRunFunctionFactoryInterface` whose `create()`
   holds all the failable wiring (the Doctrine entity manager over the DSN, the two
   `DatabaseKeyValueStore`s keyed `smartthings_access_token` / `smartthings_refresh_token`, the
-  `RefreshTokenManager` that obtains a live access token, the `SmartThings` facade + its device /
+  `RefreshTokenManager` (from `RefreshTokenManagerFactory`, with a `NativeClock`, `ClientSecretBasicAuthentication` and the advisory lock) that obtains a live access token, the `SmartThings` facade + its device /
   device-status / location-room clients, and the assembled `DataProvider` / `OutputTransformer` handed
   to a `CloudRunFunction`). It hands that factory + the `FunctionConfig` to a `RequestHandler` and returns
   `handle($request)`. All the `new` wiring lives here (outside the namespace, so it is excluded from
@@ -107,7 +107,7 @@ top-level `index.php` holds the framework entry point and is intentionally outsi
   `CloudRunFunction::run($request)`, wrapping **both** in one `try/catch (Throwable)`. Because token
   acquisition / client construction happen in the factory *before* the `CloudRunFunction` exists, a failure
   there (e.g. a revoked refresh token returning `invalid_grant`) would otherwise escape as a bare 500;
-  the catch instead `error_log()`s the cause and returns the framework's `JsonErrorResponse` envelope,
+  the catch instead `error_log()`s the cause and returns the framework's JSON error envelope built by the injected `JsonResponseFactoryInterface`,
   keeping the response contract consistent (CDN stale-if-error still shields visitors).
 - **`CloudRunFunctionFactoryInterface`** — the seam that defers the failable wiring so `RequestHandler` can
   wrap it; implemented as an anonymous class in `index.php` (the composition root) and mocked in tests.
@@ -118,7 +118,7 @@ top-level `index.php` holds the framework entry point and is intentionally outsi
   array. A single `extractRequiredString()` helper guards each required env key (`SMARTTHINGS_OAUTH_*`,
   `SMARTTHINGS_DATABASE_DSN`, `SMARTTHINGS_LOCATION_ID`) with sequential presence/type checks (kept in
   one helper so the transformer's cyclomatic complexity stays within the `ChristianBrown` standard's limit), delegating
-  the rest of the env to the injected `FunctionConfigTransformer`.
+  the rest of the env to the injected `FunctionConfigTransformerInterface` (from `CloudRunFunctionFactory::createConfigTransformer()`).
 - **Shared ORM (`ChristianBrown\Database\…`)** — the `EntityManagerFactory` (Doctrine `EntityManager`
   from the DSN, native lazy objects enabled), the `RefreshToken` entity (mapping the shared
   `refresh_tokens` key-value table), the `SmartThingsClimate` entity, and the
