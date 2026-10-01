@@ -263,16 +263,16 @@
         },
         {
             "name": "christianjbrown/key-value-store",
-            "version": "v3.0.0",
+            "version": "v3.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/christianjbrown/key-value-store-php.git",
-                "reference": "128dd9a7620390ba9cc9888bb5d5a56902dba4ae"
+                "reference": "44b24523aff95e8bbe520b61196dd80acd2a4e51"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/christianjbrown/key-value-store-php/zipball/128dd9a7620390ba9cc9888bb5d5a56902dba4ae",
-                "reference": "128dd9a7620390ba9cc9888bb5d5a56902dba4ae",
+                "url": "https://api.github.com/repos/christianjbrown/key-value-store-php/zipball/44b24523aff95e8bbe520b61196dd80acd2a4e51",
+                "reference": "44b24523aff95e8bbe520b61196dd80acd2a4e51",
                 "shasum": ""
             },
             "require": {
@@ -319,9 +319,9 @@
             ],
             "support": {
                 "issues": "https://github.com/christianjbrown/key-value-store-php/issues",
-                "source": "https://github.com/christianjbrown/key-value-store-php/tree/v3.0.0"
+                "source": "https://github.com/christianjbrown/key-value-store-php/tree/v3.0.1"
             },
-            "time": "2026-10-01T00:47:00+00:00"
+            "time": "2026-10-01T11:29:39+00:00"
         },
         {
             "name": "christianjbrown/oauth2-client",
