@@ -19,16 +19,18 @@
     ],
     "require": {
         "php": "^8.5",
-        "christianjbrown/api-client": "^1.0",
+        "christianjbrown/api-client": "^3.0",
         "christianjbrown/christianbrown-database-orm": "dev-main",
-        "christianjbrown/cloud-run-function-lib": "^1.0",
-        "christianjbrown/key-value-store": "^1.0",
-        "christianjbrown/oauth2-client": "^1.0",
-        "christianjbrown/smartthings-api-sdk": "^2.0",
+        "christianjbrown/cloud-run-function-lib": "^2.0",
+        "christianjbrown/key-value-store": "^3.0",
+        "christianjbrown/oauth2-client": "^2.1",
+        "christianjbrown/smartthings-api-sdk": "^3.0",
         "christianjbrown/user-friendly-exception": "^1.0",
         "doctrine/dbal": "^4.4.3",
         "google/cloud-functions-framework": "^1.1",
-        "psr/http-client": "^1.0"
+        "psr/http-client": "^1.0",
+        "psr/clock": "^1.0",
+        "symfony/clock": "^8.1"
     },
     "require-dev": {
         "christianjbrown/code-quality-scripts": "^1.0",

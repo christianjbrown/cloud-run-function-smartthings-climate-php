@@ -4,10 +4,16 @@ declare(strict_types=1);
 
 namespace ChristianBrown\SmartThingsClimate\Tests;
 
-use ChristianBrown\CloudRunFunction\CloudRunFunction;
+use ChristianBrown\CloudRunFunction\AllowOriginResolver;
+use ChristianBrown\CloudRunFunction\CacheHeaderBuilder;
+use ChristianBrown\CloudRunFunction\CloudRunFunctionFactory;
+use ChristianBrown\CloudRunFunction\CorsHeaderBuilder;
 use ChristianBrown\CloudRunFunction\DataProviderInterface as BaseDataProviderInterface;
 use ChristianBrown\CloudRunFunction\FunctionConfig;
 use ChristianBrown\CloudRunFunction\FunctionConfigInterface;
+use ChristianBrown\CloudRunFunction\JsonResponseFactory;
+use ChristianBrown\CloudRunFunction\JsonResponseFactoryInterface;
+use ChristianBrown\CloudRunFunction\ResponseBodyBuilder;
 use ChristianBrown\SmartThingsClimate\CloudRunFunctionFactoryInterface;
 use ChristianBrown\SmartThingsClimate\DeviceReadingInterface;
 use ChristianBrown\SmartThingsClimate\DeviceReadingOutputTransformer;
@@ -26,6 +32,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
+use Symfony\Component\Clock\NativeClock;
 
 use function dirname;
 use function ini_set;
@@ -86,7 +93,7 @@ final class ContractTest extends TestCase
         $cloudFunctionFactory->method('create')
             ->willThrowException(new RuntimeException('invalid_grant'));
 
-        $requestHandler = new RequestHandler($cloudFunctionFactory, $this->allowedConfig());
+        $requestHandler = new RequestHandler($cloudFunctionFactory, $this->allowedConfig(), $this->createResponseFactory());
 
         // The handler logs the cause via error_log() for Cloud Logging; divert it to a
         // temp file so the strict-output check does not see it as unexpected output.
@@ -172,8 +179,8 @@ final class ContractTest extends TestCase
     public function testUnauthorizedResponseMatchesContract(): void
     {
         $config = (new FunctionConfig(self::REVISION))
-            ->setRequiredHeaderKey('X-Request-Auth')
-            ->setRequiredHeaderValue('secret');
+            ->withRequiredHeaderKey('X-Request-Auth')
+            ->withRequiredHeaderValue('secret');
 
         $dataProvider = self::createStub(BaseDataProviderInterface::class);
 
@@ -186,11 +193,11 @@ final class ContractTest extends TestCase
     private function allowedConfig(): FunctionConfigInterface
     {
         return (new FunctionConfig(self::REVISION))
-            ->setAllowUnauthenticated(true)
-            ->setRequiredOrigin(self::ORIGIN)
-            ->setUseCacheTtl(300)
-            ->setUseCacheButRequestTtl(600)
-            ->setUseCacheIfErrorTtl(3600);
+            ->withAllowUnauthenticated(true)
+            ->withRequiredOrigin(self::ORIGIN)
+            ->withUseCacheTtl(300)
+            ->withUseCacheButRequestTtl(600)
+            ->withUseCacheIfErrorTtl(3600);
     }
 
     /**
@@ -198,13 +205,13 @@ final class ContractTest extends TestCase
      */
     private function buildResponse(FunctionConfigInterface $config, BaseDataProviderInterface $dataProvider, ServerRequestInterface $request): ResponseInterface
     {
-        $cloudFunction = new CloudRunFunction($dataProvider, $config);
+        $cloudFunction = (new CloudRunFunctionFactory())->create($dataProvider, $config);
 
         $cloudFunctionFactory = self::createStub(CloudRunFunctionFactoryInterface::class);
         $cloudFunctionFactory->method('create')
             ->willReturn($cloudFunction);
 
-        $requestHandler = new RequestHandler($cloudFunctionFactory, $config);
+        $requestHandler = new RequestHandler($cloudFunctionFactory, $config, $this->createResponseFactory());
 
         return $requestHandler->handle($request);
     }
@@ -244,5 +251,10 @@ final class ContractTest extends TestCase
             ->willReturn($humidity);
 
         return $reading;
+    }
+
+    private function createResponseFactory(): JsonResponseFactoryInterface
+    {
+        return new JsonResponseFactory(new ResponseBodyBuilder(), new CorsHeaderBuilder(new AllowOriginResolver()), new CacheHeaderBuilder(), new NativeClock());
     }
 }
