@@ -98,7 +98,10 @@ jobs:
           runtime: 'php85'
           entry_point: 'run'
           region: 'europe-west2'
-          memory: '128Mi'
+          # 128Mi ran at 75 to 99 percent at p99 every day, and on 2026-10-06 an
+          # instance was killed at 133 MiB right after answering its second
+          # request. 256Mi gives the Doctrine ORM and SDK clients headroom.
+          memory: '256Mi'
           min_instance_count: 0
           max_instance_count: 1
           service_timeout: '60s'
