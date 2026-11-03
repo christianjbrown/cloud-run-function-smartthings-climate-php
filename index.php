@@ -20,6 +20,7 @@ use ChristianBrown\CloudRunFunction\ResponseBodyBuilder;
 use ChristianBrown\KeyValueStore\DatabaseKeyValueStore;
 use ChristianBrown\OAuth2Client\Authentication\ClientSecretBasicAuthentication;
 use ChristianBrown\OAuth2Client\RefreshTokenManagerFactory;
+use ChristianBrown\SmartThings\Model\Location;
 use ChristianBrown\SmartThings\SmartThingsFactory;
 use ChristianBrown\SmartThingsClimate\ClimateAverageCalculator;
 use ChristianBrown\SmartThingsClimate\ClimateRecorder;
@@ -34,6 +35,7 @@ use ChristianBrown\SmartThingsClimate\DeviceReadingOutputTransformer;
 use ChristianBrown\SmartThingsClimate\MeasurementCapabilityDetector;
 use ChristianBrown\SmartThingsClimate\OutputTransformer;
 use ChristianBrown\SmartThingsClimate\RequestHandler;
+use ChristianBrown\SmartThingsClimate\RoomNameResolver;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\Clock\NativeClock;
@@ -113,7 +115,8 @@ function run(ServerRequestInterface $request): ResponseInterface
 
             $deviceFetcher = new DeviceFetcher($devicesApi, $config->getLocationId());
             $measurementCapabilityDetector = new MeasurementCapabilityDetector();
-            $deviceReadingBuilder = new DeviceReadingBuilder($devicesStatusApi, $locationRoomApi, $clock);
+            $roomNameResolver = new RoomNameResolver($locationRoomApi, new Location($config->getLocationId()));
+            $deviceReadingBuilder = new DeviceReadingBuilder($devicesStatusApi, $roomNameResolver, $clock);
 
             $dataProvider = new DataProvider($deviceFetcher, $measurementCapabilityDetector, $deviceReadingBuilder, $climateRecorder, $outputTransformer);
 

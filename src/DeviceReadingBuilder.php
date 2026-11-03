@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace ChristianBrown\SmartThingsClimate;
 
 use ChristianBrown\SmartThings\Api\DeviceStatusApiInterface;
-use ChristianBrown\SmartThings\Api\LocationRoomApiInterface;
 use ChristianBrown\SmartThings\Model\DeviceInterface;
 use ChristianBrown\SmartThings\Model\DeviceStatusInterface;
 use ChristianBrown\SmartThings\Model\DeviceStatusRelativeHumidityMeasurementInterface;
@@ -18,13 +17,13 @@ final class DeviceReadingBuilder implements DeviceReadingBuilderInterface
 {
     private ClockInterface $clock;
     private DeviceStatusApiInterface $deviceStatusApi;
-    private LocationRoomApiInterface $locationRoomApi;
+    private RoomNameResolverInterface $roomNameResolver;
 
-    public function __construct(DeviceStatusApiInterface $deviceStatusApi, LocationRoomApiInterface $locationRoomApi, ClockInterface $clock)
+    public function __construct(DeviceStatusApiInterface $deviceStatusApi, RoomNameResolverInterface $roomNameResolver, ClockInterface $clock)
     {
         $this->clock = $clock;
         $this->deviceStatusApi = $deviceStatusApi;
-        $this->locationRoomApi = $locationRoomApi;
+        $this->roomNameResolver = $roomNameResolver;
     }
 
     public function build(DeviceInterface $device, SupportedMeasurementsInterface $supportedMeasurements): ?DeviceReadingInterface
@@ -43,7 +42,7 @@ final class DeviceReadingBuilder implements DeviceReadingBuilderInterface
 
         return new DeviceReading(
             $device->getLabel() ?? '',
-            $this->resolveRoomName($device),
+            $this->roomNameResolver->resolve($device),
             $temperature,
             $humidity
         );
@@ -63,15 +62,6 @@ final class DeviceReadingBuilder implements DeviceReadingBuilderInterface
         $timestamp = $value->getTimestamp();
 
         return new Measurement($value->getValue(), $timestamp, $timestamp < $now - self::STALE_THRESHOLD);
-    }
-
-    private function resolveRoomName(DeviceInterface $device): ?string
-    {
-        if (null === $device->getRoomId()) {
-            return null;
-        }
-
-        return $this->locationRoomApi->getOneByDevice($device)->getName();
     }
 
     private static function resolveTemperature(DeviceStatusInterface $deviceStatus, bool $supported, int $now): ?MeasurementInterface
