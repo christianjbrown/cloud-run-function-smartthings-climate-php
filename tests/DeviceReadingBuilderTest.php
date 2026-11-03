@@ -5,17 +5,16 @@ declare(strict_types=1);
 namespace ChristianBrown\SmartThingsClimate\Tests;
 
 use ChristianBrown\SmartThings\Api\DeviceStatusApiInterface;
-use ChristianBrown\SmartThings\Api\LocationRoomApiInterface;
 use ChristianBrown\SmartThings\Model\DeviceInterface;
 use ChristianBrown\SmartThings\Model\DeviceStatusInterface;
 use ChristianBrown\SmartThings\Model\DeviceStatusRelativeHumidityMeasurementHumidityInterface;
 use ChristianBrown\SmartThings\Model\DeviceStatusRelativeHumidityMeasurementInterface;
 use ChristianBrown\SmartThings\Model\DeviceStatusTemperatureMeasurementInterface;
 use ChristianBrown\SmartThings\Model\DeviceStatusTemperatureMeasurementTemperatureInterface;
-use ChristianBrown\SmartThings\Model\LocationRoomInterface;
 use ChristianBrown\SmartThingsClimate\DeviceReading;
 use ChristianBrown\SmartThingsClimate\DeviceReadingBuilder;
 use ChristianBrown\SmartThingsClimate\Measurement;
+use ChristianBrown\SmartThingsClimate\RoomNameResolverInterface;
 use ChristianBrown\SmartThingsClimate\SupportedMeasurements;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\Exception;
@@ -60,7 +59,7 @@ final class DeviceReadingBuilderTest extends TestCase
         $deviceStatusApi = self::createStub(DeviceStatusApiInterface::class);
         $deviceStatusApi->method('getOneByDevice')
             ->willReturn($status);
-        $builder = new DeviceReadingBuilder($deviceStatusApi, self::createStub(LocationRoomApiInterface::class), $clock);
+        $builder = new DeviceReadingBuilder($deviceStatusApi, self::createStub(RoomNameResolverInterface::class), $clock);
         $supported = new SupportedMeasurements(true, false);
 
         $first = $builder->build($device, $supported);
@@ -139,14 +138,11 @@ final class DeviceReadingBuilderTest extends TestCase
         $deviceStatusApi->method('getOneByDevice')
             ->willReturn($status);
 
-        $room = self::createStub(LocationRoomInterface::class);
-        $room->method('getName')
+        $roomNameResolver = self::createStub(RoomNameResolverInterface::class);
+        $roomNameResolver->method('resolve')
             ->willReturn($roomName);
-        $locationRoomApi = self::createStub(LocationRoomApiInterface::class);
-        $locationRoomApi->method('getOneByDevice')
-            ->willReturn($room);
 
-        return new DeviceReadingBuilder($deviceStatusApi, $locationRoomApi, new MockClock('@'.$now));
+        return new DeviceReadingBuilder($deviceStatusApi, $roomNameResolver, new MockClock('@'.$now));
     }
 
     /**

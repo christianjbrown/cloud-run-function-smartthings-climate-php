@@ -133,11 +133,14 @@ top-level `index.php` holds the framework entry point and is intentionally outsi
 - **`DataProvider`** — implements the lib's `DataProviderInterface` and only orchestrates, through five
   injected interfaces. `DeviceFetcher` lists the location's devices; `MeasurementCapabilityDetector`
   returns a `SupportedMeasurements` for each (does it expose a `temperatureMeasurement` or
-  `relativeHumidityMeasurement` capability); `DeviceReadingBuilder` reads the status, resolves the room
-  name, and flags readings older than `STALE_THRESHOLD` (24h) as stale against an injected PSR-20 clock
+  `relativeHumidityMeasurement` capability); `DeviceReadingBuilder` reads the status, asks the injected
+  `RoomNameResolver` for the room name, and flags readings older than `STALE_THRESHOLD` (24h) as stale against an injected PSR-20 clock
   read per call; `ClimateRecorder` averages and records the climate to the database (best-effort,
   isolated by `try/catch`, timestamped from the same clock); then the `OutputTransformer` formats the
   readings. `index.php` wires them with a shared `NativeClock`.
+- **`RoomNameResolver`** / **`RoomNameResolverInterface`** - names a device's room from one list of the
+  location's rooms (`LocationRoomApiInterface::getMultiple`, cached by the SDK for the request) rather
+  than a lookup per room, since every SmartThings call counts against the monthly API plan quota.
 - **`DeviceReading`** / **`DeviceReadingInterface`** — a plain typed DTO for one device's label, room,
   battery, temperature/humidity values, timestamps, and stale flags.
 - **`OutputTransformer`** — sorts the readings by label, maps each through
