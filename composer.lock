@@ -329,16 +329,16 @@
         },
         {
             "name": "christianjbrown/oauth2-client",
-            "version": "v2.1.1",
+            "version": "v2.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/christianjbrown/oauth2-client-php.git",
-                "reference": "205c551bbb416ab89e18c1c75f86598106923633"
+                "reference": "ddfd44004c74c6e76470abd67bf2e9c88bbb2194"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/christianjbrown/oauth2-client-php/zipball/205c551bbb416ab89e18c1c75f86598106923633",
-                "reference": "205c551bbb416ab89e18c1c75f86598106923633",
+                "url": "https://api.github.com/repos/christianjbrown/oauth2-client-php/zipball/ddfd44004c74c6e76470abd67bf2e9c88bbb2194",
+                "reference": "ddfd44004c74c6e76470abd67bf2e9c88bbb2194",
                 "shasum": ""
             },
             "require": {
@@ -380,10 +380,10 @@
             ],
             "support": {
                 "issues": "https://github.com/christianjbrown/oauth2-client-php/issues",
-                "source": "https://github.com/christianjbrown/oauth2-client-php/tree/v2.1.1"
+                "source": "https://github.com/christianjbrown/oauth2-client-php/tree/v2.1.2"
             },
-            "time": "2026-10-01T11:29:38+00:00",
-            "published-time": "2026-10-01T11:29:45+00:00"
+            "time": "2026-11-08T18:03:29+00:00",
+            "published-time": "2026-11-08T18:05:55+00:00"
         },
         {
             "name": "christianjbrown/smartthings-api-sdk",
